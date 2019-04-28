@@ -1,0 +1,31 @@
+server:
+  port: 8761
+
+#/{label}/{application}-{profile}:properties:
+#spring.application.name：对应配置文件规则中的{application}部分
+#spring.cloud.config.profile：对应配置文件规则中的{profile}部分
+#spring.cloud.config.label：对应配置文件规则中的{label}部分
+#spring.cloud.config.uri：配置中心config-server的地址
+spring:
+  application:
+    name: api
+  cloud:
+    config:
+      #配置当不能连接配置服务器，则不能启动
+      fail-fast: true
+      #配置仓库分支
+      label: master
+      profile: dev
+      uri: http://localhost:8888/
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include=*:
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8760/eureka/
+
