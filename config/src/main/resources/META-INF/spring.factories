@@ -1,0 +1,1 @@
+org.springframework.boot.env.PropertySourceLoader=cn.roy.springcloud.config.Loader

@@ -4,7 +4,22 @@ server:
 spring:
   application:
     name: api2
-
+  cloud:
+    config:
+      #配置当不能连接配置服务器，则不能启动
+      fail-fast: true
+      #配置仓库分支
+      label: master
+      #配置文件的环境
+      profile: dev
+      #使用uri
+#      uri: http://localhost:8888/
+      #或discovery
+      discovery:
+        #开启配置服务发现
+        enabled: true
+        #注册中心的服务名
+        service-id: config-server
 eureka:
   client:
     serviceUrl:

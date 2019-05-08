@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RefreshScope
 @RestController
-@RequestMapping("api")
+@RequestMapping("test")
 @Api(tags = "TestController相关接口")
 public class TestController {
 
@@ -35,7 +35,7 @@ public class TestController {
     @ApiOperation(value = "我是hello接口",notes = "这是hello接口描述",tags = {"tag1","tag2"})
     @GetMapping("hello")
     public String hello() {
-        return "请求端口：" + port;
+        return "I am api，端口：" + port + "，姓名：" + userName;
     }
 
     @ApiOperation(value = "我是name接口value",notes = "我是name接口notes",tags = {"tag1","tag3"})
