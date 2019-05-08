@@ -1,5 +1,5 @@
 server:
-  port: 8762
+  port: 8761
 
 #/{label}/{application}-{profile}:properties:
 #spring.application.name：对应配置文件规则中的{application}部分
@@ -20,7 +20,7 @@ spring:
       #使用uri
       uri: http://localhost:8888/
       #或discovery
-  #      discovery:
+#      discovery:
 #        #开启配置服务发现
 #        enabled: true
 #        #注册中心的服务名
@@ -30,7 +30,7 @@ spring:
       #热部署生效
       enabled: true
       #设置重启的目录
-      additional-paths: src/main/java
+      #additional-paths: src/main/java
   freemarker:
     template-loader-path: classpath:/templates/freemarker/
     #关闭缓存，即时刷新，上线前要更改为true

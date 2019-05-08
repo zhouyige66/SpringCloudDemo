@@ -35,13 +35,13 @@ public class TestController {
     @ApiOperation(value = "我是hello接口",notes = "这是hello接口描述",tags = {"tag1","tag2"})
     @GetMapping("hello")
     public String hello() {
-        return "I am api，端口：" + port + "，姓名：" + userName;
+        return "I am api，端口：" + port + "，测试姓名：" + userName;
     }
 
     @ApiOperation(value = "我是name接口value",notes = "我是name接口notes",tags = {"tag1","tag3"})
-    @GetMapping("name")
+    @GetMapping("hello2")
     public String getUserName() {
-        return "请求端口：" + port + "，查询的名字是：" + userName;
+        return "I am api，端口：" + port + "，从配置中心读取的名字是：" + userName;
     }
 
 }

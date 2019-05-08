@@ -1,5 +1,5 @@
 server:
-  port: 8763
+  port: 8762
 
 spring:
   application:
@@ -12,8 +12,7 @@ spring:
       label: master
       #配置文件的环境
       profile: dev
-      #使用uri
-#      uri: http://localhost:8888/
+      #使用uri uri: http://localhost:8888/
       #或discovery
       discovery:
         #开启配置服务发现
