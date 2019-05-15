@@ -37,9 +37,9 @@
             <th>Cause</th>
         </tr>
         <tr>
-            <td>${(params.messageCode)!""}</td>
-            <td>${(params.messageStatus)!""}</td>
-            <td>${(params.cause)!""}</td>
+            <td>${name!}</td>
+            <td>${password!}</td>
+            <td>${msg!}</td>
         </tr>
     </table>
 </div>

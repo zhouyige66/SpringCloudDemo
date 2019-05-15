@@ -1,7 +1,9 @@
 package cn.roy.springcloud.api.controller;
 
+import cn.roy.springcloud.api.util.MailUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +28,9 @@ public class TestController {
     @Value("${user.name}")
     private String userName;
 
+    @Autowired
+    private MailUtil mailUtil;
+
     /**
      * ApiOperation使用说明
      * value:接口功能
@@ -43,5 +48,17 @@ public class TestController {
     public String getUserName() {
         return "I am api，端口：" + port + "，从配置中心读取的名字是：" + userName;
     }
+
+    @ApiOperation(value = "我是name接口value",notes = "我是name接口notes",tags = {"tag1","tag3"})
+    @GetMapping("send")
+    public String sendEmail() {
+        try {
+            mailUtil.sendTemplateMail("C:\\Users\\Roy Z Zhou\\Desktop\\log.xls");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "发送测试";
+    }
+
 
 }

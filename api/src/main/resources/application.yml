@@ -40,6 +40,21 @@ spring:
     cache: false
     check-template-location: true
     prefix: classpath:/templates/thymeleaf/
+  #邮箱配置
+  mail:
+    host: smtp.qq.com
+    port: 465
+    protocol: smtp
+    username: 751664206@qq.com
+    password: kk20910925@q
+    default-encoding: UTF-8
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
 
 management:
   endpoints:
