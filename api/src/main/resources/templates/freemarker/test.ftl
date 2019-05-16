@@ -29,17 +29,17 @@
 </style>
 <body>
 <div>
-    <h2>邮件消息通知</h2>
+    <h2>个人信息</h2>
     <table id="customers">
         <tr>
-            <th>MessageCode</th>
-            <th>MessageStatus</th>
-            <th>Cause</th>
+            <th>Name</th>
+            <th>Password</th>
+            <th>Age</th>
         </tr>
         <tr>
             <td>${name!}</td>
             <td>${password!}</td>
-            <td>${msg!}</td>
+            <td>${age!}</td>
         </tr>
     </table>
 </div>

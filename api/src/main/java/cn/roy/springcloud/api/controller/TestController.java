@@ -3,12 +3,17 @@ package cn.roy.springcloud.api.controller;
 import cn.roy.springcloud.api.util.MailUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.collections4.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Description: 测试
@@ -28,6 +33,12 @@ public class TestController {
     @Value("${user.name}")
     private String userName;
 
+    @Value("#{'${mail.sendTo}'.split(',')}")
+    private String[] sendTo;
+
+    @Value("#{'${mail.ccTo}'.split(',')}")
+    private String[] ccTo;
+
     @Autowired
     private MailUtil mailUtil;
 
@@ -37,28 +48,69 @@ public class TestController {
      * notes:接口描述
      * tags:用于接口分类，相当于按tag分组
      */
-    @ApiOperation(value = "我是hello接口",notes = "这是hello接口描述",tags = {"tag1","tag2"})
+    @ApiOperation(value = "我是hello接口", notes = "这是hello接口描述", tags = {"tag1"})
     @GetMapping("hello")
     public String hello() {
-        return "I am api，端口：" + port + "，测试姓名：" + userName;
+        Map<String, Object> map = new HashedMap<>();
+        map.put("name", "kk20");
+        return mailUtil.processThymeleafTemplateIntoString("tt.html", map);
     }
 
-    @ApiOperation(value = "我是name接口value",notes = "我是name接口notes",tags = {"tag1","tag3"})
+    @ApiOperation(value = "我是name接口value", notes = "我是name接口notes", tags = {"tag1"})
     @GetMapping("hello2")
     public String getUserName() {
         return "I am api，端口：" + port + "，从配置中心读取的名字是：" + userName;
     }
 
-    @ApiOperation(value = "我是name接口value",notes = "我是name接口notes",tags = {"tag1","tag3"})
+    @ApiOperation(value = "发送文本邮件", notes = "发送文本邮件", tags = {"邮件"})
     @GetMapping("send")
-    public String sendEmail() {
+    public String sendSimpleMail() {
+        String content = "这是一封简单的测试邮件";
         try {
-            mailUtil.sendTemplateMail("C:\\Users\\Roy Z Zhou\\Desktop\\log.xls");
+            mailUtil.sendSimpleMail(sendTo, ccTo, "测试普通文本邮件", content);
+            return "发送成功";
         } catch (Exception e) {
             e.printStackTrace();
+            return "发送失败";
         }
-        return "发送测试";
     }
 
+    @ApiOperation(value = "发送附件邮件", notes = "发送附件邮件", tags = {"邮件"})
+    @GetMapping("send2")
+    public String sendAttachmentsMail() {
+        String filePath = "C:\\Users\\Roy Z Zhou\\Desktop\\log.xls";
+        String filePath1 = "C:\\Users\\Roy Z Zhou\\Desktop\\1月.xlsm";
+        List<String> filePaths = new ArrayList<>();
+        filePaths.add(filePath);
+        filePaths.add(filePath1);
+        try {
+            mailUtil.sendAttachmentsMail(sendTo, ccTo, "测试发送附件邮件", "", filePaths);
+            return "发送成功";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "发送失败";
+        }
+    }
 
+    @ApiOperation(value = "发送模板邮件（带附件）", notes = "发送模板邮件（带附件）", tags = {"邮件"})
+    @GetMapping("send3")
+    public String sendEmail() {
+        String filePath = "C:\\Users\\Roy Z Zhou\\Desktop\\log.xls";
+        String filePath1 = "C:\\Users\\Roy Z Zhou\\Desktop\\1月.xlsm";
+        List<String> filePaths = new ArrayList<>();
+        filePaths.add(filePath);
+        filePaths.add(filePath1);
+        Map<String, Object> model = new HashedMap();
+        model.put("name", "Roy");
+        model.put("password", "123456");
+        model.put("age", 21);
+        String content = mailUtil.processFreemarkerTemplateIntoString("test.ftl", model);
+        try {
+            mailUtil.sendTemplateMail(sendTo, ccTo, "测试模板邮件（带附件）", content, filePaths);
+            return "发送成功";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "发送失败";
+        }
+    }
 }

@@ -20,11 +20,11 @@ spring:
       #使用uri
       uri: http://localhost:8888/
       #或discovery
-#      discovery:
-#        #开启配置服务发现
-#        enabled: true
-#        #注册中心的服务名
-#        service-id: config-server
+  #      discovery:
+  #        #开启配置服务发现
+  #        enabled: true
+  #        #注册中心的服务名
+  #        service-id: config-server
   devtools:
     restart:
       #热部署生效
@@ -42,19 +42,34 @@ spring:
     prefix: classpath:/templates/thymeleaf/
   #邮箱配置
   mail:
-    host: smtp.qq.com
-    port: 465
+    host: 10.150.192.96
+    port: 25
     protocol: smtp
-    username: 751664206@qq.com
-    password: kk20910925@q
+    username: roy.z.zhou@cn.pwc.com
+    password: yige9257
     default-encoding: UTF-8
     properties:
       mail:
+        mime:
+          encodefilename: false
+          charset: UTF-8
+          splitlongparameters: false
         smtp:
           auth: true
           starttls:
-            enable: true
-            required: true
+            enable: false
+            required: false
+
+mail:
+  #收件人之间逗号隔开，如roy.z.zhou@cn.pwc.com,zhiqiang.z.li@cn.pwc.com
+  sendTo: roy.z.zhou@cn.pwc.com
+  ccTo: roy.z.zhou@cn.pwc.com
+
+custom:
+  names:
+    - roy.z.zhou
+    - kk20
+    - yige
 
 management:
   endpoints:
