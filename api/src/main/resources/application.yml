@@ -42,11 +42,12 @@ spring:
     prefix: classpath:/templates/thymeleaf/
   #邮箱配置
   mail:
-    host: 10.150.192.96
+    host: 127.0.0.1
     port: 25
     protocol: smtp
-    username: roy.z.zhou@cn.pwc.com
-    password: yige9257
+    #配置发送者信息
+    username:
+    password:
     default-encoding: UTF-8
     properties:
       mail:
@@ -61,9 +62,9 @@ spring:
             required: false
 
 mail:
-  #收件人之间逗号隔开，如roy.z.zhou@cn.pwc.com,zhiqiang.z.li@cn.pwc.com
-  sendTo: roy.z.zhou@cn.pwc.com
-  ccTo: roy.z.zhou@cn.pwc.com
+  #收件人之间逗号隔开，如xxx@qq.com,yyy@163.com
+  sendTo: x@qq.com,y@163.com
+  ccTo: a@qq.com,b@163.com
 
 custom:
   names:
