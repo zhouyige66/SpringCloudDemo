@@ -17,9 +17,8 @@ spring:
       label: master
       #配置文件的环境
       profile: dev
-      #使用uri
+      #使用uri或discovery
       uri: http://localhost:8888/
-      #或discovery
   #      discovery:
   #        #开启配置服务发现
   #        enabled: true

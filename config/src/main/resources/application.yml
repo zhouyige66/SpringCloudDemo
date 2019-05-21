@@ -6,24 +6,23 @@ spring:
     name: config-server
   cloud:
     config:
-      #配置仓库分支
+      # 配置仓库分支
       label: master
       server:
         git:
-          #仓库地址
+          # 仓库地址
           uri: https://github.com/zhouyige66/ConfigCenter.git
-          #仓库路径
+          # 仓库路径
           searchPaths: /**
           username: 751664206@qq.com
           password: kk209257
-          #跳过ssl认证
+          # 跳过ssl认证
           skip-ssl-validation: true
-          #启动时候clone仓库
+          # 启动时候clone仓库
           clone-on-start: true
 
 eureka:
   client:
     serviceUrl:
+      # 配置注册中心地址
       defaultZone: http://localhost:8760/eureka/
-
-
