@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @FeignClient(name = "api")
 public interface RemoteCallService {
 
-    @RequestMapping(value = "/test/hello",method = RequestMethod.GET)
+    @RequestMapping(value = "/test/read",method = RequestMethod.GET)
     String getStringFromApi();
 
 }

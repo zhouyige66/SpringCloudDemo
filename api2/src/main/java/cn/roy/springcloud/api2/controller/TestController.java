@@ -1,6 +1,8 @@
 package cn.roy.springcloud.api2.controller;
 
 import cn.roy.springcloud.api2.service.RemoteCallService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RefreshScope
 @RestController
 @RequestMapping("test")
+@Api(tags = "TestController相关接口")
 public class TestController {
 
     @Value("${server.port}")
@@ -29,11 +32,13 @@ public class TestController {
     RemoteCallService remoteCallService;
 
     @GetMapping("hello")
+    @ApiOperation(value = "hello", notes = "功能：接口功能描述")
     public String hello() {
         return "I am api2，端口：" + port + "，姓名：" + userName;
     }
 
-    @GetMapping("hello2")
+    @GetMapping("call")
+    @ApiOperation(value = "remoteCall", notes = "功能：接口功能描述")
     public String remoteCall() {
         return "我是api2，我调用了api，返回：" + remoteCallService.getStringFromApi();
     }

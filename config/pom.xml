@@ -13,6 +13,10 @@
     <name>config</name>
     <description>配置中心</description>
 
+    <properties>
+        <version>0.0.1</version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -39,10 +43,20 @@
             </plugin>
         </plugins>
         <resources>
+            <!-- 防止JKS被Maven过掉 false表示不会替换占位符-->
             <resource>
-                <!-- 防止JKS被Maven过掉 -->
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <excludes>
+                    <exclude>*.jks</exclude>
+                </excludes>
+            </resource>
+            <resource>
                 <directory>src/main/resources</directory>
                 <filtering>false</filtering>
+                <includes>
+                    <include>*.jks</include>
+                </includes>
             </resource>
         </resources>
     </build>

@@ -4,25 +4,40 @@ server:
 spring:
   application:
     name: config-server
+  # 配置读取本地文件
+  profiles:
+    active: native
   cloud:
     config:
-      # 配置仓库分支
-      label: master
       server:
-        git:
-          # 仓库地址
-          uri: https://github.com/zhouyige66/ConfigCenter.git
-          # 仓库路径
-          searchPaths: /**
-          username: 751664206@qq.com
-          password: kk209257
-          # 跳过ssl认证
-          skip-ssl-validation: true
-          # 启动时候clone仓库
-          clone-on-start: true
+        native:
+          # 注意，Windows中的绝对路径需要额外的“/”
+          search-locations: C:/Users/Roy Z Zhou/Music/config
+  # 配置读取远程仓库文件
+#  cloud:
+#    config:
+#      # 配置仓库分支
+#      label: master
+#      # 配置远程仓库
+#      server:
+#        git:
+#          # 仓库地址
+#          uri: https://github.com/zhouyige66/ConfigCenter.git
+#          # 仓库路径
+#          searchPaths: /**
+#          username: 751664206@qq.com
+#          password: kk209257
+#          # 跳过ssl认证
+#          skip-ssl-validation: true
+#          # 启动时候clone仓库
+#          clone-on-start: true
+#          order: 2
 
 eureka:
   client:
     serviceUrl:
       # 配置注册中心地址
       defaultZone: http://localhost:8760/eureka/
+  instance:
+    # 服务实体注册名默认是“IP名:应用名:应用端口名”，可使用@value@读取maven中配置的属性
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${server.port}:@version@

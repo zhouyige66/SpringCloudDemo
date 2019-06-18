@@ -1,6 +1,6 @@
 encrypt:
   keyStore:
-    #jks的配置文件的路径
+    # jks的配置文件的路径
     location: classpath:/roy.jks
     # keystore的密码
     password: 123456

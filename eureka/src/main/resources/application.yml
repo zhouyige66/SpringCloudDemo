@@ -1,20 +1,25 @@
 server:
   port: 8760
 
-#Í¨¹ıeureka.client.registerWithEureka£ºfalseºÍfetchRegistry£ºfalseÀ´±íÃ÷×Ô¼ºÊÇÒ»¸öeureka server
+# é€šè¿‡eureka.client.registerWithEurekaï¼šfalseå’ŒfetchRegistryï¼šfalseæ¥è¡¨æ˜è‡ªå·±æ˜¯ä¸€ä¸ªeureka server
 eureka:
+  instance:
+    hostname: localhost
   client:
     registerWithEureka: false
     fetchRegistry: false
     serviceUrl:
-      #×¢²áÖĞĞÄ°²È«ÑéÖ¤£¬ÅäÖÃµÄµØÖ·¸ñÊ½Îª£ºhttp://<username>:<password>@localhost:8761/eureka ÆäÖĞ <username> Îª°²È«Ğ£ÑéµÄÓÃ»§Ãû£»<password> Îª¸ÃÓÃ»§µÄÃÜÂë
+      # æ³¨å†Œä¸­å¿ƒå®‰å…¨éªŒè¯ï¼Œé…ç½®çš„åœ°å€æ ¼å¼ä¸ºï¼šhttp://<username>:<password>@localhost:8761/eureka
+      # å…¶ä¸­<username>ä¸ºå®‰å…¨æ ¡éªŒçš„ç”¨æˆ·åï¼›<password>ä¸ºè¯¥ç”¨æˆ·çš„å¯†ç 
       defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
-  # ×Ô¶¨ÒåÊµÀı±àºÅ
+
+#    # è‡ªå®šä¹‰å®ä¾‹ç¼–å·
 #  instance:
-#    instance-id: ${spring.application.name}:${server.port}:@project.version@
-#    # ÅäÖÃÊ¹ÓÃÖ÷»úÃû×¢²á·şÎñ£¬ĞèÒª¸ü¸Ä/etc/hostsÎÄ¼ş
+#    # æœåŠ¡å®ä½“æ³¨å†Œåé»˜è®¤æ˜¯â€œIPå:åº”ç”¨å:åº”ç”¨ç«¯å£åâ€ï¼Œå¯ä½¿ç”¨@value@è¯»å–mavenä¸­é…ç½®çš„å±æ€§
+#    instance-id: ${spring.application.name}:${server.port}:'@project.version@'
+#    # é…ç½®ä½¿ç”¨ä¸»æœºåæ³¨å†ŒæœåŠ¡ï¼Œéœ€è¦æ›´æ”¹/etc/hostsæ–‡ä»¶
 #    hostname: node1
-#    # ÓÅÏÈÊ¹ÓÃIPµØÖ··½Ê½½øĞĞ×¢²á·şÎñ
+#    # ä¼˜å…ˆä½¿ç”¨IPåœ°å€æ–¹å¼è¿›è¡Œæ³¨å†ŒæœåŠ¡
 #    prefer-ip-address: true
-#    # ÅäÖÃÊ¹ÓÃÖ¸¶¨IP
+#    # é…ç½®ä½¿ç”¨æŒ‡å®šIP
 #    ip-address: 127.0.0.1
