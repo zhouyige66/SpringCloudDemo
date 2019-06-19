@@ -4,6 +4,8 @@ server:
 spring:
   application:
     name: api2
+  zipkin:
+    baseUrl: http://localhost:8888
   cloud:
     config:
       # 配置当不能连接配置服务器，则不能启动
@@ -23,3 +25,15 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:8760/eureka/
+
+# 开启熔断机制
+feign:
+  hystrix:
+    enabled: true
+
+# 健康监控
+management:
+  endpoints:
+    web:
+      exposure:
+        include: hystrix.stream

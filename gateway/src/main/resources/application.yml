@@ -3,10 +3,14 @@ server:
 spring:
   application:
     name: gateway
+
+# 注册中心
 eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:8760/eureka/
+
+# 路由配置
 zuul:
   routes:
     api:

@@ -58,6 +58,11 @@ public class TestController {
     @ApiOperation(value = "接口名称", notes = "功能：接口功能描述", tags = {"tag1"})
     @GetMapping("read")
     public String getUserName() {
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return "I am api，端口：" + port + "，从配置中心读取的名字是：" + userName;
     }
 

@@ -15,10 +15,10 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 import java.util.ArrayList;
 import java.util.List;
 
-@EnableSwagger2
+@SpringBootApplication
 @EnableEurekaClient
 @EnableZuulProxy
-@SpringBootApplication
+@EnableSwagger2
 public class GatewayApplication {
 
     public static void main(String[] args) {

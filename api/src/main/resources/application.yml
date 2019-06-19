@@ -9,6 +9,8 @@ server:
 spring:
   application:
     name: api
+  zipkin:
+    baseUrl: http://localhost:8888
   cloud:
     config:
       #配置当不能连接配置服务器，则不能启动

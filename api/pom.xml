@@ -29,6 +29,12 @@
             <artifactId>spring-cloud-config-client</artifactId>
         </dependency>
 
+        <!--链路追踪-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-sleuth-zipkin</artifactId>
+        </dependency>
+
         <!--健康检查以及刷新配置-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
