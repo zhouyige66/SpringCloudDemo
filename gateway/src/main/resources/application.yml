@@ -3,13 +3,17 @@ server:
 spring:
   application:
     name: gateway
-
+  zipkin:
+    baseUrl: http://localhost:9411
+  sleuth:
+    traceId128: true
+    sampler:
+      probability: 1.0
 # 注册中心
 eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:8760/eureka/
-
 # 路由配置
 zuul:
   routes:
@@ -19,3 +23,23 @@ zuul:
     api2:
       path: /api2/**
       serviceId: api2
+  retryable: true
+ribbon:
+  # 连接超时时间(ms)
+  ConnectTimeout: 250
+  # 通信超时时间(ms)，解决504问题
+  ReadTimeout: 10000
+  # 是否对所有操作重试
+  OkToRetryOnAllOperations: true
+  # 同一服务不同实例的重试次数
+  MaxAutoRetriesNextServer: 2
+  # 同一实例的重试次数
+  MaxAutoRetries: 1
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            # 熔断超时时长：6000ms
+            timeoutInMilliseconds: 6000

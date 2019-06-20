@@ -5,7 +5,11 @@ spring:
   application:
     name: api2
   zipkin:
-    baseUrl: http://localhost:8888
+    baseUrl: http://localhost:9411
+  sleuth:
+    traceId128: true
+    sampler:
+      probability: 1.0
   cloud:
     config:
       # 配置当不能连接配置服务器，则不能启动
@@ -21,16 +25,34 @@ spring:
         enabled: true
         #注册中心的服务名
         service-id: config-server
+# 注册中心
 eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:8760/eureka/
-
 # 开启熔断机制
 feign:
   hystrix:
     enabled: true
-
+ribbon:
+  # 连接超时时间(ms)
+  ConnectTimeout: 250
+  # 通信超时时间(ms)，解决504问题
+  ReadTimeout: 5000
+  # 是否对所有操作重试
+  OkToRetryOnAllOperations: true
+  # 同一服务不同实例的重试次数
+  MaxAutoRetriesNextServer: 2
+  # 同一实例的重试次数
+  MaxAutoRetries: 1
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            # 熔断超时时长：6000ms
+            timeoutInMilliseconds: 6000
 # 健康监控
 management:
   endpoints:

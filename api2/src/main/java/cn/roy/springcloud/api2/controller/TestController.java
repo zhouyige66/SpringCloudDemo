@@ -31,16 +31,22 @@ public class TestController {
     @Autowired
     RemoteCallService remoteCallService;
 
-    @GetMapping("hello")
-    @ApiOperation(value = "hello", notes = "功能：接口功能描述")
-    public String hello() {
-        return "I am api2，端口：" + port + "，姓名：" + userName;
+    @GetMapping("name")
+    @ApiOperation(value = "查询用户名接口", notes = "功能：查询配置用户名称")
+    public String name() {
+        return "I am api2，从配置中心读取的名字为：" + userName;
     }
 
     @GetMapping("call")
-    @ApiOperation(value = "remoteCall", notes = "功能：接口功能描述")
-    public String remoteCall() {
-        return "我是api2，我调用了api，返回：" + remoteCallService.getStringFromApi();
+    @ApiOperation(value = "远程调用测试接口", notes = "功能：远程调用测试接口")
+    public String call() {
+        return "I am api2，调用api返回数据：" + remoteCallService.getStringFromApi();
+    }
+
+    @GetMapping("timeOver")
+    @ApiOperation(value = "远程调用测试接口", notes = "功能：远程调用测试接口")
+    public String timeOver() {
+        return "I am api2，调用api返回数据：" + remoteCallService.getStringFromApi2();
     }
 
 }

@@ -1,4 +1,4 @@
-package cn.roy.springcloud.api2.service;
+package cn.roy.springcloud.api.service;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,13 +10,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @Date: 2019-04-25 11:25
  * @Version: v1.0
  */
-@FeignClient(name = "api", fallback = RemoteCallServiceFallback.class)
+@FeignClient(name = "api2",fallback = RemoteCallServiceFallback.class)
 public interface RemoteCallService {
 
-    @RequestMapping(value = "/test/time", method = RequestMethod.GET)
-    String getStringFromApi();
-
-    @RequestMapping(value = "/test/timeOver", method = RequestMethod.GET)
+    @RequestMapping(value = "/test/name",method = RequestMethod.GET)
     String getStringFromApi2();
 
 }

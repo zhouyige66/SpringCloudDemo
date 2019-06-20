@@ -1,4 +1,4 @@
-package cn.roy.springcloud.api2.service;
+package cn.roy.springcloud.api.service;
 
 import org.springframework.stereotype.Component;
 
@@ -10,11 +10,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class RemoteCallServiceFallback implements RemoteCallService {
-
-    @Override
-    public String getStringFromApi() {
-        return "服务降级：fail";
-    }
 
     @Override
     public String getStringFromApi2() {

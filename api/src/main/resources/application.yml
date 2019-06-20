@@ -10,7 +10,11 @@ spring:
   application:
     name: api
   zipkin:
-    baseUrl: http://localhost:8888
+    baseUrl: http://localhost:9411
+  sleuth:
+    traceId128: true
+    sampler:
+      probability: 1.0
   cloud:
     config:
       #配置当不能连接配置服务器，则不能启动
@@ -19,26 +23,27 @@ spring:
       label: master
       #配置文件的环境
       profile: dev
-      #使用uri或discovery
-      uri: http://localhost:8888/
-  #      discovery:
-  #        #开启配置服务发现
-  #        enabled: true
-  #        #注册中心的服务名
-  #        service-id: config-server
-  devtools:
-    restart:
-      #热部署生效
-      enabled: true
-      #设置重启的目录
-      #additional-paths: src/main/java
+#      #使用uri或discovery
+#      uri: http://localhost:8888/
+      discovery:
+        #开启配置服务发现
+        enabled: true
+        #注册中心的服务名
+        service-id: config-server
+#  devtools:
+#    add-properties: false
+#    restart:
+#      #热部署生效
+#      enabled: false
+#      #设置重启的目录
+#      #additional-paths: src/main/java
   freemarker:
     template-loader-path: classpath:/templates/freemarker/
     #关闭缓存，即时刷新，上线前要更改为true
-    cache: false
+    cache: true
   thymeleaf:
     #关闭缓存，即时刷新，上线前要更改为true
-    cache: false
+    cache: true
     check-template-location: true
     prefix: classpath:/templates/thymeleaf/
   #邮箱配置
