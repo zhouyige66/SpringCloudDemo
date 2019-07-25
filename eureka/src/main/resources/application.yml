@@ -1,11 +1,11 @@
 server:
   port: 8760
 
-# 通过eureka.client.registerWithEureka：false和fetchRegistry：false来表明自己是一个eureka server
 eureka:
   instance:
     hostname: localhost
   client:
+    # 通过eureka.client.registerWithEureka：false和fetchRegistry：false来表明自己是一个eureka server
     registerWithEureka: false
     fetchRegistry: false
     serviceUrl:
