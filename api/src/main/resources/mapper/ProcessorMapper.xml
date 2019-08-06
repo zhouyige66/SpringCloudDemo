@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.roy.springcloud.api.dao.ProcessorMapper">
+    <resultMap id="BaseResultMap" type="cn.roy.springcloud.api.dao.bean.Processor">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="assignee" property="assignee" jdbcType="VARCHAR"/>
+        <result column="assign_date" property="assignDate" jdbcType="VARCHAR"/>
+        <result column="group" property="group" jdbcType="VARCHAR"/>
+        <result column="grade" property="grade" jdbcType="VARCHAR"/>
+        <result column="reviewer" property="reviewer" jdbcType="SMALLINT"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="email" property="email" jdbcType="VARCHAR"/>
+        <result column="department" property="department" jdbcType="VARCHAR"/>
+        <result column="mobile" property="mobile" jdbcType="VARCHAR"/>
+        <result column="extension" property="extension" jdbcType="VARCHAR"/>
+        <result column="wr_work_request_id" property="wrWorkRequestId" jdbcType="BIGINT"/>
+        <result column="s_df" property="sDf" jdbcType="SMALLINT"/>
+        <result column="s_ct" property="sCt" jdbcType="TIMESTAMP"/>
+        <result column="s_ut" property="sUt" jdbcType="TIMESTAMP"/>
+        <result column="s_uid" property="sUid" jdbcType="VARCHAR"/>
+        <result column="name_cn" property="nameCN" jdbcType="VARCHAR"/>
+        <result column="task_id" property="taskId" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, assignee, assign_date, `group`, grade, reviewer, name, email, department, mobile,
+        extension, wr_work_request_id, s_df, s_ct, s_ut, s_uid, name_cn, task_id;
+    </sql>
+
+    <insert id="insert" parameterType="cn.roy.springcloud.api.dao.bean.Processor">
+        <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into wr_assignee (assignee, assign_date, `group`,
+        grade, reviewer, name,
+        email, department, mobile,
+        extension, wr_work_request_id, s_df,
+        s_ct, s_ut, s_uid, name_cn, task_id)
+        values (#{assignee,jdbcType=VARCHAR}, #{assignDate,jdbcType=VARCHAR}, #{group,jdbcType=VARCHAR},
+        #{grade,jdbcType=VARCHAR}, #{reviewer,jdbcType=SMALLINT}, #{name,jdbcType=VARCHAR},
+        #{email,jdbcType=VARCHAR}, #{department,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR},
+        #{extension,jdbcType=VARCHAR}, #{wrWorkRequestId,jdbcType=BIGINT}, #{sDf,jdbcType=SMALLINT},
+        #{sCt,jdbcType=TIMESTAMP}, #{sUt,jdbcType=TIMESTAMP}, #{sUid,jdbcType=VARCHAR}), #{nameCN,jdbcType=VARCHAR},
+        #{taskId,jdbcType=VARCHAR})
+    </insert>
+
+    <insert id="insertSelective" parameterType="cn.roy.springcloud.api.dao.bean.Processor">
+        <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into wr_assignee
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="assignee != null">
+                assignee,
+            </if>
+            <if test="assignDate != null">
+                assign_date,
+            </if>
+            <if test="group != null">
+                `group`,
+            </if>
+            <if test="grade != null">
+                grade,
+            </if>
+            <if test="reviewer != null">
+                reviewer,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="email != null">
+                email,
+            </if>
+            <if test="department != null">
+                department,
+            </if>
+            <if test="mobile != null">
+                mobile,
+            </if>
+            <if test="extension != null">
+                extension,
+            </if>
+            <if test="wrWorkRequestId != null">
+                wr_work_request_id,
+            </if>
+            <if test="sDf != null">
+                s_df,
+            </if>
+            <if test="sCt != null">
+                s_ct,
+            </if>
+            <if test="sUt != null">
+                s_ut,
+            </if>
+            <if test="sUid != null">
+                s_uid,
+            </if>
+            <if test="nameCN != null">
+                name_cn,
+            </if>
+            <if test="taskId != null">
+                task_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="assignee != null">
+                #{assignee,jdbcType=VARCHAR},
+            </if>
+            <if test="assignDate != null">
+                #{assignDate,jdbcType=VARCHAR},
+            </if>
+            <if test="group != null">
+                #{group,jdbcType=VARCHAR},
+            </if>
+            <if test="grade != null">
+                #{grade,jdbcType=VARCHAR},
+            </if>
+            <if test="reviewer != null">
+                #{reviewer,jdbcType=SMALLINT},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="department != null">
+                #{department,jdbcType=VARCHAR},
+            </if>
+            <if test="mobile != null">
+                #{mobile,jdbcType=VARCHAR},
+            </if>
+            <if test="extension != null">
+                #{extension,jdbcType=VARCHAR},
+            </if>
+            <if test="wrWorkRequestId != null">
+                #{wrWorkRequestId,jdbcType=BIGINT},
+            </if>
+            <if test="sDf != null">
+                #{sDf,jdbcType=SMALLINT},
+            </if>
+            <if test="sCt != null">
+                #{sCt,jdbcType=TIMESTAMP},
+            </if>
+            <if test="sUt != null">
+                #{sUt,jdbcType=TIMESTAMP},
+            </if>
+            <if test="sUid != null">
+                #{sUid,jdbcType=VARCHAR},
+            </if>
+            <if test="nameCN != null">
+                #{nameCN,jdbcType=VARCHAR},
+            </if>
+            <if test="taskId != null">
+                #{taskId,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from wr_assignee
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <update id="updateByPrimaryKeySelective" parameterType="cn.roy.springcloud.api.dao.bean.Processor">
+        update wr_assignee
+        <set>
+            <if test="assignee != null">
+                assignee = #{assignee,jdbcType=VARCHAR},
+            </if>
+            <if test="assignDate != null">
+                assign_date = #{assignDate,jdbcType=VARCHAR},
+            </if>
+            <if test="group != null">
+                `group` = #{group,jdbcType=VARCHAR},
+            </if>
+            <if test="grade != null">
+                grade = #{grade,jdbcType=VARCHAR},
+            </if>
+            <if test="reviewer != null">
+                reviewer = #{reviewer,jdbcType=SMALLINT},
+            </if>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                email = #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="department != null">
+                department = #{department,jdbcType=VARCHAR},
+            </if>
+            <if test="mobile != null">
+                mobile = #{mobile,jdbcType=VARCHAR},
+            </if>
+            <if test="extension != null">
+                extension = #{extension,jdbcType=VARCHAR},
+            </if>
+            <if test="wrWorkRequestId != null">
+                wr_work_request_id = #{wrWorkRequestId,jdbcType=BIGINT},
+            </if>
+            <if test="sDf != null">
+                s_df = #{sDf,jdbcType=SMALLINT},
+            </if>
+            <if test="sCt != null">
+                s_ct = #{sCt,jdbcType=TIMESTAMP},
+            </if>
+            <if test="sUt != null">
+                s_ut = #{sUt,jdbcType=TIMESTAMP},
+            </if>
+            <if test="sUid != null">
+                s_uid = #{sUid,jdbcType=VARCHAR},
+            </if>
+            <if test="nameCN != null">
+                name_cn = #{nameCN,jdbcType=VARCHAR},
+            </if>
+            <if test="taskId != null">
+                task_id = #{taskId,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKey" parameterType="cn.roy.springcloud.api.dao.bean.Processor">
+        update wr_assignee
+        set assignee = #{assignee,jdbcType=VARCHAR},
+          assign_date = #{assignDate,jdbcType=VARCHAR},
+          `group` = #{group,jdbcType=VARCHAR},
+          grade = #{grade,jdbcType=VARCHAR},
+          reviewer = #{reviewer,jdbcType=SMALLINT},
+          name = #{name,jdbcType=VARCHAR},
+          email = #{email,jdbcType=VARCHAR},
+          department = #{department,jdbcType=VARCHAR},
+          mobile = #{mobile,jdbcType=VARCHAR},
+          extension = #{extension,jdbcType=VARCHAR},
+          wr_work_request_id = #{wrWorkRequestId,jdbcType=BIGINT},
+          s_df = #{sDf,jdbcType=SMALLINT},
+          s_ct = #{sCt,jdbcType=TIMESTAMP},
+          s_ut = #{sUt,jdbcType=TIMESTAMP},
+          s_uid = #{sUid,jdbcType=VARCHAR},
+          name_cn = #{nameCN,jdbcType=TIMESTAMP},
+          task_id = #{taskId,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from wr_assignee
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+</mapper>

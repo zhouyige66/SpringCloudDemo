@@ -12,15 +12,10 @@ import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-import javax.sql.DataSource;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @Description: SQL拦截器
@@ -33,12 +28,15 @@ import java.util.concurrent.ConcurrentHashMap;
         @Signature(type = Executor.class, method = "query",
                 args = {MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class})
 })
-public class SQLIntercepter implements Interceptor {
-    protected static final Logger logger = LoggerFactory.getLogger(SQLIntercepter.class);
+public class SQLInterceptor implements Interceptor {
+    protected static final Logger logger = LoggerFactory.getLogger(SQLInterceptor.class);
     private static final String REGEX = ".*insert\\u0020.*|.*delete\\u0020.*|.*update\\u0020.*";
 
-    @Autowired
-    List<DataSource> slaveDatasourceList;
+    private int slaveDatasourceCount = 0;
+
+    public SQLInterceptor(int slaveDatasourceCount) {
+        this.slaveDatasourceCount = slaveDatasourceCount;
+    }
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
@@ -85,9 +83,21 @@ public class SQLIntercepter implements Interceptor {
     }
 
     private int slaveLoadBalance() {
+        System.out.println("调用：" + this);
         //通过随机获取数组中数据库的名称来随机分配要使用的数据库
-        int num = new Random().nextInt(slaveDatasourceList.size());
+        if (slaveDatasourceCount == 0) {
+            return 0;
+        }
+        int num = new Random().nextInt(slaveDatasourceCount);
         return num;
+    }
+
+    public int getSlaveDatasourceCount() {
+        return slaveDatasourceCount;
+    }
+
+    public void setSlaveDatasourceCount(int slaveDatasourceCount) {
+        this.slaveDatasourceCount = slaveDatasourceCount;
     }
 
 }

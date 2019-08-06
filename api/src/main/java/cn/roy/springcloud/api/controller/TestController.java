@@ -1,5 +1,7 @@
 package cn.roy.springcloud.api.controller;
 
+import cn.roy.springcloud.api.dao.ProcessorMapper;
+import cn.roy.springcloud.api.dao.bean.Processor;
 import cn.roy.springcloud.api.service.RemoteCallService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -9,6 +11,8 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * @Description: 测试
@@ -60,7 +64,6 @@ public class TestController {
         return "I am api，返回数据：success";
     }
 
-
     @ApiOperation(value = "服务降级功能测试接口，超时测试", notes = "功能：供其他服务调用接口")
     @GetMapping("timeOver")
     public String timeOver() {
@@ -70,6 +73,21 @@ public class TestController {
             e.printStackTrace();
         }
         return "I am api，返回数据：success";
+    }
+
+    @Autowired
+    ProcessorMapper processorMapper;
+
+    @ApiOperation(value = "多数据源测试", notes = "功能：多DB切换测试")
+    @GetMapping("master")
+    public String master() {
+        return "I am api，返回数据：success";
+    }
+
+    @ApiOperation(value = "多数据源测试", notes = "功能：多DB切换测试")
+    @GetMapping("slave")
+    public List<Processor> slave() {
+        return processorMapper.selectAssigneeByWorkRequestId((long) 1);
     }
 
 }

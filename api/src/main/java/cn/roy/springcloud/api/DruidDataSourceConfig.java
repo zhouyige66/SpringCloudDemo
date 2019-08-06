@@ -1,27 +1,37 @@
-package cn.roy.springcloud.api.datasource;
+package cn.roy.springcloud.api;
 
+import cn.roy.springcloud.api.datasource.DynamicDataSource;
+import cn.roy.springcloud.api.datasource.SlaveDatasourcePropertyContainer;
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.DruidDataSourceFactory;
 import com.alibaba.druid.support.http.StatViewServlet;
 import com.alibaba.druid.support.http.WebStatFilter;
 import com.alibaba.druid.support.spring.stat.DruidStatInterceptor;
 import org.apache.commons.collections4.map.HashedMap;
+import org.apache.ibatis.annotations.Property;
 import org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.PropertySources;
 import org.springframework.core.env.Environment;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.util.CollectionUtils;
 
 import javax.sql.DataSource;
+import java.sql.SQLException;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 
 /**
@@ -36,40 +46,36 @@ import java.util.Map;
  */
 @Configuration
 @EnableTransactionManagement
+@EnableConfigurationProperties({SlaveDatasourcePropertyContainer.class})
 public class DruidDataSourceConfig implements EnvironmentAware {
+    @Autowired
+    SlaveDatasourcePropertyContainer slaveDatasourcePropertyContainer;
 
     public void setEnvironment(Environment env) {
 
     }
 
-    @Bean(name = "master")
-    @Primary
-    @ConfigurationProperties(prefix = "spring.database.master")
-    public DataSource masterDataSource() {
-        DruidDataSource datasource = new DruidDataSource();
-        return datasource;
-    }
-
-    @Bean(name = "slave")
-    public List<DataSource> slaveDataSource(SlaveDatasource slaveDatasource) {
-        return slaveDatasource.dataSourceList;
-    }
-
     @Bean
-    public DynamicDataSource dynamicDataSource(@Qualifier("master") DataSource master, @Qualifier("slave") List<DataSource> slaveList) {
+    public DynamicDataSource dynamicDataSource() {
+        DynamicDataSource dynamicDataSource = new DynamicDataSource();
+
         Map<Object, Object> targetDatasource = new HashedMap<>();
-        targetDatasource.put(DynamicDataSource.DynamicDataSourceType.getMasterType(), master);
-        if (!CollectionUtils.isEmpty(slaveList)) {
+        if (!CollectionUtils.isEmpty(slaveDatasourcePropertyContainer.getDatasource())) {
             int i = 0;
-            for (DataSource dataSource : slaveList) {
-                targetDatasource.put(DynamicDataSource.DynamicDataSourceType.getSlaveType(i), dataSource);
+            for (Map<String, Properties> map : slaveDatasourcePropertyContainer.getDatasource()) {
+                Object[] keys = map.keySet().toArray();
+                String key = (String) keys[0];
+                Properties properties = map.get(key);
+                DruidDataSource dataSource = new DruidDataSource();
+                dataSource.configFromPropety(properties);
+                if (key.equals("master")) {
+                    dynamicDataSource.setDefaultTargetDataSource(dataSource);
+                }
+                targetDatasource.put(key, dataSource);
                 i++;
             }
         }
-
-        DynamicDataSource dynamicDataSource = new DynamicDataSource();
         dynamicDataSource.setTargetDataSources(targetDatasource);
-        dynamicDataSource.setDefaultTargetDataSource(master);
         return dynamicDataSource;
     }
 
@@ -114,4 +120,5 @@ public class DruidDataSourceConfig implements EnvironmentAware {
         beanNameAutoProxyCreator.setInterceptorNames("druid-stat-interceptor");
         return beanNameAutoProxyCreator;
     }
+
 }

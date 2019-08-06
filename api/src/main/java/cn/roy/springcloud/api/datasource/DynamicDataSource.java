@@ -30,7 +30,7 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
         }
 
         public static String getMasterType() {
-            return SLAVE.type;
+            return MASTER.type;
         }
 
         public static String getSlaveType(int order) {
