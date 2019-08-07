@@ -3,13 +3,19 @@ package cn.roy.springcloud.api.datasource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 
+import javax.sql.DataSource;
+
 /**
- * @Description:
+ * @Description: 事务管理库选择（多数据源）
  * @Author: Roy Z
  * @Date: 2019-08-05 15:57
  * @Version: v1.0
  */
 public class DynamicDataSourceTransactionManager extends DataSourceTransactionManager {
+
+    public DynamicDataSourceTransactionManager(DataSource dataSource) {
+        super(dataSource);
+    }
 
     /**
      * 只读事务到读库，读写事务到写库

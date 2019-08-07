@@ -1,6 +1,7 @@
 package cn.roy.springcloud.api;
 
 import cn.roy.springcloud.api.datasource.DynamicDataSource;
+import cn.roy.springcloud.api.datasource.DynamicDataSourceTransactionManager;
 import cn.roy.springcloud.api.datasource.SlaveDatasource;
 import com.alibaba.druid.pool.DruidDataSource;
 import org.apache.commons.collections4.map.HashedMap;
@@ -11,6 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.util.CollectionUtils;
 
@@ -52,7 +54,7 @@ public class DruidDataSourceConfig implements EnvironmentAware {
 
     @Bean
     @Primary
-    public DataSource dynamicDataSource(@Qualifier("master") DataSource masterDataSource,
+    public DynamicDataSource dynamicDataSource(@Qualifier("master") DataSource masterDataSource,
                                         @Qualifier("slave") SlaveDatasource slaveDatasource) {
         DynamicDataSource dynamicDataSource = new DynamicDataSource();
         Map<Object, Object> targetDatasource = new HashedMap<>();
@@ -68,6 +70,14 @@ public class DruidDataSourceConfig implements EnvironmentAware {
         dynamicDataSource.setDefaultTargetDataSource(masterDataSource);
         dynamicDataSource.setTargetDataSources(targetDatasource);
         return dynamicDataSource;
+    }
+
+    /**
+     * 配置事务管理器
+     */
+    @Bean
+    public DataSourceTransactionManager transactionManager(DynamicDataSource dataSource) throws Exception {
+        return new DynamicDataSourceTransactionManager(dataSource);
     }
 
 //    @Bean
