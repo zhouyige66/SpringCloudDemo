@@ -1,9 +1,9 @@
 package cn.roy.springcloud.api;
 
-import cn.roy.springcloud.api.datasource.SlaveDatasourcePropertyContainer;
+import cn.roy.springcloud.api.datasource.SlaveDatasource;
 import cn.roy.springcloud.api.intercepter.SQLInterceptor;
 import org.mybatis.spring.boot.autoconfigure.ConfigurationCustomizer;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -16,17 +16,15 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class MyBatisConfig {
 
-    @Autowired
-    SlaveDatasourcePropertyContainer slaveDatasourcePropertyContainer;
-
     @Bean
-    ConfigurationCustomizer mybatisConfigurationCustomizer() {
-        return new ConfigurationCustomizer() {
+    ConfigurationCustomizer mybatisConfigurationCustomizer(@Qualifier("slave") SlaveDatasource slaveDatasource) {
+        ConfigurationCustomizer customizer = new ConfigurationCustomizer() {
             @Override
             public void customize(org.apache.ibatis.session.Configuration configuration) {
-                configuration.addInterceptor(new SQLInterceptor(slaveDatasourcePropertyContainer.getDatasource().size()-1));
+                configuration.addInterceptor(new SQLInterceptor(slaveDatasource.getSlave().size()));
             }
         };
+        return customizer;
     }
 
 }

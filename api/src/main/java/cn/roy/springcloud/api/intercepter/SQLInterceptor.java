@@ -92,12 +92,4 @@ public class SQLInterceptor implements Interceptor {
         return num;
     }
 
-    public int getSlaveDatasourceCount() {
-        return slaveDatasourceCount;
-    }
-
-    public void setSlaveDatasourceCount(int slaveDatasourceCount) {
-        this.slaveDatasourceCount = slaveDatasourceCount;
-    }
-
 }

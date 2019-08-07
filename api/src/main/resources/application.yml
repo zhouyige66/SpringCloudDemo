@@ -6,7 +6,6 @@ eureka:
     serviceUrl:
       defaultZone: http://localhost:8760/eureka/
 
-
 #/{label}/{application}-{profile}:properties:
 #spring.application.name：对应配置文件规则中的{application}部分
 #spring.cloud.config.profile：对应配置文件规则中的{profile}部分
@@ -29,20 +28,20 @@ spring:
       label: master
       #配置文件的环境
       profile: dev
-#      #使用uri或discovery
-#      uri: http://localhost:8888/
+      #      #使用uri或discovery
+      #      uri: http://localhost:8888/
       discovery:
         #开启配置服务发现
         enabled: true
         #注册中心的服务名
         service-id: config-server
-#  devtools:
-#    add-properties: false
-#    restart:
-#      #热部署生效
-#      enabled: false
-#      #设置重启的目录
-#      #additional-paths: src/main/java
+  #  devtools:
+  #    add-properties: false
+  #    restart:
+  #      #热部署生效
+  #      enabled: false
+  #      #设置重启的目录
+  #      #additional-paths: src/main/java
   freemarker:
     template-loader-path: classpath:/templates/freemarker/
     #关闭缓存，即时刷新，上线前要更改为true
@@ -72,103 +71,110 @@ spring:
           starttls:
             enable: false
             required: false
-  datasource:
-    # 主库
-    - master:
-        druid:
-          url: jdbc:mysql://10.157.107.101:3306/cproject?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true&useSSL=false
-          username: cproject
-          password: dev-cproject
-          driver-class-name: com.mysql.jdbc.Driver
-          type: com.alibaba.druid.pool.DruidDataSource
-          # 下面为连接池的补充设置，应用到上面所有数据源中
-          # 初始化大小，最小，最大
-          initialSize: 5
-          minIdle: 5
-          maxActive: 20
-          # 配置获取连接等待超时的时间
-          maxWait: 60000
-          # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
-          timeBetweenEvictionRunsMillis: 60000
-          # 配置一个连接在池中最小生存的时间，单位是毫秒
-          minEvictableIdleTimeMillis: 300000
-          validationQuery: SELECT 1 FROM DUAL
-          testWhileIdle: true
-          testOnBorrow: false
-          testOnReturn: false
-          # 打开PSCache，并且指定每个连接上PSCache的大小
-          poolPreparedStatements: true
-          maxPoolPreparedStatementPerConnectionSize: 20
-          # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
-          spring.datasource.filters: stat,wall,log4j
-          # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
-          connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
-          # 合并多个DruidDataSource的监控数据
-          #useGlobalDataSourceStat: true
-    # 从库
-    - slave0:
-        druid:
-          url: jdbc:mysql://10.158.249.31:3306/cproject?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true&useSSL=false
-          username: cproject
-          password: dev-cproject
-          driver-class-name: com.mysql.jdbc.Driver
-          type: com.alibaba.druid.pool.DruidDataSource
-          # 下面为连接池的补充设置，应用到上面所有数据源中
-          # 初始化大小，最小，最大
-          initialSize: 5
-          minIdle: 5
-          maxActive: 20
-          # 配置获取连接等待超时的时间
-          maxWait: 60000
-          # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
-          timeBetweenEvictionRunsMillis: 60000
-          # 配置一个连接在池中最小生存的时间，单位是毫秒
-          minEvictableIdleTimeMillis: 300000
-          validationQuery: SELECT 1 FROM DUAL
-          testWhileIdle: true
-          testOnBorrow: false
-          testOnReturn: false
-          # 打开PSCache，并且指定每个连接上PSCache的大小
-          poolPreparedStatements: true
-          maxPoolPreparedStatementPerConnectionSize: 20
-          # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
-          spring.datasource.filters: stat,wall,log4j
-          # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
-          connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
-          # 合并多个DruidDataSource的监控数据
-          #useGlobalDataSourceStat: true
-    - slave1:
-        druid:
-          url: jdbc:mysql://10.158.249.37:3306/cproject?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true&useSSL=false
-          username: cproject
-          password: test-cproject
-          driver-class-name: com.mysql.jdbc.Driver
-          type: com.alibaba.druid.pool.DruidDataSource
-          # 下面为连接池的补充设置，应用到上面所有数据源中
-          # 初始化大小，最小，最大
-          initialSize: 5
-          minIdle: 5
-          maxActive: 20
-          # 配置获取连接等待超时的时间
-          maxWait: 60000
-          # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
-          timeBetweenEvictionRunsMillis: 60000
-          # 配置一个连接在池中最小生存的时间，单位是毫秒
-          minEvictableIdleTimeMillis: 300000
-          validationQuery: SELECT 1 FROM DUAL
-          testWhileIdle: true
-          testOnBorrow: false
-          testOnReturn: false
-          # 打开PSCache，并且指定每个连接上PSCache的大小
-          poolPreparedStatements: true
-          maxPoolPreparedStatementPerConnectionSize: 20
-          # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
-          spring.datasource.filters: stat,wall,log4j
-          # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
-          connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
-          # 合并多个DruidDataSource的监控数据
-          #useGlobalDataSourceStat: true
 
+#数据源
+datasource:
+  #主库
+  master:
+    url: jdbc:mysql://10.157.107.101:3306/cproject?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true&useSSL=false
+    username: cproject
+    password: uat-cproject
+    driver-class-name: com.mysql.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    #下面为连接池的补充设置，应用到上面所有数据源中
+    #初始化大小，最小，最大
+    initialSize: 5
+    minIdle: 5
+    maxActive: 20
+    #配置获取连接等待超时的时间
+    maxWait: 60000
+    #配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+    timeBetweenEvictionRunsMillis: 60000
+    #配置一个连接在池中最小生存的时间，单位是毫秒
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT 1 FROM DUAL
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    #打开PSCache，并且指定每个连接上PSCache的大小
+    poolPreparedStatements: true
+    maxPoolPreparedStatementPerConnectionSize: 20
+    #配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+    spring.datasource.filters: stat,wall,log4j
+    #通过connectProperties属性来打开mergeSql功能；慢SQL记录
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+    #合并多个DruidDataSource的监控数据
+    #useGlobalDataSourceStat: true
+  #从库
+  slave:
+    - url: jdbc:mysql://10.158.249.31:3306/cproject?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true&useSSL=false
+      username: cproject
+      password: dev-cproject
+      driver-class-name: com.mysql.jdbc.Driver
+      type: com.alibaba.druid.pool.DruidDataSource
+      #下面为连接池的补充设置，应用到上面所有数据源中
+      #初始化大小，最小，最大
+      initialSize: 5
+      minIdle: 5
+      maxActive: 20
+      #配置获取连接等待超时的时间
+      maxWait: 60000
+      #配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+      timeBetweenEvictionRunsMillis: 60000
+      #配置一个连接在池中最小生存的时间，单位是毫秒
+      minEvictableIdleTimeMillis: 300000
+      validationQuery: SELECT 1 FROM DUAL
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      #打开PSCache，并且指定每个连接上PSCache的大小
+      poolPreparedStatements: true
+      maxPoolPreparedStatementPerConnectionSize: 20
+      #配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+      spring.datasource.filters: stat,wall,log4j
+      #通过connectProperties属性来打开mergeSql功能；慢SQL记录
+      connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+      #合并多个DruidDataSource的监控数据
+      #useGlobalDataSourceStat: true
+    - url: jdbc:mysql://10.158.249.37:3306/cproject?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true&useSSL=false
+      username: cproject
+      password: test-cproject
+      driver-class-name: com.mysql.jdbc.Driver
+      type: com.alibaba.druid.pool.DruidDataSource
+      #下面为连接池的补充设置，应用到上面所有数据源中
+      #初始化大小，最小，最大
+      initialSize: 5
+      minIdle: 5
+      maxActive: 20
+      #配置获取连接等待超时的时间
+      maxWait: 60000
+      #配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+      timeBetweenEvictionRunsMillis: 60000
+      #配置一个连接在池中最小生存的时间，单位是毫秒
+      minEvictableIdleTimeMillis: 300000
+      validationQuery: SELECT 1 FROM DUAL
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      #打开PSCache，并且指定每个连接上PSCache的大小
+      poolPreparedStatements: true
+      maxPoolPreparedStatementPerConnectionSize: 20
+      #配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+      spring.datasource.filters: stat,wall,log4j
+      #通过connectProperties属性来打开mergeSql功能；慢SQL记录
+      connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+      #合并多个DruidDataSource的监控数据
+      #useGlobalDataSourceStat: true
+
+mybatis:
+  # Mapper.xml所在的位置
+  mapper-locations: classpath:mapper/*.xml
+  # Entity扫描的包名
+  type-aliases-package: cn.roy.springcloud.api.dao
+  configuration:
+    map-underscore-to-camel-case: true
+
+#加载所有的端点/默认只加载了info/health
 management:
   endpoints:
     web:
@@ -185,10 +191,4 @@ custom:
     - roy.z.zhou
     - kk20
     - yige
-#Mapper.xml所在的位置
-mybatis:
-  mapper-locations: classpath:mapper/*.xml
-  #entity扫描的包名
-  type-aliases-package: cn.roy.springcloud.api.dao
-  configuration:
-    map-underscore-to-camel-case: true
+
