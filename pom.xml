@@ -21,7 +21,6 @@
         <module>gateway</module>
         <module>eureka</module>
         <module>config</module>
-        <module>zipkin-server</module>
     </modules>
 
     <properties>
