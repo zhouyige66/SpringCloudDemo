@@ -1,7 +1,7 @@
 package cn.roy.springcloud.api.datasource;
 
 /**
- * @Description:
+ * @Description: 线程绑定的动态数据源
  * @Author: Roy Z
  * @Date: 2019-08-05 15:58
  * @Version: v1.0

@@ -3,7 +3,7 @@ package cn.roy.springcloud.api.datasource;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
 /**
- * @Description: 多数据源
+ * @Description: 动态数据源
  * @Author: Roy Z
  * @Date: 2019-08-05 15:52
  * @Version: v1.0

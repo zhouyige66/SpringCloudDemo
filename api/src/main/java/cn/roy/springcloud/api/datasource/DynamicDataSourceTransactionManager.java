@@ -6,7 +6,7 @@ import org.springframework.transaction.TransactionDefinition;
 import javax.sql.DataSource;
 
 /**
- * @Description: 事务管理库选择（多数据源）
+ * @Description: 事务管理器（多数据源）
  * @Author: Roy Z
  * @Date: 2019-08-05 15:57
  * @Version: v1.0
@@ -25,7 +25,7 @@ public class DynamicDataSourceTransactionManager extends DataSourceTransactionMa
      */
     @Override
     protected void doBegin(Object transaction, TransactionDefinition definition) {
-        //设置数据源
+        // 设置数据源
         boolean readOnly = definition.isReadOnly();
         if (readOnly) {
             // 默认使用第一个Slave源

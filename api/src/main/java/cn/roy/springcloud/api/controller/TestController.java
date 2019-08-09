@@ -2,6 +2,7 @@ package cn.roy.springcloud.api.controller;
 
 import cn.roy.springcloud.api.dao.ProcessorMapper;
 import cn.roy.springcloud.api.dao.bean.Processor;
+import cn.roy.springcloud.api.service.ProcessorService;
 import cn.roy.springcloud.api.service.RemoteCallService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -78,16 +80,25 @@ public class TestController {
     @Autowired
     ProcessorMapper processorMapper;
 
-    @ApiOperation(value = "多数据源测试", notes = "功能：多DB切换测试")
-    @GetMapping("master")
-    public String master() {
-        return "I am api，返回数据：success";
+    @Autowired
+    ProcessorService processorService;
+
+    @ApiOperation(value = "只读库对比", notes = "功能：只读库对比")
+    @GetMapping("compare")
+    public List<Processor> compare() {
+        return processorService.compare();
+    }
+
+    @ApiOperation(value = "主从对比更新", notes = "功能：主从对比更新")
+    @GetMapping("swap")
+    public long swap() {
+        return processorService.compareAndSwap();
     }
 
     @ApiOperation(value = "多数据源测试", notes = "功能：多DB切换测试")
-    @GetMapping("slave")
-    public List<Processor> slave() {
-        return processorMapper.selectAssigneeByWorkRequestId((long) 1);
+    @GetMapping("slave/{wrId}")
+    public List<Processor> slave(@PathVariable("wrId") long wrId) {
+        return processorMapper.selectAssigneeByWorkRequestId(wrId);
     }
 
 }

@@ -39,6 +39,7 @@ public class DruidDataSourceConfig implements EnvironmentAware {
     }
 
     @Bean(name = "master")
+    @Primary
     @ConfigurationProperties(prefix = "datasource.master")
     public DataSource master() {
         DruidDataSource dataSource = new DruidDataSource();
@@ -53,7 +54,6 @@ public class DruidDataSourceConfig implements EnvironmentAware {
     }
 
     @Bean
-    @Primary
     public DynamicDataSource dynamicDataSource(@Qualifier("master") DataSource masterDataSource,
                                         @Qualifier("slave") SlaveDatasource slaveDatasource) {
         DynamicDataSource dynamicDataSource = new DynamicDataSource();

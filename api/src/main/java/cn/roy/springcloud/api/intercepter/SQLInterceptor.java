@@ -41,7 +41,7 @@ public class SQLInterceptor implements Interceptor {
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
         boolean synchronizationActive = TransactionSynchronizationManager.isSynchronizationActive();
-        if (!synchronizationActive) {
+        if (!synchronizationActive) {// 事务不处于活动状态
             Object[] objects = invocation.getArgs();
             MappedStatement ms = (MappedStatement) objects[0];
 
