@@ -1,5 +1,8 @@
 package cn.roy.springcloud.api;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * @Description: bb
  * @Author: Roy Z
@@ -34,23 +37,34 @@ public class ThreadLocalTest {
     }
 
     public static void main(String []args) {
-        final A a = new A();
-        final B b = new B();
-        for(int i = 0 ; i < 15 ; i ++) {
-            final String resouce1 = "线程-" + i;
-            final String resouce2 = " value = (" + i + ")";
-            new Thread() {
-                public void run() {
-                    try {
-                        a.setOne(resouce1);
-                        a.setTwo(resouce2);
-                        b.display();
-                    }finally {
-                        ResourceClass.RESOURCE_1.remove();
-                        ResourceClass.RESOURCE_2.remove();
-                    }
-                }
-            }.start();
-        }
+//        final A a = new A();
+//        final B b = new B();
+//        for(int i = 0 ; i < 15 ; i ++) {
+//            final String resouce1 = "线程-" + i;
+//            final String resouce2 = " value = (" + i + ")";
+//            new Thread() {
+//                public void run() {
+//                    try {
+//                        a.setOne(resouce1);
+//                        a.setTwo(resouce2);
+//                        b.display();
+//                    }finally {
+//                        ResourceClass.RESOURCE_1.remove();
+//                        ResourceClass.RESOURCE_2.remove();
+//                    }
+//                }
+//            }.start();
+//        }
+        Set<Long> set1 = new HashSet<>();
+        set1.add(1L);
+        set1.add(2L);
+        set1.add(3L);
+        set1.add(4L);
+        Set<Long> set2 = new HashSet<>();
+        set2.add(1L);
+        set2.add(2L);
+        set2.add(5L);
+        set1.removeAll(set2);
+        System.out.println(set1);
     }
 }

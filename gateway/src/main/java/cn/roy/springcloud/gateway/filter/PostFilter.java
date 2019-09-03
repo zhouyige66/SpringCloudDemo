@@ -10,20 +10,20 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * @Description: 过滤器
  * @Author: Roy Z
- * @Date: 2019-04-25 15:04
+ * @Date: 2019-09-03 09:21
  * @Version: v1.0
  */
-public class SimpleFilter extends ZuulFilter {
-    private static Logger log = LoggerFactory.getLogger(SimpleFilter.class);
+public class PostFilter extends ZuulFilter {
+    private static Logger log = LoggerFactory.getLogger(PostFilter.class);
 
     @Override
     public String filterType() {
-        return "pre";
+        return "post";
     }
 
     @Override
     public int filterOrder() {
-        return 0;
+        return 1;
     }
 
     @Override
@@ -35,6 +35,10 @@ public class SimpleFilter extends ZuulFilter {
     public Object run() {
         RequestContext ctx = RequestContext.getCurrentContext();
         HttpServletRequest request = ctx.getRequest();
+        long endTime = System.currentTimeMillis();
+        long startTime = RequestHolder.getStartTimestamp();
+        long time = endTime - startTime;
+        log.info("请求结束，请求ID：{}，开始时间：{}，结束时间：{}，请求耗时{}", request.hashCode(), startTime, endTime, time);
         log.info(String.format("%s request to %s", request.getMethod(), request.getRequestURL().toString()));
         return null;
     }

@@ -1,10 +1,13 @@
 package cn.roy.springcloud.gateway;
 
-import cn.roy.springcloud.gateway.filter.SimpleFilter;
+import cn.roy.springcloud.gateway.filter.PostFilter;
+import cn.roy.springcloud.gateway.filter.PreFilter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
+import org.springframework.cloud.netflix.zuul.filters.Route;
+import org.springframework.cloud.netflix.zuul.filters.RouteLocator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
@@ -26,27 +29,40 @@ public class GatewayApplication {
     }
 
     @Bean
-    public SimpleFilter simpleFilter() {
-        return new SimpleFilter();
+    public PreFilter preFilter() {
+        return new PreFilter();
+    }
+
+    @Bean
+    public PostFilter postFilter() {
+        return new PostFilter();
     }
 
     @Component
     @Primary
     class DocumentationConfig implements SwaggerResourcesProvider {
+        private final RouteLocator routeLocator;
+
+        public DocumentationConfig(RouteLocator routeLocator) {
+            this.routeLocator = routeLocator;
+        }
 
         @Override
         public List<SwaggerResource> get() {
-            List resources = new ArrayList<>();
-            resources.add(swaggerResource("api", "/api/v2/api-docs", "2.0"));
-            resources.add(swaggerResource("api2", "/api2/v2/api-docs", "2.0"));
+            List<SwaggerResource> resources = new ArrayList<>();
+            List<Route> routes = routeLocator.getRoutes();
+            for (Route route:routes) {
+                resources.add(swaggerResource(route.getId(),
+                        route.getFullPath().replace("**", "v2/api-docs")));
+            }
             return resources;
         }
 
-        private SwaggerResource swaggerResource(String name, String location, String version) {
+        private SwaggerResource swaggerResource(String name, String location) {
             SwaggerResource swaggerResource = new SwaggerResource();
             swaggerResource.setName(name);
             swaggerResource.setLocation(location);
-            swaggerResource.setSwaggerVersion(version);
+            swaggerResource.setSwaggerVersion("2.0");
             return swaggerResource;
         }
     }

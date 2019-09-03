@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RefreshScope
 @RestController
-@RequestMapping("test")
-@Api(tags = "TestController相关接口")
-public class TestController {
+@RequestMapping("hello")
+@Api(tags = "HelloController相关接口")
+public class HelloController {
 
     @Value("${server.port}")
     private int port;

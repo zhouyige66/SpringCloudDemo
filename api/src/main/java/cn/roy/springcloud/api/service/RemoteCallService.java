@@ -1,8 +1,7 @@
 package cn.roy.springcloud.api.service;
 
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.GetMapping;
 
 /**
  * @Description: 远程调用，同时配置服务降级处理
@@ -13,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @FeignClient(name = "api2",fallback = RemoteCallServiceFallback.class)
 public interface RemoteCallService {
 
-    @RequestMapping(value = "/test/name",method = RequestMethod.GET)
+    @GetMapping(value = "/hello/name")
     String getStringFromApi2();
 
 }

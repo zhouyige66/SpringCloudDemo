@@ -25,6 +25,7 @@ spring:
         enabled: true
         #注册中心的服务名
         service-id: config-server
+
 # 注册中心
 eureka:
   client:
@@ -33,11 +34,13 @@ eureka:
     #检索服务选项，当设置为True(默认值)时，会进行服务检索,注册中心不负责检索服务
     fetch-registry: true
     #服务注册中心也会将自己作为客户端来尝试注册自己,为true（默认）时自动生效
-    register-with-eureka: false
+#    register-with-eureka: false
+
 # 开启熔断机制
 feign:
   hystrix:
     enabled: true
+
 ribbon:
   # 连接超时时间(ms)
   ConnectTimeout: 250
@@ -49,6 +52,7 @@ ribbon:
   MaxAutoRetriesNextServer: 2
   # 同一实例的重试次数
   MaxAutoRetries: 1
+
 hystrix:
   command:
     default:
@@ -57,6 +61,7 @@ hystrix:
           thread:
             # 熔断超时时长：6000ms
             timeoutInMilliseconds: 6000
+
 # 健康监控
 management:
   endpoints:
