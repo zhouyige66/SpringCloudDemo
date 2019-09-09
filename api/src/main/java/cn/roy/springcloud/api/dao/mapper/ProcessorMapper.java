@@ -1,4 +1,4 @@
-package cn.roy.springcloud.api.dao;
+package cn.roy.springcloud.api.dao.mapper;
 
 import cn.roy.springcloud.api.dao.bean.Processor;
 import org.apache.ibatis.annotations.Mapper;

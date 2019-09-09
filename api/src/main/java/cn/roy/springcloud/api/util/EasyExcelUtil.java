@@ -71,15 +71,13 @@ public class EasyExcelUtil {
     public static void main(String[] args) {
         try (
                 InputStream is = new FileInputStream("C:\\Users\\Roy Z Zhou\\Desktop\\Monthly Requirement Check_junjie.xlsx");
-                BufferedInputStream inputStream = new BufferedInputStream(is);
+                BufferedInputStream inputStream = new BufferedInputStream(is)
         ) {
             // 解析每行结果在listener中处理
             ExcelListener listener = new ExcelListener();
             ExcelReader excelReader = new ExcelReader(inputStream, null, listener);
             excelReader.read();
             excelReader.getSheets();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }

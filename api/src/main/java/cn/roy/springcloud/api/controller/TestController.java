@@ -1,6 +1,6 @@
 package cn.roy.springcloud.api.controller;
 
-import cn.roy.springcloud.api.dao.ProcessorMapper;
+import cn.roy.springcloud.api.dao.mapper.ProcessorMapper;
 import cn.roy.springcloud.api.dao.bean.Processor;
 import cn.roy.springcloud.api.service.ProcessorService;
 import cn.roy.springcloud.api.service.RemoteCallService;

@@ -76,9 +76,9 @@ spring:
 datasource:
   #主库
   master:
-    url: jdbc:mysql://localhost:3306/cm_master?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true&useSSL=false
-    username: kk20
-    password: Kk209257
+    url: jdbc:mysql://localhost:3306/cm_interface?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true&useSSL=false
+    username: root
+    password: kk209257
     driver-class-name: com.mysql.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
     #下面为连接池的补充设置，应用到上面所有数据源中
@@ -170,9 +170,10 @@ mybatis:
   # Mapper.xml所在的位置
   mapper-locations: classpath:mapper/*.xml
   # Entity扫描的包名
-  type-aliases-package: cn.roy.springcloud.api.dao
+  type-aliases-package: cn.roy.springcloud.api.dao.bean
   configuration:
     map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 #加载所有的端点/默认只加载了info/health
 management:

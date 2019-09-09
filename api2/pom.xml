@@ -6,7 +6,6 @@
         <groupId>cn.roy.springcloud</groupId>
         <artifactId>demo</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <artifactId>api2</artifactId>
     <version>0.0.1-SNAPSHOT</version>
