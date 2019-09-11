@@ -1,4 +1,4 @@
-package cn.roy.springcloud.api;
+package cn.roy.springcloud.api2.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,14 +26,14 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("cn.roy.springcloud.api.controller"))
+                .apis(RequestHandlerSelectors.basePackage("cn.roy.springcloud.api2.controller"))
                 .paths(PathSelectors.any())
                 .build();
     }
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("API OF Server1")
+                .title("API OF Server2")
                 .description("swagger接口文档")
                 .contact(new Contact("kk20", "https://github.com/zhouyige66", "751664206@qq.com"))
                 .version("1.0-Beta")

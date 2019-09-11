@@ -37,4 +37,5 @@ public class Api2Application extends SpringBootServletInitializer implements Com
     public void run(ApplicationArguments args) throws Exception {
         System.out.println("---ApplicationRunner---");
     }
+
 }

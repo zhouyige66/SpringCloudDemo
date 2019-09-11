@@ -1,6 +1,6 @@
 package cn.roy.springcloud.api2.controller;
 
-import cn.roy.springcloud.api2.service.RemoteCallService;
+import cn.roy.springcloud.api2.service.call.RemoteCallService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,19 +34,41 @@ public class HelloController {
     @GetMapping("name")
     @ApiOperation(value = "查询用户名接口", notes = "功能：查询配置用户名称")
     public String name() {
-        return "I am api2，从配置中心读取的名字为：" + userName;
+        return "从配置中心读取的名字为：" + userName;
     }
 
-    @GetMapping("call")
-    @ApiOperation(value = "远程调用测试接口", notes = "功能：远程调用测试接口")
-    public String call() {
-        return "I am api2，调用api返回数据：" + remoteCallService.getStringFromApi();
+    @ApiOperation(value = "服务处理时间4S", notes = "功能：供其他服务调用接口")
+    @GetMapping("time")
+    public String time() {
+        try {
+            Thread.sleep(4000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return "睡眠4秒";
     }
 
+    @ApiOperation(value = "服务处理时间6S", notes = "功能：供其他服务调用接口")
     @GetMapping("timeOver")
-    @ApiOperation(value = "远程调用测试接口", notes = "功能：远程调用测试接口")
     public String timeOver() {
-        return "I am api2，调用api返回数据：" + remoteCallService.getStringFromApi2();
+        try {
+            Thread.sleep(6000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return "睡眠6秒";
+    }
+
+    @GetMapping("callTime")
+    @ApiOperation(value = "远程接口调用，未超时", notes = "功能：远程调用测试接口")
+    public String callTime() {
+        return remoteCallService.callTimeFromApi();
+    }
+
+    @GetMapping("callTimeOver")
+    @ApiOperation(value = "远程接口调用，超时", notes = "功能：远程调用测试接口")
+    public String callTimeOver() {
+        return remoteCallService.callTimeOverFromApi();
     }
 
 }

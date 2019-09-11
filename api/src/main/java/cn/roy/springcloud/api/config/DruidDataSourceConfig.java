@@ -1,4 +1,4 @@
-package cn.roy.springcloud.api;
+package cn.roy.springcloud.api.config;
 
 import cn.roy.springcloud.api.datasource.DynamicDataSource;
 import cn.roy.springcloud.api.datasource.DynamicDataSourceTransactionManager;

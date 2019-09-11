@@ -1,6 +1,7 @@
 server:
   port: 8761
 
+# 注册中心
 eureka:
   client:
     serviceUrl:
@@ -16,6 +17,7 @@ spring:
     name: api
   zipkin:
     baseUrl: http://localhost:9411
+  # 服务追踪
   sleuth:
     traceId128: true
     sampler:
@@ -28,8 +30,8 @@ spring:
       label: master
       #配置文件的环境
       profile: dev
-      #      #使用uri或discovery
-      #      uri: http://localhost:8888/
+      ##使用uri或discovery
+      #uri: http://localhost:8888/
       discovery:
         #开启配置服务发现
         enabled: true
@@ -173,9 +175,39 @@ mybatis:
   type-aliases-package: cn.roy.springcloud.api.dao.bean
   configuration:
     map-underscore-to-camel-case: true
+    # sql输出
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
-#加载所有的端点/默认只加载了info/health
+# 开启熔断机制
+feign:
+  hystrix:
+    # If true, an OpenFeign client will be wrapped with a Hystrix circuit breaker.
+    enabled: true
+
+# 服务熔断
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            # 熔断超时时长：6000ms
+            timeoutInMilliseconds: 6000
+
+# 负载均衡
+ribbon:
+  # 连接超时时间(ms)
+  ConnectTimeout: 1000
+  # 通信超时时间(ms)，解决504问题
+  ReadTimeout: 5000
+  # 是否对所有操作重试
+  OkToRetryOnAllOperations: true
+  # 同一服务不同实例的重试次数
+  MaxAutoRetriesNextServer: 2
+  # 同一实例的重试次数
+  MaxAutoRetries: 1
+
+# 健康监控：加载所有的端点/默认只加载了info/health
 management:
   endpoints:
     web:

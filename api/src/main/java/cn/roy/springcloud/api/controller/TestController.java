@@ -1,9 +1,8 @@
 package cn.roy.springcloud.api.controller;
 
-import cn.roy.springcloud.api.dao.mapper.ProcessorMapper;
 import cn.roy.springcloud.api.dao.bean.Processor;
-import cn.roy.springcloud.api.service.ProcessorService;
-import cn.roy.springcloud.api.service.RemoteCallService;
+import cn.roy.springcloud.api.dao.mapper.ProcessorMapper;
+import cn.roy.springcloud.api.service.call.RemoteCallService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +37,9 @@ public class TestController {
     @Autowired
     private RemoteCallService remoteCallService;
 
+    @Autowired
+    private ProcessorMapper processorMapper;
+
     /**
      * ApiOperation使用说明
      * value:接口功能
@@ -48,17 +50,17 @@ public class TestController {
     @GetMapping("name")
     public String name(HttpServletRequest request) {
         String baseInfo = request.getHeader("baseInfo");
-        System.out.println("读取的baseInfo参数："+baseInfo);
-        return "I am api，从配置中心读取的名字是：" + userName;
+        System.out.println("读取的baseInfo参数：" + baseInfo);
+        return "从配置中心读取的名字为：" + userName;
     }
 
-    @ApiOperation(value = "测试远程调用接口", notes = "功能：测试远程调用")
-    @GetMapping("call")
-    public String call() {
-        return "I am api，调用api2返回结果：" + remoteCallService.getStringFromApi2();
+    @ApiOperation(value = "多数据源测试", notes = "功能：多DB切换测试")
+    @GetMapping("slave/{wrId}")
+    public List<Processor> slave(@PathVariable("wrId") long wrId) {
+        return processorMapper.selectAssigneeByWorkRequestId(wrId);
     }
 
-    @ApiOperation(value = "服务降级功能测试接口，未超时", notes = "功能：供其他服务调用接口")
+    @ApiOperation(value = "服务处理时间4S", notes = "功能：供其他服务调用接口")
     @GetMapping("time")
     public String time() {
         try {
@@ -66,10 +68,10 @@ public class TestController {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return "I am api，返回数据：success";
+        return "睡眠4秒";
     }
 
-    @ApiOperation(value = "服务降级功能测试接口，超时测试", notes = "功能：供其他服务调用接口")
+    @ApiOperation(value = "服务处理时间6S", notes = "功能：供其他服务调用接口")
     @GetMapping("timeOver")
     public String timeOver() {
         try {
@@ -77,31 +79,19 @@ public class TestController {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return "I am api，返回数据：success";
+        return "睡眠6秒";
     }
 
-    @Autowired
-    ProcessorMapper processorMapper;
-
-    @Autowired
-    ProcessorService processorService;
-
-    @ApiOperation(value = "只读库对比", notes = "功能：只读库对比")
-    @GetMapping("compare")
-    public List<Processor> compare() {
-        return processorService.compare();
+    @ApiOperation(value = "测试远程调用接口", notes = "功能：测试远程调用")
+    @GetMapping("call")
+    public String call() {
+        return remoteCallService.callTimeFromApi2();
     }
 
-    @ApiOperation(value = "主从对比更新", notes = "功能：主从对比更新")
-    @GetMapping("swap")
-    public long swap() {
-        return processorService.compareAndSwap();
-    }
-
-    @ApiOperation(value = "多数据源测试", notes = "功能：多DB切换测试")
-    @GetMapping("slave/{wrId}")
-    public List<Processor> slave(@PathVariable("wrId") long wrId) {
-        return processorMapper.selectAssigneeByWorkRequestId(wrId);
+    @ApiOperation(value = "测试远程调用接口", notes = "功能：测试远程调用")
+    @GetMapping("call2")
+    public String call2() {
+        return remoteCallService.callTimeOverFromApi2();
     }
 
 }

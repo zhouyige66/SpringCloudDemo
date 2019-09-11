@@ -6,6 +6,7 @@ spring:
     name: gateway
   zipkin:
     baseUrl: http://localhost:9411
+  # 日志追踪
   sleuth:
     traceId128: true
     sampler:
@@ -27,7 +28,6 @@ zuul:
       path: /api2/**
       serviceId: api2
   retryable: true
-
 
 ribbon:
   # 连接超时时间(ms)
