@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -25,7 +26,7 @@ import java.util.List;
 @RefreshScope
 @RestController
 @RequestMapping("test")
-@Api(tags = "TestController相关接口")
+@Api(tags = "Test相关接口")
 public class TestController {
 
     @Value("${server.port}")
@@ -45,7 +46,9 @@ public class TestController {
      */
     @ApiOperation(value = "用户名接口", notes = "功能：获取配置中心配置的用户名")
     @GetMapping("name")
-    public String name() {
+    public String name(HttpServletRequest request) {
+        String baseInfo = request.getHeader("baseInfo");
+        System.out.println("读取的baseInfo参数："+baseInfo);
         return "I am api，从配置中心读取的名字是：" + userName;
     }
 

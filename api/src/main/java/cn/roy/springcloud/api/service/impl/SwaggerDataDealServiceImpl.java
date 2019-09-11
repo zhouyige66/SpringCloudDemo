@@ -137,7 +137,6 @@ public class SwaggerDataDealServiceImpl implements SwaggerDataDealService {
         }
 
         // 存储api以及参数
-
         JSONObject pathsJson = jsonObject.getJSONObject("paths");
         Set<String> keySet = pathsJson.keySet();
         for (String key : keySet) {
@@ -160,19 +159,57 @@ public class SwaggerDataDealServiceImpl implements SwaggerDataDealService {
                     String des = paramJson.getString("description");
                     if (in.equals("body")) {
                         JSONObject schemaJson = JSON.parseObject(paramJson.getString("schema"));
+                        EntityQuery query = new EntityQuery();
                         if (schemaJson.containsKey("entity")) {
                             String ref = schemaJson.getString("entity");
                             String[] split = ref.split("/");
-
                             String entityName = split[split.length - 1];
                             logger.info("实体名称{}", entityName);
-                            EntityQuery query = new EntityQuery();
-                            query.getOredCriteria().add(
-                                    new EntityQuery().createCriteria().andNameEqualTo(entityName));
+
+                            query.createCriteria().andNameEqualTo(entityName);
                             // 查询实体Id
                             List<Entity> entities = entityMapper.selectByExample(query);
                             if (entities != null && entities.size() > 0) {
                                 bodyId = entities.get(0).getId();
+                            }
+                        } else {
+                            // 对应body为基础类型如：String、Array等
+                            String bodyName = paramJson.getString("name");
+                            String entityDes = null;
+                            if (paramJson.containsKey("description")) {
+                                entityDes = paramJson.getString("description");
+                            }
+                            String type = schemaJson.getString("type");
+                            if (type.equals("array")) {
+                                // 解析子属性
+                                JSONObject items = schemaJson.getJSONObject("items");
+                                String itemType = items.getString("type");
+                                if (items.containsKey("entity")) {
+                                    String ref = items.getString("entity");
+                                    String[] split = ref.split("/");
+                                    String refName = split[split.length - 1];
+                                    itemType = refName;
+                                } else if (items.containsKey("format")) {
+                                    String format = items.getString("format");
+                                    if (format.equals("int64")) {
+                                        itemType = "Long";
+                                    }
+                                }
+                                type = "List<" + itemType + ">";
+                            }
+                            String searchKey = bodyName + (entityDes == null ? "" : ("@" + entityDes)) + "&" + type;
+                            logger.info("搜索关键字：{}", searchKey);
+                            query.createCriteria().andNameEqualTo(searchKey);
+                            // 查询实体Id
+                            List<Entity> entities = entityMapper.selectByExample(query);
+                            if (entities != null && entities.size() > 0) {
+                                bodyId = entities.get(0).getId();
+                            } else {
+                                // 未查到，直接插入数据库，然后赋值
+                                Entity entity = new Entity();
+                                entity.withName(searchKey).withProperties(type);
+                                entityMapper.insertSelective(entity);
+                                bodyId = entity.getId();
                             }
                         }
                     } else {
@@ -255,7 +292,7 @@ public class SwaggerDataDealServiceImpl implements SwaggerDataDealService {
     private ResultData exportDoc(Map<String, Integer> urlMap) throws IOException {
         // 排序处理
         String[] sortKeys = new String[urlMap.keySet().size()];
-        for(String key:urlMap.keySet()){
+        for (String key : urlMap.keySet()) {
             sortKeys[urlMap.get(key)] = key;
         }
 
@@ -299,9 +336,28 @@ public class SwaggerDataDealServiceImpl implements SwaggerDataDealService {
             Long bodyId = api.getBody();
             if (null != bodyId) {
                 Entity entity = entityMapper.selectByPrimaryKey(bodyId);
-                logger.info("查询body：" + JSON.toJSONString(entity));
-
-                apiEntity.setBody(entity.getProperties());
+                apiEntity.setBodyDes(entity.getName());
+                String bodyStr = entity.getProperties();
+                if (bodyStr.startsWith("List")) {
+                    // 读取具体类型
+                    int startIndex = bodyStr.indexOf("<");
+                    int endIndex = bodyStr.indexOf(">");
+                    String body = bodyStr.substring(startIndex, endIndex);
+                    // 搜索
+                    EntityQuery query = new EntityQuery();
+                    query.createCriteria().andNameEqualTo(body);
+                    List<Entity> entityList = entityMapper.selectByExample(query);
+                    if (!CollectionUtils.isEmpty(entityList)) {
+                        StringBuilder sb = new StringBuilder();
+                        sb.append("[").append(entityList.get(0).getProperties())
+                                .append("]");
+                        apiEntity.setBody(sb.toString());
+                    } else {
+                        apiEntity.setBody(bodyStr);
+                    }
+                } else {
+                    apiEntity.setBody(entity.getProperties());
+                }
             }
 
             apiEntityList.add(apiEntity);
@@ -424,10 +480,17 @@ public class SwaggerDataDealServiceImpl implements SwaggerDataDealService {
             if (!StringUtils.isEmpty(body)) {
                 XSSFRow row5 = sheet.createRow(index);
                 createCell(row5);
-                sheet.addMergedRegion(new CellRangeAddress(index, index, 1, 4));
+                sheet.addMergedRegion(new CellRangeAddress(index, index, 3, 4));
                 row5.getCell(0).setCellValue("请求body");
+                String bodyDes = apiEntity.getBodyDes();
+                String nameAndDes = bodyDes.split("&")[0];
+                String[] split = nameAndDes.split("@");
                 row5.getCell(0).setCellStyle(boldFontStyle);
-                row5.getCell(1).setCellValue(body);
+                row5.getCell(1).setCellValue(split[0]);
+                if (split.length > 2) {
+                    row5.getCell(2).setCellValue(split[1]);
+                }
+                row5.getCell(3).setCellValue(body);
                 index++;
             }
 

@@ -4,6 +4,7 @@ import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.multipart.support.StandardMultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -39,6 +40,8 @@ public class PreFilter extends ZuulFilter {
         RequestHolder.putStartTimestamp(time);
         log.info("请求开始，请求ID：{}，开始时间：{}", request.hashCode(), time);
         log.info(String.format("%s request to %s", request.getMethod(), request.getRequestURL().toString()));
+
+        ctx.addZuulRequestHeader("baseInfo","kk20");
         return null;
     }
 

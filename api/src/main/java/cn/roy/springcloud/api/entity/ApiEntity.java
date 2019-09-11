@@ -24,6 +24,7 @@ public class ApiEntity {
     private String method;
     private String name;
     private List<ParameterEntity> parameterEntityList;
+    private String bodyDes;
     private String body;
 
     public String getController() {
@@ -64,6 +65,14 @@ public class ApiEntity {
 
     public void setParameterEntityList(List<ParameterEntity> parameterEntityList) {
         this.parameterEntityList = parameterEntityList;
+    }
+
+    public String getBodyDes() {
+        return bodyDes;
+    }
+
+    public void setBodyDes(String bodyDes) {
+        this.bodyDes = bodyDes;
     }
 
     public String getBody() {

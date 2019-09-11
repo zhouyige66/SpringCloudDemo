@@ -23,7 +23,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("mail")
-@Api(tags = "MailController相关接口")
+@Api(tags = "Mail相关接口")
 public class MailController {
 
     @Value("#{'${mail.sendTo}'.split(',')}")
