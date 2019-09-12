@@ -3,6 +3,9 @@ package cn.roy.springcloud.api.controller;
 import cn.roy.springcloud.api.dao.bean.Processor;
 import cn.roy.springcloud.api.dao.mapper.ProcessorMapper;
 import cn.roy.springcloud.api.service.call.RemoteCallService;
+import com.netflix.hystrix.contrib.javanica.annotation.DefaultProperties;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +29,7 @@ import java.util.List;
 @RestController
 @RequestMapping("test")
 @Api(tags = "Test相关接口")
+@DefaultProperties(defaultFallback = "defaultFallback")
 public class TestController {
 
     @Value("${server.port}")
@@ -88,10 +92,41 @@ public class TestController {
         return remoteCallService.callTimeFromApi2();
     }
 
+    @HystrixCommand(fallbackMethod = "fallback",
+            commandProperties = {
+                    @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "3000")
+            })
     @ApiOperation(value = "测试远程调用接口", notes = "功能：测试远程调用")
     @GetMapping("call2")
     public String call2() {
         return remoteCallService.callTimeOverFromApi2();
+    }
+
+//    HystrixCommandProperties中可查看属性含义
+//    @HystrixCommand(
+//            fallbackMethod = "buildFallbackLicenseList",
+//            threadPoolKey = "licenseByOrgThreadPool",
+//            threadPoolProperties = {
+//                    @HystrixProperty(name = "coreSize",value="30"),
+//                    @HystrixProperty(name="maxQueueSize", value="10")
+//            }
+//    )
+    @HystrixCommand(fallbackMethod = "fallback",
+            commandProperties = {
+                    @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "5500")
+            })
+    @ApiOperation(value = "测试远程调用接口", notes = "功能：测试远程调用")
+    @GetMapping("call3")
+    public String call3() {
+        return remoteCallService.callTimeOverFromApi2();
+    }
+
+    private String fallback() {
+        return "太拥挤了，请稍后再试";
+    }
+
+    private String defaultFallback() {
+        return "默认太拥挤了，请稍后再试";
     }
 
 }
