@@ -11,6 +11,14 @@ spring:
     traceId128: true
     sampler:
       probability: 1.0
+  # es
+  data:
+    elasticsearch:
+      cluster-name: es_api_count
+      cluster-nodes: localhost:9300
+      properties:
+      repositories:
+        enabled: true
 
 # 注册中心
 eureka:
