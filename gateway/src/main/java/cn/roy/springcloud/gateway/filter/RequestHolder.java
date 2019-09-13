@@ -1,5 +1,7 @@
 package cn.roy.springcloud.gateway.filter;
 
+import java.util.Date;
+
 /**
  * @Description:
  * @Author: Roy Z
@@ -7,17 +9,17 @@ package cn.roy.springcloud.gateway.filter;
  * @Version: v1.0
  */
 public class RequestHolder {
-    private static final ThreadLocal<Long> holder = new ThreadLocal<>();
+    private static final ThreadLocal<Date> holder = new ThreadLocal<>();
 
     private RequestHolder() {
 
     }
 
-    public static void putStartTimestamp(Long  timestamp) {
-        holder.set(timestamp);
+    public static void putStartDate(Date date) {
+        holder.set(date);
     }
 
-    public static Long getStartTimestamp() {
+    public static Date getStartDate() {
         return holder.get();
     }
 

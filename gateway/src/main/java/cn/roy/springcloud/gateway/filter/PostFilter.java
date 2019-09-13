@@ -1,11 +1,13 @@
 package cn.roy.springcloud.gateway.filter;
 
+import cn.roy.springcloud.gateway.es.bean.ApiCallBean;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 
 /**
  * @Description: 过滤器
@@ -35,9 +37,18 @@ public class PostFilter extends ZuulFilter {
     public Object run() {
         RequestContext ctx = RequestContext.getCurrentContext();
         HttpServletRequest request = ctx.getRequest();
-        long endTime = System.currentTimeMillis();
-        long startTime = RequestHolder.getStartTimestamp();
-        long time = endTime - startTime;
+        Date endTime = new Date();
+        Date startTime = RequestHolder.getStartDate();
+        long time = endTime.getTime() - startTime.getTime();
+
+        ApiCallBean apiCallBean = new ApiCallBean();
+        apiCallBean.setName(request.getPathInfo());
+        apiCallBean.setStartTime(startTime);
+        apiCallBean.setEndTime(endTime);
+        apiCallBean.setCostTime(time);
+        apiCallBean.setRemoteIp(request.getRequestURI());
+
+
         log.info("请求结束，请求ID：{}，开始时间：{}，结束时间：{}，请求耗时{}", request.hashCode(), startTime, endTime, time);
         log.info(String.format("%s request to %s", request.getMethod(), request.getRequestURL().toString()));
         return null;

@@ -23,4 +23,51 @@ public class ApiCallBean {
     private Long costTime;
     private String remoteIp;
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
+    public Long getCostTime() {
+        return costTime;
+    }
+
+    public void setCostTime(Long costTime) {
+        this.costTime = costTime;
+    }
+
+    public String getRemoteIp() {
+        return remoteIp;
+    }
+
+    public void setRemoteIp(String remoteIp) {
+        this.remoteIp = remoteIp;
+    }
 }

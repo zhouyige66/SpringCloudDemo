@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.support.StandardMultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 
 /**
  * @Description: 过滤器
@@ -36,9 +37,9 @@ public class PreFilter extends ZuulFilter {
     public Object run() {
         RequestContext ctx = RequestContext.getCurrentContext();
         HttpServletRequest request = ctx.getRequest();
-        long time = System.currentTimeMillis();
-        RequestHolder.putStartTimestamp(time);
-        log.info("请求开始，请求ID：{}，开始时间：{}", request.hashCode(), time);
+        Date time = new Date();
+        RequestHolder.putStartDate(time);
+        log.info("请求开始，请求ID：{}，开始时间：{}", request.hashCode(), time.getTime());
         log.info(String.format("%s request to %s", request.getMethod(), request.getRequestURL().toString()));
 
         ctx.addZuulRequestHeader("baseInfo","kk20");
