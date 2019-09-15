@@ -14,8 +14,8 @@ spring:
   # es
   data:
     elasticsearch:
-      cluster-name: es_api_count
-      cluster-nodes: localhost:9300
+      cluster-name: my-application
+      cluster-nodes: 192.168.74.132:9300
       repositories:
         enabled: true
 

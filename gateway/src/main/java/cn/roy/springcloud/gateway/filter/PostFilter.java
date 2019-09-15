@@ -42,12 +42,11 @@ public class PostFilter extends ZuulFilter {
         long time = endTime.getTime() - startTime.getTime();
 
         ApiCallBean apiCallBean = new ApiCallBean();
-        apiCallBean.setName(request.getPathInfo());
+        apiCallBean.setName(request.getRequestURI());
         apiCallBean.setStartTime(startTime);
         apiCallBean.setEndTime(endTime);
         apiCallBean.setCostTime(time);
-        apiCallBean.setRemoteIp(request.getRequestURI());
-
+        apiCallBean.setRemoteIp(request.getRemoteAddr());
 
         log.info("请求结束，请求ID：{}，开始时间：{}，结束时间：{}，请求耗时{}", request.hashCode(), startTime, endTime, time);
         log.info(String.format("%s request to %s", request.getMethod(), request.getRequestURL().toString()));
