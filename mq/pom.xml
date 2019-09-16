@@ -7,7 +7,6 @@
         <artifactId>demo</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <groupId>cn.roy.springcloud</groupId>
     <artifactId>mq</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>mq</name>

@@ -11,7 +11,7 @@
     <artifactId>demo</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>demo</name>
+    <name>SpringCloudDemo</name>
     <description>Demo project for Spring Cloud</description>
 
     <modules>
