@@ -1,10 +1,11 @@
 package cn.roy.springcloud.api2;
 
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.docx4j.XmlUtils;
-import org.docx4j.dml.CTGraphicalObjectFrameLocking;
-import org.docx4j.dml.CTNonVisualDrawingProps;
-import org.docx4j.dml.CTNonVisualGraphicFrameProperties;
-import org.docx4j.dml.CTPoint2D;
+import org.docx4j.dml.*;
+import org.docx4j.dml.picture.CTPictureNonVisual;
+import org.docx4j.dml.picture.Pic;
 import org.docx4j.dml.wordprocessingDrawing.*;
 import org.docx4j.jaxb.Context;
 import org.docx4j.model.structure.PageDimensions;
@@ -15,17 +16,20 @@ import org.docx4j.openpackaging.parts.PartName;
 import org.docx4j.openpackaging.parts.WordprocessingML.AlternativeFormatInputPart;
 import org.docx4j.openpackaging.parts.WordprocessingML.BinaryPartAbstractImage;
 import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart;
-import org.docx4j.org.apache.poi.util.IOUtils;
 import org.docx4j.relationships.Relationship;
 import org.docx4j.wml.*;
-import org.docx4j.wml.ObjectFactory;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTP;
+import org.springframework.util.CollectionUtils;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import javax.xml.bind.JAXBElement;
-import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import javax.xml.bind.JAXBException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * @Description: 测试
@@ -35,171 +39,173 @@ import java.util.List;
  */
 public class Docx4jTest {
 
-    public static InputStream mergeDocx(final List<InputStream> streams) throws Docx4JException, IOException {
-        WordprocessingMLPackage target = null;
-        //创建临时Docx文件
-        final File generated = File.createTempFile("generated", ".docx");
+    public static void main(String[] args) {
+        mergeTest();
+    }
 
-        int chunkId = 0;
-        Iterator<InputStream> it = streams.iterator();
-        while (it.hasNext()) {
-            InputStream is = it.next();
-            if (is != null) {
-                if (target == null) {
-                    // 流读写 第一个文档
-                    OutputStream os = new FileOutputStream(generated);
-                    os.write(IOUtils.toByteArray(is));
-                    os.close();
+    public static void addQRCodeByCodeTest() {
+        String temporaryWordPath1 = "C:\\data1\\share\\data\\word\\SHA-EC-1908-000087-BC-00001-temp.doc";
+        String temporaryWordPath2 = "C:\\data1\\share\\data\\word\\SHA-EC-1908-000087-BC-00001-temp_test.doc";
+        String img = "C:\\Users\\Roy Z Zhou\\Pictures\\timg.jpg";
 
-                    //获取第一个文档
-                    target = WordprocessingMLPackage.load(generated);
+        boolean actionResult;
+        try {
+            int docPrId = new Random().nextInt(10000);
+            String picName = "pic_" + docPrId;
+
+            WordprocessingMLPackage wordMLPackage = WordprocessingMLPackage.load(new File(temporaryWordPath1));
+            BinaryPartAbstractImage imagePart = BinaryPartAbstractImage.createImagePart(wordMLPackage, new File(img));
+            imagePart.getRelLast().setId("rId" + docPrId);
+
+            Anchor anchor = new Anchor();
+            anchor.setAllowOverlap(true);
+            anchor.setBehindDoc(false);
+            anchor.setDistT(0L);
+            anchor.setDistB(0L);
+            anchor.setDistL(114300L);
+            anchor.setDistR(114300L);
+            anchor.setLayoutInCell(true);
+            anchor.setLocked(false);
+            anchor.setRelativeHeight(251661312);
+
+            CTPoint2D ctPoint2D = new CTPoint2D();
+            ctPoint2D.setX(0);
+            ctPoint2D.setY(0);
+            anchor.setSimplePos(ctPoint2D);
+
+            CTPosH ctPosH = new CTPosH();
+            ctPosH.setRelativeFrom(STRelFromH.MARGIN);
+            ctPosH.setAlign(STAlignH.RIGHT);
+            anchor.setPositionH(ctPosH);
+
+            CTPosV ctPosV = new CTPosV();
+            ctPosV.setRelativeFrom(STRelFromV.PARAGRAPH);
+            ctPosV.setPosOffset(-1009015);
+            anchor.setPositionV(ctPosV);
+
+            CTPositiveSize2D ctPositiveSize2D = new CTPositiveSize2D();
+            ctPositiveSize2D.setCx(890270);
+            ctPositiveSize2D.setCy(890270);
+            anchor.setExtent(ctPositiveSize2D);
+
+            CTEffectExtent ctEffectExtent = new CTEffectExtent();
+            ctEffectExtent.setB(5080);
+            ctEffectExtent.setL(0);
+            ctEffectExtent.setR(5080);
+            ctEffectExtent.setT(0);
+            anchor.setEffectExtent(ctEffectExtent);
+
+            anchor.setWrapNone(new CTWrapNone());
+
+            CTNonVisualDrawingProps ctNonVisualDrawingProps = new CTNonVisualDrawingProps();
+            ctNonVisualDrawingProps.setId(docPrId);
+            ctNonVisualDrawingProps.setName(picName);
+            ctNonVisualDrawingProps.setDescr(picName);
+            anchor.setDocPr(ctNonVisualDrawingProps);
+
+            CTNonVisualGraphicFrameProperties ctNonVisualGraphicFrameProperties = new CTNonVisualGraphicFrameProperties();
+            CTGraphicalObjectFrameLocking ctGraphicalObjectFrameLocking = new CTGraphicalObjectFrameLocking();
+            ctGraphicalObjectFrameLocking.setNoChangeAspect(true);
+            ctNonVisualGraphicFrameProperties.setGraphicFrameLocks(ctGraphicalObjectFrameLocking);
+            anchor.setCNvGraphicFramePr(ctNonVisualGraphicFrameProperties);
+
+            Pic pic = new Pic();
+            // 1.nvPicPr
+            CTPictureNonVisual ctPictureNonVisual = new CTPictureNonVisual();
+            ctNonVisualDrawingProps.setId(docPrId);
+            ctNonVisualDrawingProps.setName(picName);
+            ctPictureNonVisual.setCNvPr(ctNonVisualDrawingProps);
+            ctPictureNonVisual.setCNvPicPr(new CTNonVisualPictureProperties());
+            pic.setNvPicPr(ctPictureNonVisual);
+            // 2.blipFill
+            CTBlipFillProperties ctBlipFillProperties = new CTBlipFillProperties();
+            CTBlip ctBlip = new CTBlip();
+            ctBlip.setEmbed(imagePart.getRelLast().getId());
+            ctBlipFillProperties.setBlip(ctBlip);
+            CTStretchInfoProperties ctStretchInfoProperties = new CTStretchInfoProperties();
+            ctStretchInfoProperties.setFillRect(new CTRelativeRect());
+            ctBlipFillProperties.setStretch(ctStretchInfoProperties);
+            pic.setBlipFill(ctBlipFillProperties);
+            // 3.spPr
+            CTShapeProperties ctShapeProperties = new CTShapeProperties();
+            CTTransform2D ctTransform2D = new CTTransform2D();
+            CTPoint2D point2D = new CTPoint2D();
+            point2D.setX(0);
+            point2D.setY(0);
+            ctTransform2D.setOff(point2D);
+            ctTransform2D.setExt(ctPositiveSize2D);
+            ctShapeProperties.setXfrm(ctTransform2D);
+            CTPresetGeometry2D ctPresetGeometry2D = new CTPresetGeometry2D();
+            ctPresetGeometry2D.setPrst(STShapeType.RECT);
+            ctPresetGeometry2D.setAvLst(new CTGeomGuideList());
+            ctShapeProperties.setPrstGeom(ctPresetGeometry2D);
+            pic.setSpPr(ctShapeProperties);
+
+            GraphicData graphicData = new GraphicData();
+            graphicData.setUri("http://schemas.openxmlformats.org/drawingml/2006/picture");
+            graphicData.getAny().add(pic);
+            Graphic graphic = new Graphic();
+            graphic.setGraphicData(graphicData);
+            anchor.setGraphic(graphic);
+
+            Drawing drawing = new Drawing();
+            drawing.getAnchorOrInline().add(anchor);
+
+            MainDocumentPart documentPart = wordMLPackage.getMainDocumentPart();
+            List<Object> content = documentPart.getContent();
+            if (content.size() == 0) {
+                P p = new P();
+                p.getContent().add(drawing);
+                documentPart.addObject(p);
+            } else {
+                Object obj = content.get(0);
+                if (obj instanceof P) {
+                    P p = (P) obj;
+                    p.getContent().add(drawing);
                 } else {
-                    // 插入其他文档
-                    insertDocx(target.getMainDocumentPart(), IOUtils.toByteArray(is), chunkId++);
+                    P p = new P();
+                    p.getContent().add(drawing);
+                    content.add(0, p);
                 }
             }
-        }
+            wordMLPackage.save(new FileOutputStream(temporaryWordPath2));
 
-        if (target != null) {
-            target.save(generated);
-            return new FileInputStream(generated);
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * * 插入文档
-     * * @param main
-     * * @param bytes
-     * * @param chunkId
-     */
-    public static void insertDocx(MainDocumentPart main, byte[] bytes, int chunkId) {
-        try {
-            AlternativeFormatInputPart afiPart = new AlternativeFormatInputPart(
-                    new PartName("/part" + chunkId + ".docx"));
-            // afiPart.setContentType(new ContentType(CONTENT_TYPE));
-            afiPart.setBinaryData(bytes);
-            Relationship altChunkRel = main.addTargetPart(afiPart);
-
-            CTAltChunk chunk = Context.getWmlObjectFactory().createCTAltChunk();
-            chunk.setId(altChunkRel.getId());
-
-            main.addObject(chunk);
+            actionResult = true;
+        } catch (org.docx4j.openpackaging.exceptions.InvalidFormatException e) {
+            actionResult = false;
+        } catch (Docx4JException e) {
+            actionResult = false;
         } catch (Exception e) {
-            e.printStackTrace();
+            actionResult = false;
         }
     }
 
-    public static void main(String[] args) {
-        String temporaryWordPath = "C:\\Users\\Roy Z Zhou\\Desktop\\fsdownload\\DLZ-EC-1907-000148-BC-00001.docx";
-        String temporaryWordPath2 = "C:\\Users\\Roy Z Zhou\\Desktop\\fsdownload\\EC_template.docx";
-
-        List<String> fileList = new ArrayList<>();
-        fileList.add(temporaryWordPath);
-        fileList.add(temporaryWordPath2);
-
-        WordprocessingMLPackage target = null;
+    public static void addQRCodeByTemplateTest() {
+        String originWordPath = "C:\\data1\\share\\data\\word\\SHA-EC-1908-000087-BC-00001-temp.doc";
+        String generateWordPath = "C:\\data1\\share\\data\\word\\SHA-EC-1908-000087-BC-00001-temp_test.doc";
+        String imageFilePath = "C:\\Users\\Roy Z Zhou\\Pictures\\1.jpeg";
+        File imgFile = new File(imageFilePath);
         try {
-            WordprocessingMLPackage wordprocessingMLPackage = WordprocessingMLPackage.load(new File(temporaryWordPath));
-            MainDocumentPart mainDocumentPart = wordprocessingMLPackage.getMainDocumentPart();
-            for (int i = 0; i < fileList.size() - 1; i++) {
-                Br br = new Br();
-                br.setType(STBrType.PAGE);
-                mainDocumentPart.addObject(br);
-
-                AlternativeFormatInputPart afiPart = new AlternativeFormatInputPart(
-                        new PartName("/part" + i + ".docx"));
-                // afiPart.setContentType(new ContentType(CONTENT_TYPE));
-                afiPart.setBinaryData(new FileInputStream(new File(fileList.get(i))));
-                Relationship altChunkRel = mainDocumentPart.addTargetPart(afiPart);
-                CTAltChunk chunk = Context.getWmlObjectFactory().createCTAltChunk();
-                chunk.setId(altChunkRel.getId());
-
-                mainDocumentPart.addObject(chunk);
-            }
-            wordprocessingMLPackage.save(new FileOutputStream("C:\\Users\\Roy Z Zhou\\Desktop\\fsdownload\\合并.docx"));
-        } catch (IOException e) {
+            WordprocessingMLPackage wordMLPackage = WordprocessingMLPackage.load(new File(originWordPath));
+            BinaryPartAbstractImage imagePart = BinaryPartAbstractImage.createImagePart(wordMLPackage, imgFile);
+            int docPrId = 1;
+            int cNvPrId = 2;
+            Anchor anchor = createImageAnchor(imagePart, "Filename hint", "Alternative text",
+                    docPrId, cNvPrId, false);
+            Drawing drawing = new Drawing();
+            drawing.getAnchorOrInline().add(anchor);
+            MainDocumentPart documentPart = wordMLPackage.getMainDocumentPart();
+            List<Object> content = documentPart.getContent();
+            P p = (P) content.get(0);
+            p.getContent().add(drawing);
+            wordMLPackage.save(new FileOutputStream(generateWordPath));
+        } catch (org.docx4j.openpackaging.exceptions.InvalidFormatException e) {
             e.printStackTrace();
         } catch (Docx4JException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-//        String temporaryWordPath2 = "C:\\Users\\Roy Z Zhou\\Desktop\\fsdownload\\DLZ-EC-1907-000148-BC-00001-test.docx";
-//        File imgFile = new File("C:\\Users\\Roy Z Zhou\\Pictures\\1.jpeg");
-//        try {
-//            WordprocessingMLPackage wordMLPackage = WordprocessingMLPackage.load(new File(temporaryWordPath));
-//            BinaryPartAbstractImage imagePart = BinaryPartAbstractImage.createImagePart(wordMLPackage, imgFile);
-//            int docPrId = 1;
-//            int cNvPrId = 2;
-//            Anchor anchor = createImageAnchor(imagePart, "Filename hint", "Alternative text",
-//                    docPrId, cNvPrId, false);
-//            anchor.setAllowOverlap(true);
-//            anchor.setBehindDoc(false);
-//            anchor.setDistB(0L);
-//            anchor.setDistL(114300L);
-//            anchor.setDistR(114300L);
-//            anchor.setLayoutInCell(true);
-//            anchor.setLocked(false);
-//            anchor.setRelativeHeight(251661312);
-////            anchor.setSimplePos2(false);
-//
-//            CTPoint2D ctPoint2D = new CTPoint2D();
-//            ctPoint2D.setX(0);
-//            ctPoint2D.setY(0);
-//            anchor.setSimplePos(ctPoint2D);
-//
-//            CTPosH ctPosH = new CTPosH();
-//            ctPosH.setRelativeFrom(STRelFromH.MARGIN);
-//            ctPosH.setAlign(STAlignH.RIGHT);
-//            anchor.setPositionH(ctPosH);
-//
-//            CTPosV ctPosV = new CTPosV();
-//            ctPosV.setRelativeFrom(STRelFromV.PARAGRAPH);
-//            ctPosV.setPosOffset(-1009015);
-//            anchor.setPositionV(ctPosV);
-//
-////            CTPositiveSize2D ctPositiveSize2D = new CTPositiveSize2D();
-////            ctPositiveSize2D.setCx(890270);
-////            ctPositiveSize2D.setCy(890270);
-////            anchor.setExtent(ctPositiveSize2D);
-//
-//            CTEffectExtent ctEffectExtent = new CTEffectExtent();
-//            ctEffectExtent.setB(5080);
-//            ctEffectExtent.setL(0);
-//            ctEffectExtent.setR(5080);
-//            ctEffectExtent.setT(0);
-//            anchor.setEffectExtent(ctEffectExtent);
-//
-//            anchor.setWrapNone(new CTWrapNone());
-//
-//            CTNonVisualDrawingProps ctNonVisualDrawingProps = new CTNonVisualDrawingProps();
-//            ctNonVisualDrawingProps.setDescr("timg");
-//            ctNonVisualDrawingProps.setId(14);
-//            ctNonVisualDrawingProps.setName("Picture 14");
-//            anchor.setDocPr(ctNonVisualDrawingProps);
-//
-//            CTNonVisualGraphicFrameProperties ctNonVisualGraphicFrameProperties = new CTNonVisualGraphicFrameProperties();
-//            CTGraphicalObjectFrameLocking ctGraphicalObjectFrameLocking = new CTGraphicalObjectFrameLocking();
-//            ctGraphicalObjectFrameLocking.setNoChangeAspect(true);
-//            ctNonVisualGraphicFrameProperties.setGraphicFrameLocks(ctGraphicalObjectFrameLocking);
-//            anchor.setCNvGraphicFramePr(ctNonVisualGraphicFrameProperties);
-//
-//            ObjectFactory objectFactory = new ObjectFactory();
-//            Drawing drawing = objectFactory.createDrawing();
-//            drawing.getAnchorOrInline().add(anchor);
-//            MainDocumentPart documentPart = wordMLPackage.getMainDocumentPart();
-//            List<Object> content = documentPart.getContent();
-//            P p = (P) content.get(0);
-//            p.getContent().add(drawing);
-//            wordMLPackage.save(new FileOutputStream(temporaryWordPath2));
-//        } catch (org.docx4j.openpackaging.exceptions.InvalidFormatException e) {
-//            e.printStackTrace();
-//        } catch (Docx4JException e) {
-//            e.printStackTrace();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
     }
 
     public static Anchor createImageAnchor(BinaryPartAbstractImage image, String filenameHint, String altText, int id1, int id2,
@@ -276,7 +282,7 @@ public class Docx4jTest {
         mappings.put("cy", Long.toString(cy));
         mappings.put("filenameHint", filenameHint);
         mappings.put("altText", altText);
-        mappings.put("rEmbedId", getRelLast(image).getId());
+        mappings.put("rEmbedId", image.getRelLast().getId());
         mappings.put("id1", Integer.toString(id1));
         mappings.put("id2", Integer.toString(id2));
         Object o = XmlUtils.unmarshallFromTemplate(ml, mappings);
@@ -285,9 +291,111 @@ public class Docx4jTest {
         return anchor;
     }
 
-    public static Relationship getRelLast(BinaryPartAbstractImage image) {
-        int size = image.getRels().size();
-        return size < 1 ? null : (Relationship) image.getRels().get(size - 1);
+    public static void mergeTest() {
+        String temporaryWordPath1 = "C:\\data1\\share\\data\\word\\1570600059124_SHA-EC-1908-000087-BC-00001.docx";
+        String temporaryWordPath2 = "C:\\data1\\share\\data\\word\\1570600064910_SHA-EC-1908-000087-BC-00002.docx";
+        String temporaryWordPath3 = "C:\\data1\\share\\data\\word\\1570600069946_SHA-EC-1908-000087-BC-00003.docx";
+        String generateWordPath = "C:\\data1\\share\\data\\word\\merge.doc";
+
+        List<String> fileList = new ArrayList<>();
+        fileList.add(temporaryWordPath1);
+        fileList.add(temporaryWordPath2);
+        fileList.add(temporaryWordPath3);
+
+        merge(fileList, generateWordPath);
+    }
+
+    public static boolean merge(List<String> fileList, String mergedFilePath) {
+        if (CollectionUtils.isEmpty(fileList)) {
+            System.out.println("合并word失败，合并的文件列表为空");
+            return false;
+        }
+        // 过滤不存在的文件
+        ListIterator<String> stringListIterator = fileList.listIterator();
+        while (stringListIterator.hasNext()) {
+            String filePath = stringListIterator.next();
+            File file = new File(filePath);
+            if (!file.exists()) {
+                fileList.remove(filePath);
+            }
+        }
+        if (CollectionUtils.isEmpty(fileList)) {
+            System.out.println("合并word失败，过滤后需要合并的文件列表为空");
+            return false;
+        }
+
+        try {
+            File file = new File(fileList.get(1));
+
+            Drawing drawing = null;
+            XWPFDocument document = new XWPFDocument(new FileInputStream(file));
+            XWPFParagraph paragraph = document.getParagraphs().get(0);
+            CTP ctp = paragraph.getCTP();
+            Node domNode = ctp.getDomNode();
+            NodeList childNodes = domNode.getChildNodes();
+            int length = childNodes.getLength();
+            for (int i = 0; i < length; i++) {
+                Node node = childNodes.item(i);
+                String prefix = node.getPrefix();
+                String nodeName = node.getNodeName();
+                if (nodeName.equals("w:drawing")) {
+                    try {
+                        drawing = (Drawing) XmlUtils.unmarshal(node);
+                    } catch (JAXBException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            WordprocessingMLPackage wordprocessingMLPackage = WordprocessingMLPackage.load(file);
+            MainDocumentPart mainDocumentPart = wordprocessingMLPackage.getMainDocumentPart();
+            if (fileList.size() > 1) {
+                for (int i = 1; i < fileList.size(); i++) {
+                    // 插入分隔符
+                    Br br = new Br();
+                    br.setType(STBrType.PAGE);
+                    br.setClear(STBrClear.LEFT);
+                    mainDocumentPart.addObject(br);
+
+                    PartName partName = new PartName("/part_" + i + ".docx");
+                    System.out.println("part：" + partName.getName());
+                    AlternativeFormatInputPart afiPart = new AlternativeFormatInputPart(partName);
+                    File docFile = new File(fileList.get(i));
+                    afiPart.setBinaryData(new FileInputStream(docFile));
+                    Relationship altChunkRel = mainDocumentPart.addTargetPart(afiPart);
+                    CTAltChunk chunk = Context.getWmlObjectFactory().createCTAltChunk();
+                    chunk.setId(altChunkRel.getId());
+
+                    mainDocumentPart.addObject(chunk);
+                }
+                if (null != drawing && mainDocumentPart.getContent().size() > 0) {
+                    List<Object> content = mainDocumentPart.getContent();
+                    Object obj = content.get(0);
+                    if (obj instanceof P) {
+                        P p = (P) obj;
+                        p.getContent().add(drawing);
+                    } else {
+                        P p = new P();
+                        p.getContent().add(drawing);
+                        content.add(0, p);
+                    }
+                }
+            }
+            File mergeFile = new File(mergedFilePath);
+            File parentFile = mergeFile.getParentFile();
+            if (!parentFile.exists()) {
+                parentFile.mkdirs();
+            }
+            wordprocessingMLPackage.save(mergeFile);
+
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Docx4JException e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 
 }
