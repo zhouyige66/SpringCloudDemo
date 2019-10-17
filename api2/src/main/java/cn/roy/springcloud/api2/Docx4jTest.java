@@ -1,5 +1,6 @@
 package cn.roy.springcloud.api2;
 
+import org.apache.commons.collections4.MapUtils;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.docx4j.XmlUtils;
@@ -13,11 +14,13 @@ import org.docx4j.model.structure.SectionWrapper;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 import org.docx4j.openpackaging.parts.PartName;
+import org.docx4j.openpackaging.parts.WordprocessingML.AltChunkType;
 import org.docx4j.openpackaging.parts.WordprocessingML.AlternativeFormatInputPart;
 import org.docx4j.openpackaging.parts.WordprocessingML.BinaryPartAbstractImage;
 import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart;
 import org.docx4j.relationships.Relationship;
 import org.docx4j.wml.*;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTBody;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTP;
 import org.springframework.util.CollectionUtils;
 import org.w3c.dom.Node;
@@ -40,12 +43,12 @@ import java.util.*;
 public class Docx4jTest {
 
     public static void main(String[] args) {
-        mergeTest();
+        addImageByTemplateTest();
     }
 
-    public static void addQRCodeByCodeTest() {
-        String temporaryWordPath1 = "C:\\data1\\share\\data\\word\\SHA-EC-1908-000087-BC-00001-temp.doc";
-        String temporaryWordPath2 = "C:\\data1\\share\\data\\word\\SHA-EC-1908-000087-BC-00001-temp_test.doc";
+    private static void addImageByCode() {
+        String temporaryWordPath1 = "C:\\data1\\share\\data\\word\\SHA-EC-1907-001873-EIC-00001-temp.doc";
+        String temporaryWordPath2 = "C:\\data1\\share\\data\\word\\qrcode.doc";
         String img = "C:\\Users\\Roy Z Zhou\\Pictures\\timg.jpg";
 
         boolean actionResult;
@@ -64,7 +67,7 @@ public class Docx4jTest {
             anchor.setDistB(0L);
             anchor.setDistL(114300L);
             anchor.setDistR(114300L);
-            anchor.setLayoutInCell(true);
+            anchor.setLayoutInCell(false);
             anchor.setLocked(false);
             anchor.setRelativeHeight(251661312);
 
@@ -180,13 +183,41 @@ public class Docx4jTest {
         }
     }
 
-    public static void addQRCodeByTemplateTest() {
-        String originWordPath = "C:\\data1\\share\\data\\word\\SHA-EC-1908-000087-BC-00001-temp.doc";
-        String generateWordPath = "C:\\data1\\share\\data\\word\\SHA-EC-1908-000087-BC-00001-temp_test.doc";
+    private static void addImageByTemplateTest() {
+        String originWordPath = "C:\\data1\\share\\data\\word\\SHA-EC-1907-001873-EIC-00001-temp.doc";
+        String generateWordPath = "C:\\data1\\share\\data\\word\\SHA-EC-1907-001873-EIC-00001-temp_test.doc";
         String imageFilePath = "C:\\Users\\Roy Z Zhou\\Pictures\\1.jpeg";
         File imgFile = new File(imageFilePath);
         try {
             WordprocessingMLPackage wordMLPackage = WordprocessingMLPackage.load(new File(originWordPath));
+            MainDocumentPart documentPart = wordMLPackage.getMainDocumentPart();
+            List<Object> content = documentPart.getContent();
+
+            // 获取所有表格
+//            List<JAXBElement> ctTableRemoveList = new ArrayList<>();
+//            TreeMap<Integer, Object> ctTableAddMap = new TreeMap<>();
+//            int index = 0;
+//            for (Object obj : content) {
+//                if (obj instanceof JAXBElement) {
+//                    JAXBElement element = (JAXBElement) obj;
+//                    Object value = element.getValue();
+//                    if (value instanceof Tbl) {
+//                        ctTableRemoveList.add(element);
+//
+//                        Tbl originTbl = (Tbl) value;
+//                        String s = XmlUtils.marshaltoString(originTbl);
+//                        System.out.println("原表格："+s);
+//                        // 拷贝当前表格
+//                        Tbl tbl = XmlUtils.deepCopy((Tbl) value);
+//                        ctTableAddMap.put(index, tbl);
+//                    }
+//                }
+//                index++;
+//            }
+
+//            boolean removeResult = content.removeAll(ctTableRemoveList);
+//            System.out.println("移除表格：" + removeResult);
+            // 添加二维码
             BinaryPartAbstractImage imagePart = BinaryPartAbstractImage.createImagePart(wordMLPackage, imgFile);
             int docPrId = 1;
             int cNvPrId = 2;
@@ -194,10 +225,30 @@ public class Docx4jTest {
                     docPrId, cNvPrId, false);
             Drawing drawing = new Drawing();
             drawing.getAnchorOrInline().add(anchor);
-            MainDocumentPart documentPart = wordMLPackage.getMainDocumentPart();
-            List<Object> content = documentPart.getContent();
-            P p = (P) content.get(0);
-            p.getContent().add(drawing);
+            if (content.size() == 0) {
+                P p = new P();
+                p.getContent().add(drawing);
+                documentPart.addObject(p);
+            } else {
+                Object obj = content.get(0);
+                if (obj instanceof P) {
+                    P p = (P) obj;
+                    p.getContent().add(0, drawing);
+                } else {
+                    P p = new P();
+                    p.getContent().add(drawing);
+                    content.add(0, p);
+                }
+            }
+
+            // 添加原来的表格
+//            if (MapUtils.isNotEmpty(ctTableAddMap)) {
+//                Set<Map.Entry<Integer, Object>> entries = ctTableAddMap.entrySet();
+//                for (Map.Entry<Integer, Object> entry : entries) {
+//                    content.add(entry.getKey(), entry.getValue());
+//                }
+//            }
+
             wordMLPackage.save(new FileOutputStream(generateWordPath));
         } catch (org.docx4j.openpackaging.exceptions.InvalidFormatException e) {
             e.printStackTrace();
@@ -234,28 +285,35 @@ public class Docx4jTest {
             type = "r:embed";
         }
 
-        cx = cy = 890270L;
-        String ml =
-                "<wp:anchor allowOverlap=\"1\" behindDoc=\"0\" distB=\"0\" distL=\"114300\" distR=\"114300\" distT=\"0\" layoutInCell=\"1\" locked=\"0\" relativeHeight=\"251661312\" simplePos=\"0\" xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" xmlns:wp=\"http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing\">\n" +
+        String a =
+                "<wp:anchor xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\"\n" +
+                        "           xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"\n" +
+                        "           xmlns:wp=\"http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing\"\n" +
+                        "           distT=\"0\" distB=\"0\" distL=\"114300\" distR=\"114300\" simplePos=\"0\"\n" +
+                        "           relativeHeight=\"251658240\" behindDoc=\"0\" locked=\"0\" layoutInCell=\"0 \"\n" +
+                        "           allowOverlap=\"1\">\n" +
                         "    <wp:simplePos x=\"0\" y=\"0\"/>\n" +
                         "    <wp:positionH relativeFrom=\"margin\">\n" +
-                        "        <wp:align>right</wp:align>\n" +
+                        "        <wp:posOffset>5577840</wp:posOffset>\n" +
                         "    </wp:positionH>\n" +
-                        "    <wp:positionV relativeFrom=\"paragraph\">\n" +
-                        "        <wp:posOffset>-1009015</wp:posOffset>\n" +
+                        "    <wp:positionV relativeFrom=\"topMargin\">\n" +
+                        "        <wp:posOffset>548640</wp:posOffset>\n" +
                         "    </wp:positionV>\n" +
                         "    <wp:extent cx=\"${cx}\" cy=\"${cy}\"/>\n" +
-                        "    <wp:effectExtent b=\"5080\" l=\"0\" r=\"5080\" t=\"0\"/>\n" +
+                        "    <wp:effectExtent l=\"0\" t=\"0\" r=\"8890\" b=\"8890\"/>\n" +
                         "    <wp:wrapNone/>\n" +
-                        "    <wp:docPr descr=\"timg\" id=\"14\" name=\"Picture 14\"/>\n" +
+                        "    <wp:docPr id=\"${docPrId}\" name=\"${docPrName}\" descr=\"${docPrDes}\"/>\n" +
                         "    <wp:cNvGraphicFramePr>\n" +
-                        "        <a:graphicFrameLocks noChangeAspect=\"1\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\"/>\n" +
+                        "        <a:graphicFrameLocks\n" +
+                        "                xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\"\n" +
+                        "                noChangeAspect=\"1\"/>\n" +
                         "    </wp:cNvGraphicFramePr>\n" +
                         "    <a:graphic xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\">\n" +
                         "        <a:graphicData uri=\"http://schemas.openxmlformats.org/drawingml/2006/picture\">\n" +
-                        "            <pic:pic xmlns:pic=\"http://schemas.openxmlformats.org/drawingml/2006/picture\">\n" +
+                        "            <pic:pic\n" +
+                        "                    xmlns:pic=\"http://schemas.openxmlformats.org/drawingml/2006/picture\">\n" +
                         "                <pic:nvPicPr>\n" +
-                        "                    <pic:cNvPr id=\"${id2}\" name=\"${filenameHint}\"/>\n" +
+                        "                    <pic:cNvPr id=\"${docPrId}\" name=\"${docPrName}\"/>\n" +
                         "                    <pic:cNvPicPr/>\n" +
                         "                </pic:nvPicPr>\n" +
                         "                <pic:blipFill>\n" +
@@ -277,37 +335,153 @@ public class Docx4jTest {
                         "        </a:graphicData>\n" +
                         "    </a:graphic>\n" +
                         "</wp:anchor>";
+
+        cx = cy = 800000L;
+        String xml = "<wp:anchor distT=\"0\" distB=\"0\" distL=\"114300\" distR=\"114300\" simplePos=\"0\" relativeHeight=\"251658240\" behindDoc=\"0\" locked=\"0\" layoutInCell=\"1\" allowOverlap=\"1\" xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" xmlns:wp=\"http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing\">\n" +
+                "    <wp:simplePos x=\"0\" y=\"0\"/>\n" +
+                "    <wp:positionH relativeFrom=\"margin\">\n" +
+                "        <wp:align>right</wp:align>\n" +
+                "    </wp:positionH>\n" +
+                "    <wp:positionV relativeFrom=\"topMargin\">\n" +
+                "        <wp:align>bottom</wp:align>\n" +
+                "    </wp:positionV>\n" +
+                "    <wp:extent cx=\"${cx}\" cy=\"${cy}\"/>\n" +
+                "    <wp:effectExtent l=\"0\" t=\"0\" r=\"8890\" b=\"8890\"/>\n" +
+                "    <wp:wrapNone/>\n" +
+                "    <wp:docPr descr=\"${docPrDes}\" id=\"${docPrId}\" name=\"${docPrName}\"/>\n" +
+                "    <wp:cNvGraphicFramePr>\n" +
+                "        <a:graphicFrameLocks noChangeAspect=\"1\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\"/>\n" +
+                "    </wp:cNvGraphicFramePr>\n" +
+                "    <a:graphic xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\">\n" +
+                "        <a:graphicData uri=\"http://schemas.openxmlformats.org/drawingml/2006/picture\">\n" +
+                "            <pic:pic xmlns:pic=\"http://schemas.openxmlformats.org/drawingml/2006/picture\">\n" +
+                "                <pic:nvPicPr>\n" +
+                "                    <pic:cNvPr id=\"${picId}\" name=\"${picName}\"/>\n" +
+                "                    <pic:cNvPicPr/>\n" +
+                "                </pic:nvPicPr>\n" +
+                "                <pic:blipFill>\n" +
+                "                    <a:blip r:embed=\"${rEmbedId}\"/>\n" +
+                "                    <a:stretch>\n" +
+                "                        <a:fillRect/>\n" +
+                "                    </a:stretch>\n" +
+                "                </pic:blipFill>\n" +
+                "                <pic:spPr>\n" +
+                "                    <a:xfrm>\n" +
+                "                        <a:off x=\"0\" y=\"0\"/>\n" +
+                "                        <a:ext cx=\"${cx}\" cy=\"${cy}\"/>\n" +
+                "                    </a:xfrm>\n" +
+                "                    <a:prstGeom prst=\"rect\">\n" +
+                "                        <a:avLst/>\n" +
+                "                    </a:prstGeom>\n" +
+                "                </pic:spPr>\n" +
+                "            </pic:pic>\n" +
+                "        </a:graphicData>\n" +
+                "    </a:graphic>\n" +
+                "</wp:anchor>";
+        String ml =
+                "<wp:anchor distT=\"0\" distB=\"0\" distL=\"114300\" distR=\"114300\" simplePos=\"0\" relativeHeight=\"251658240\" behindDoc=\"0\" locked=\"0\" layoutInCell=\"1\" allowOverlap=\"1\" xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" xmlns:wp=\"http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing\">\n" +
+                        "    <wp:simplePos x=\"0\" y=\"0\"/>\n" +
+                        "    <wp:positionH relativeFrom=\"margin\">\n" +
+                        "        <wp:align>right</wp:align>\n" +
+                        "    </wp:positionH>\n" +
+                        "    <wp:positionV relativeFrom=\"topMargin\">\n" +
+                        "        <wp:align>bottom</wp:align>\n" +
+                        "    </wp:positionV>\n" +
+                        "    <wp:extent cx=\"886968\" cy=\"886968\"/>\n" +
+                        "    <wp:effectExtent l=\"0\" t=\"0\" r=\"8890\" b=\"8890\"/>\n" +
+                        "    <wp:wrapNone/>\n" +
+                        "    <wp:docPr id=\"2\" name=\"Picture 2\"/>\n" +
+                        "    <wp:cNvGraphicFramePr>\n" +
+                        "        <a:graphicFrameLocks xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\"\n" +
+                        "                             noChangeAspect=\"1\"/>\n" +
+                        "    </wp:cNvGraphicFramePr>\n" +
+                        "    <a:graphic xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\">\n" +
+                        "        <a:graphicData uri=\"http://schemas.openxmlformats.org/drawingml/2006/picture\">\n" +
+                        "            <pic:pic xmlns:pic=\"http://schemas.openxmlformats.org/drawingml/2006/picture\">\n" +
+                        "                <pic:nvPicPr>\n" +
+                        "                    <pic:cNvPr id=\"2\" name=\"timg.jpg\"/>\n" +
+                        "                    <pic:cNvPicPr/>\n" +
+                        "                </pic:nvPicPr>\n" +
+                        "                <pic:blipFill>\n" +
+                        "                    <a:blip r:embed=\"${rEmbedId}\" cstate=\"print\">\n" +
+                        "                        <a:extLst>\n" +
+                        "                            <a:ext uri=\"{28A0092B-C50C-407E-A947-70E740481C1C}\">\n" +
+                        "                                <a14:useLocalDpi\n" +
+                        "                                        xmlns:a14=\"http://schemas.microsoft.com/office/drawing/2010/main\"\n" +
+                        "                                        val=\"0\"/>\n" +
+                        "                            </a:ext>\n" +
+                        "                        </a:extLst>\n" +
+                        "                    </a:blip>\n" +
+                        "                    <a:stretch>\n" +
+                        "                        <a:fillRect/>\n" +
+                        "                    </a:stretch>\n" +
+                        "                </pic:blipFill>\n" +
+                        "                <pic:spPr>\n" +
+                        "                    <a:xfrm>\n" +
+                        "                        <a:off x=\"0\" y=\"0\"/>\n" +
+                        "                        <a:ext cx=\"886968\" cy=\"886968\"/>\n" +
+                        "                    </a:xfrm>\n" +
+                        "                    <a:prstGeom prst=\"rect\">\n" +
+                        "                        <a:avLst/>\n" +
+                        "                    </a:prstGeom>\n" +
+                        "                </pic:spPr>\n" +
+                        "            </pic:pic>\n" +
+                        "        </a:graphicData>\n" +
+                        "    </a:graphic>\n" +
+                        "    <wp14:sizeRelH relativeFrom=\"margin\">\n" +
+                        "        <wp14:pctWidth>0</wp14:pctWidth>\n" +
+                        "    </wp14:sizeRelH>\n" +
+                        "    <wp14:sizeRelV relativeFrom=\"margin\">\n" +
+                        "        <wp14:pctHeight>0</wp14:pctHeight>\n" +
+                        "    </wp14:sizeRelV>\n" +
+                        "</wp:anchor>";
         HashMap<String, String> mappings = new HashMap();
+//        mappings.put("cx", Long.toString(cx));
+//        mappings.put("cy", Long.toString(cy));
+//        mappings.put("filenameHint", filenameHint);
+//        mappings.put("altText", altText);
+//        mappings.put("rEmbedId", image.getRelLast().getId());
+//        mappings.put("id1", Integer.toString(id1));
+//        mappings.put("id2", Integer.toString(id2));
+
         mappings.put("cx", Long.toString(cx));
         mappings.put("cy", Long.toString(cy));
-        mappings.put("filenameHint", filenameHint);
-        mappings.put("altText", altText);
+        int docPrId = 100;
+        mappings.put("docPrId", "" + docPrId);
+        mappings.put("docPrName", "docPrName");
+        mappings.put("docPrDes", "docPrDes");
         mappings.put("rEmbedId", image.getRelLast().getId());
-        mappings.put("id1", Integer.toString(id1));
-        mappings.put("id2", Integer.toString(id2));
-        Object o = XmlUtils.unmarshallFromTemplate(ml, mappings);
+
+        Object o = XmlUtils.unmarshallFromTemplate(a, mappings);
         Anchor anchor = (Anchor) ((JAXBElement) o).getValue();
 
         return anchor;
     }
 
     public static void mergeTest() {
-        String temporaryWordPath1 = "C:\\data1\\share\\data\\word\\1570600059124_SHA-EC-1908-000087-BC-00001.docx";
-        String temporaryWordPath2 = "C:\\data1\\share\\data\\word\\1570600064910_SHA-EC-1908-000087-BC-00002.docx";
-        String temporaryWordPath3 = "C:\\data1\\share\\data\\word\\1570600069946_SHA-EC-1908-000087-BC-00003.docx";
+        String[] paths = {
+//                "C:\\data1\\share\\data\\word\\AP1.doc",
+//                "C:\\data1\\share\\data\\word\\AR1.doc",
+//                "C:\\data1\\share\\data\\word\\AR2.doc",
+//                "C:\\data1\\share\\data\\word\\AR3.doc",
+                "C:\\data1\\share\\data\\word\\BC1.doc",
+                "C:\\data1\\share\\data\\word\\CC1.doc",
+//                "C:\\data1\\share\\data\\word\\EC1.doc",
+//                "C:\\data1\\share\\data\\word\\FB1.doc",
+//                "C:\\data1\\share\\data\\word\\FC1.doc",
+//                "C:\\data1\\share\\data\\word\\IC1.doc",
+                "C:\\data1\\share\\data\\word\\IH1.doc"
+        };
+
         String generateWordPath = "C:\\data1\\share\\data\\word\\merge.doc";
-
-        List<String> fileList = new ArrayList<>();
-        fileList.add(temporaryWordPath1);
-        fileList.add(temporaryWordPath2);
-        fileList.add(temporaryWordPath3);
-
+        List<String> fileList = Arrays.asList(paths);
+        long startTime = System.currentTimeMillis();
         merge(fileList, generateWordPath);
+        System.out.println("耗时：" + ((System.currentTimeMillis() - startTime) / 1000) + "S");
     }
 
     public static boolean merge(List<String> fileList, String mergedFilePath) {
         if (CollectionUtils.isEmpty(fileList)) {
-            System.out.println("合并word失败，合并的文件列表为空");
             return false;
         }
         // 过滤不存在的文件
@@ -320,36 +494,35 @@ public class Docx4jTest {
             }
         }
         if (CollectionUtils.isEmpty(fileList)) {
-            System.out.println("合并word失败，过滤后需要合并的文件列表为空");
             return false;
         }
 
         try {
-            File file = new File(fileList.get(1));
-
-            Drawing drawing = null;
-            XWPFDocument document = new XWPFDocument(new FileInputStream(file));
-            XWPFParagraph paragraph = document.getParagraphs().get(0);
-            CTP ctp = paragraph.getCTP();
-            Node domNode = ctp.getDomNode();
-            NodeList childNodes = domNode.getChildNodes();
-            int length = childNodes.getLength();
-            for (int i = 0; i < length; i++) {
-                Node node = childNodes.item(i);
-                String prefix = node.getPrefix();
-                String nodeName = node.getNodeName();
-                if (nodeName.equals("w:drawing")) {
-                    try {
-                        drawing = (Drawing) XmlUtils.unmarshal(node);
-                    } catch (JAXBException e) {
-                        e.printStackTrace();
+            File file = new File(fileList.get(0));
+            WordprocessingMLPackage wordprocessingMLPackage = WordprocessingMLPackage.load(file);
+            if (fileList.size() > 1) {
+                MainDocumentPart mainDocumentPart = wordprocessingMLPackage.getMainDocumentPart();
+                // 处理首页二维码
+                Drawing drawing = null;
+                XWPFDocument document = new XWPFDocument(new FileInputStream(file));
+                XWPFParagraph paragraph = document.getParagraphs().get(0);
+                CTP ctp = paragraph.getCTP();
+                Node domNode = ctp.getDomNode();
+                NodeList childNodes = domNode.getChildNodes();
+                int length = childNodes.getLength();
+                for (int i = 0; i < length; i++) {
+                    Node node = childNodes.item(i);
+                    String nodeName = node.getNodeName();
+                    if (nodeName.equals("w:drawing")) {
+                        try {
+                            drawing = (Drawing) XmlUtils.unmarshal(node);
+                        } catch (JAXBException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
-            }
 
-            WordprocessingMLPackage wordprocessingMLPackage = WordprocessingMLPackage.load(file);
-            MainDocumentPart mainDocumentPart = wordprocessingMLPackage.getMainDocumentPart();
-            if (fileList.size() > 1) {
+                // 在当前文件后追加word
                 for (int i = 1; i < fileList.size(); i++) {
                     // 插入分隔符
                     Br br = new Br();
@@ -360,14 +533,22 @@ public class Docx4jTest {
                     PartName partName = new PartName("/part_" + i + ".docx");
                     System.out.println("part：" + partName.getName());
                     AlternativeFormatInputPart afiPart = new AlternativeFormatInputPart(partName);
+                    afiPart.setAltChunkType(AltChunkType.WordprocessingML);
                     File docFile = new File(fileList.get(i));
                     afiPart.setBinaryData(new FileInputStream(docFile));
                     Relationship altChunkRel = mainDocumentPart.addTargetPart(afiPart);
-                    CTAltChunk chunk = Context.getWmlObjectFactory().createCTAltChunk();
-                    chunk.setId(altChunkRel.getId());
+                    altChunkRel.setTargetMode("Internal");
+                    CTAltChunk ctAltChunk = Context.getWmlObjectFactory().createCTAltChunk();
+                    CTAltChunkPr ctAltChunkPr = new CTAltChunkPr();
+                    BooleanDefaultTrue booleanDefaultTrue = new BooleanDefaultTrue();
+                    booleanDefaultTrue.setVal(true);
+                    ctAltChunkPr.setMatchSrc(booleanDefaultTrue);
+                    ctAltChunk.setAltChunkPr(ctAltChunkPr);
+                    ctAltChunk.setId(altChunkRel.getId());
 
-                    mainDocumentPart.addObject(chunk);
+                    mainDocumentPart.addObject(ctAltChunk);
                 }
+                // docx4j识别不出drawing，所以需要对首页二维码做重新插入操作
                 if (null != drawing && mainDocumentPart.getContent().size() > 0) {
                     List<Object> content = mainDocumentPart.getContent();
                     Object obj = content.get(0);
@@ -396,6 +577,25 @@ public class Docx4jTest {
         }
 
         return false;
+    }
+
+    private static void appendImage(CTBody src, String appendString, Map<String, String> map) throws Exception {
+        String srcString = src.xmlText();
+        String prefix = srcString.substring(0, srcString.indexOf(">") + 1);
+        String mainPart = srcString.substring(srcString.indexOf(">") + 1, srcString.lastIndexOf("<"));
+        String sufix = srcString.substring(srcString.lastIndexOf("<"));
+        String addPart = appendString.substring(appendString.indexOf(">") + 1, appendString.lastIndexOf("<"));
+
+        if (map != null && !map.isEmpty()) {
+            //对xml字符串中图片ID进行替换
+            for (Map.Entry<String, String> set : map.entrySet()) {
+                addPart = addPart.replace(set.getKey(), set.getValue());
+            }
+        }
+        //将两个文档的xml内容进行拼接
+        CTBody makeBody = CTBody.Factory.parse(prefix + mainPart + addPart + sufix);
+
+        src.set(makeBody);
     }
 
 }
