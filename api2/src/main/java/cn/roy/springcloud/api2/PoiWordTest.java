@@ -1,15 +1,22 @@
 package cn.roy.springcloud.api2;
 
 import io.swagger.models.auth.In;
+import org.apache.poi.POIXMLDocumentPart;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.openxml4j.opc.PackagePart;
+import org.apache.poi.openxml4j.opc.PackageRelationship;
 import org.apache.poi.xwpf.usermodel.*;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlOptions;
+import org.docx4j.openpackaging.parts.relationships.Namespaces;
 import org.docx4j.wml.SectPr;
 import org.openxmlformats.schemas.drawingml.x2006.wordprocessingDrawing.CTAnchor;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.*;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTSectPrImpl;
 import org.springframework.util.CollectionUtils;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import java.io.*;
 import java.math.BigInteger;
@@ -27,18 +34,18 @@ public class PoiWordTest {
 
     public static void main(String[] args) {
         String[] paths = {
+                "C:\\Users\\Roy Z Zhou\\Desktop\\word\\AP-1.doc",
+//                "C:\\Users\\Roy Z Zhou\\Desktop\\word\\AP-2.doc",
+//                "C:\\Users\\Roy Z Zhou\\Desktop\\word\\AP-3.doc",
+//                "C:\\Users\\Roy Z Zhou\\Desktop\\word\\AP-4.doc",
                 "C:\\Users\\Roy Z Zhou\\Desktop\\word\\AR-1.doc",
 //                "C:\\Users\\Roy Z Zhou\\Desktop\\word\\AR-2.doc",
-                "C:\\Users\\Roy Z Zhou\\Desktop\\word\\AR-3.doc",
-////                "C:\\Users\\Roy Z Zhou\\Desktop\\word\\AR-4.doc",
-                "C:\\Users\\Roy Z Zhou\\Desktop\\word\\AP-1.doc",
-////                "C:\\Users\\Roy Z Zhou\\Desktop\\word\\AP-2.doc",
-//                "C:\\Users\\Roy Z Zhou\\Desktop\\word\\AP-3.doc",
-////                "C:\\Users\\Roy Z Zhou\\Desktop\\word\\AP-4.doc",
-//                "C:\\Users\\Roy Z Zhou\\Desktop\\word\\EIC-1.doc",
-////                "C:\\Users\\Roy Z Zhou\\Desktop\\word\\EIC-2.doc",
+//                "C:\\Users\\Roy Z Zhou\\Desktop\\word\\AR-3.doc",
+//                "C:\\Users\\Roy Z Zhou\\Desktop\\word\\AR-4.doc",
+                "C:\\Users\\Roy Z Zhou\\Desktop\\word\\EIC-1.doc",
+//                "C:\\Users\\Roy Z Zhou\\Desktop\\word\\EIC-2.doc",
 //                "C:\\Users\\Roy Z Zhou\\Desktop\\word\\EIC-3.doc",
-////                "C:\\Users\\Roy Z Zhou\\Desktop\\word\\EIC-4.doc"
+//                "C:\\Users\\Roy Z Zhou\\Desktop\\word\\EIC-4.doc"
         };
 
         String generateWordPath = "C:\\Users\\Roy Z Zhou\\Desktop\\word\\merge.doc";
@@ -57,56 +64,115 @@ public class PoiWordTest {
         try {
             File file = new File(fileList.get(0));
             XWPFDocument mainDocument = new XWPFDocument(new FileInputStream(file));
+
             if (fileList.size() > 1) {
-                // 更改footer样式
-                XWPFFooter mainFooter = null;
-                List<XWPFFooter> footerList = mainDocument.getFooterList();
-                if (fileList.size() > 0) {
-                    mainFooter = footerList.get(0);
-                    CTHdrFtr ctHdrFtr = mainFooter._getHdrFtr();
+                List<XWPFDocument> documentList = new ArrayList<>();
+                // 分节符列表
+                List<CTSectPr> ctSectPrList = new ArrayList<>();
+                // 样式
+                XWPFStyles mainStyles = mainDocument.getStyles();
+                /**
+                 * 分节符以及样式处理
+                 */
+                for (int i = 0; i < fileList.size(); i++) {
+                    XWPFDocument document;
+                    if (i == 0) {
+                        document = mainDocument;
+                    } else {
+                        document = new XWPFDocument(new FileInputStream(new File(fileList.get(i))));
+                    }
+                    documentList.add(document);
+
+                    // 设置页码
+                    List<XWPFFooter> footerList = document.getFooterList();
+                    XWPFFooter footer = footerList.get(0);
+                    CTHdrFtr ctHdrFtr = footer._getHdrFtr();
                     String s = ctHdrFtr.xmlText();
                     s = s.replace("NUMPAGES", "SECTIONPAGES");
                     CTHdrFtr parse = CTHdrFtr.Factory.parse(s);
-                    mainFooter.setHeaderFooter(parse);
-                }
-                // 创建footer关联关系
-                CTHdrFtrRef[] ctHdrFtrRefs = new CTHdrFtrRef[1];
-                CTHdrFtrRef ctHdrFtrRef = CTHdrFtrRef.Factory.newInstance();
-                ctHdrFtrRef.setType(DEFAULT);
-                ctHdrFtrRef.setId(mainDocument.getRelationId(mainFooter));
-                ctHdrFtrRefs[0] = ctHdrFtrRef;
-                // 替换与添加
-                int top = replaceSection(mainDocument);
-                CTSectPr sectPr = copyCTSectPr(mainDocument, ctHdrFtrRefs);
-                if (top != -1) {
-                    sectPr.getPgMar().setTop(BigInteger.valueOf(top));
-                }
-                XWPFParagraph paragraph = mainDocument.createParagraph();
-                CTPPr ctpPr = paragraph.getCTP().addNewPPr();
-                ctpPr.setSectPr(sectPr);
-                for (int i = 1; i < fileList.size(); i++) {
-                    XWPFDocument itemDoc = new XWPFDocument(new FileInputStream(new File(fileList.get(i))));
-                    int top1 = replaceSection(itemDoc);
-                    CTSectPr sectPr1 = copyCTSectPr(itemDoc, ctHdrFtrRefs);
-                    if (top1 != -1) {
-                        sectPr1.getPgMar().setTop(BigInteger.valueOf(top1));
-                    }
-                    XWPFParagraph paragraph1 = itemDoc.createParagraph();
-                    paragraph1.setPageBreak(true);
-                    CTPPr ctpPr1 = paragraph1.getCTP().addNewPPr();
-                    ctpPr1.setSectPr(sectPr1);
+                    footer.setHeaderFooter(parse);
 
-                    itemDoc.removeBodyElement(itemDoc.getBodyElements().size()-2);
-//                    itemDoc.getParagraphs().get(0).setPageBreak(true);
-//                    CTSectPr sectPr1 = itemDoc.getDocument().getBody().getSectPr();
-//                    CTSectType type = sectPr1.getType();
-//                    if (type == null) {
-//                        type = sectPr1.addNewType();
-//                    }
-//                    type.setVal(STSectionMark.NEXT_PAGE);
+                    String relationId = "";
+                    if (i == 0) {
+                        relationId = mainDocument.getRelationId(footer);
+                    } else {
+                        XWPFStyles itemStyles = document.getStyles();
+                        CTStyles itemCtStyles = document.getStyle();
+                        List<CTStyle> itemStyleList = itemCtStyles.getStyleList();
+                        for (CTStyle ctStyle : itemStyleList) {
+                            String styleId = ctStyle.getStyleId();
+                            XWPFStyle style = itemStyles.getStyle(styleId);
+                            mainStyles.addStyle(style);
+                        }
+
+                        List<POIXMLDocumentPart.RelationPart> relationPartList = document.getRelationParts();
+                        for (POIXMLDocumentPart.RelationPart relationPart : relationPartList) {
+                            PackageRelationship relationship = relationPart.getRelationship();
+                            String relationshipType = relationship.getRelationshipType();
+                            PackagePart source = relationship.getSource();
+
+                            POIXMLDocumentPart poixmlDocumentPart = relationPart.getDocumentPart();
+
+                            relationPart.getDocumentPart();
+                            if (relationshipType.equals(Namespaces.FONT_TABLE)) {
+                                POIXMLDocumentPart documentPart = relationPart.getDocumentPart();
+                                String rId = "rId" + (mainDocument.getRelationParts().size() + 1);
+                                XWPFRelation instance = XWPFRelation.getInstance(relationshipType);
+                                mainDocument.addRelation(rId, instance, documentPart);
+                            }
+                        }
+
+                        XWPFRelation relation = XWPFRelation.FOOTER;
+                        int i1 = mainDocument.getRelations().size() + 1;
+                        XWPFFooter xwpfFooter = (XWPFFooter) mainDocument.createRelationship(relation,
+                                XWPFFactory.getInstance(), i1);
+                        xwpfFooter.setHeaderFooter(parse);
+                        relationId = mainDocument.getRelationId(xwpfFooter);
+                    }
+                    // 创建footer关联关系
+                    CTHdrFtrRef[] ctHdrFtrRefs = new CTHdrFtrRef[1];
+                    CTHdrFtrRef ctHdrFtrRef = CTHdrFtrRef.Factory.newInstance();
+                    ctHdrFtrRef.setType(DEFAULT);
+                    ctHdrFtrRef.setId(relationId);
+                    ctHdrFtrRefs[0] = ctHdrFtrRef;
+
+                    // 拿到本document的分隔符
+                    CTBody body = document.getDocument().getBody();
+                    CTSectPr sectPr = body.getSectPr();
+                    byte[] rsidSect = sectPr.getRsidSect();
+                    // 找到第一个分节符
+                    CTSectPr firstSec = findFirstCTSectPr(document);
+                    if (firstSec == null) {
+                        System.out.println("未找到分节符");
+                        firstSec = (CTSectPr) sectPr.copy();
+                    }
+                    byte[] rsidSect2 = firstSec.getRsidSect();
+                    CTSectPr copySec = (CTSectPr) firstSec.copy();
+                    copySec.setRsidR(rsidSect2);
+                    copySec.setRsidSect(rsidSect);
+                    copySec.setFooterReferenceArray(ctHdrFtrRefs);
+                    setSectionTypeAndPgNumberType(copySec);
+
+                    ctSectPrList.add(copySec);
+                }
+
+                replaceSection(mainDocument);
+                removeBodySection(mainDocument);
+                addPageBreak(mainDocument, ctSectPrList.get(0));
+                for (int i = 1; i < documentList.size(); i++) {
+                    XWPFDocument document = documentList.get(i);
+                    replaceSection(document);
+                    if (i == documentList.size() - 1) {
+                        document.removeBodyElement(document.getBodyElements().size() - 2);
+                        CTSectPr sectPr = document.getDocument().getBody().getSectPr();
+                        setSectionTypeAndPgNumberType(sectPr);
+                    }else {
+                        removeBodySection(document);
+                        addPageBreak(document, ctSectPrList.get(i));
+                    }
 
                     // 拼接
-                    appendBody(mainDocument, itemDoc);
+                    appendBody(mainDocument, document);
                 }
             }
 
@@ -129,67 +195,6 @@ public class PoiWordTest {
         return false;
     }
 
-    private static int replaceSection(XWPFDocument document) {
-        int top = -1;
-        CTP[] pArray = document.getDocument().getBody().getPArray();
-        int index = 0;
-        List<Integer> remove = new ArrayList<>();
-        for (CTP ctp : pArray) {
-            String ctpStr = ctp.xmlText();
-            if (ctpStr.contains("w:sectPr")) {
-                System.out.println("提取的节：" + ctp.xmlText());
-                CTPPr pPr = ctp.getPPr();
-                CTSectPr sectPr = pPr.getSectPr();
-                CTPageMar pgMar = sectPr.getPgMar();
-                top = pgMar.getTop().intValue();
-                System.out.println("提取的高度：" + top);
-
-                remove.add(index);
-            }
-            index++;
-        }
-        System.out.println("删除行：" + remove);
-        List<Integer> list = new ArrayList<>();
-        for (Integer i : remove) {
-            XWPFParagraph paragraphArray = document.getParagraphArray(i);
-            document.getParagraph(paragraphArray.getCTP());
-            int paragraphPos = document.getPosOfParagraph(paragraphArray);
-            System.out.println("查询的pos:" + paragraphPos);
-            list.add(paragraphPos);
-        }
-        System.out.println("删除前长度：" + document.getBodyElements().size());
-        Collections.reverse(list);
-        for (Integer i : list) {
-            document.removeBodyElement(i);
-        }
-        System.out.println("删除后长度：" + document.getBodyElements().size());
-
-        return top;
-    }
-
-    private static CTSectPr copyCTSectPr(XWPFDocument document, CTHdrFtrRef[] ctHdrFtrRefs) {
-        CTSectPr sectPr = document.getDocument().getBody().getSectPr();
-        CTSectPr sectPrCopy = (CTSectPr) sectPr.copy();
-        sectPrCopy.setFooterReferenceArray(ctHdrFtrRefs);
-        CTSectType type = sectPrCopy.getType();
-        if (type == null) {
-            type = sectPrCopy.addNewType();
-        }
-        type.setVal(STSectionMark.NEXT_PAGE);
-        CTPageNumber ctPageNumber = sectPrCopy.getPgNumType();
-        if (ctPageNumber == null) {
-            ctPageNumber = sectPrCopy.addNewPgNumType();
-        }
-        ctPageNumber.setStart(BigInteger.valueOf(1));
-        return sectPrCopy;
-    }
-
-    /**
-     * 预处理文件列表
-     *
-     * @param fileList
-     * @return
-     */
     private static List<String> preProcessFileList(List<String> fileList) {
         if (CollectionUtils.isEmpty(fileList)) {
             return null;
@@ -209,13 +214,100 @@ public class PoiWordTest {
         return fileList;
     }
 
-    /**
-     * 拼装
-     *
-     * @param src
-     * @param append
-     * @throws Exception
-     */
+    private static CTSectPr findFirstCTSectPr(XWPFDocument document) {
+        CTP[] pArray = document.getDocument().getBody().getPArray();
+        CTSectPr sectPr = null;
+        for (CTP ctp : pArray) {
+            String ctpStr = ctp.xmlText();
+            if (ctpStr.contains("w:sectPr")) {
+                CTPPr pPr = ctp.getPPr();
+                CTSectPr sectPr1 = pPr.getSectPr();
+                CTSectType type = sectPr1.getType();
+                if (type != null) {
+                    System.out.println("类型是：" + type.getVal());
+                    sectPr = sectPr1;
+                    break;
+                }
+            }
+        }
+        return sectPr;
+    }
+
+    private static void setSectionTypeAndPgNumberType(CTSectPr sectPr){
+        CTSectType type = sectPr.getType();
+        if (type == null) {
+            type = sectPr.addNewType();
+        }
+        type.setVal(STSectionMark.NEXT_PAGE);
+        CTPageNumber ctPageNumber = sectPr.getPgNumType();
+        if (ctPageNumber == null) {
+            ctPageNumber = sectPr.addNewPgNumType();
+        }
+        ctPageNumber.setStart(BigInteger.valueOf(1));
+    }
+
+    private static void replaceSection(XWPFDocument document) {
+        CTP[] pArray = document.getDocument().getBody().getPArray();
+        int index = 0;
+        List<Integer> remove = new ArrayList<>();
+        for (CTP ctp : pArray) {
+            String ctpStr = ctp.xmlText();
+            if (ctpStr.contains("w:sectPr")) {
+                System.out.println("提取的节：" + ctp.xmlText());
+                remove.add(index);
+            }
+            index++;
+        }
+        System.out.println("删除行：" + remove);
+        List<Integer> list = new ArrayList<>();
+        for (Integer i : remove) {
+            XWPFParagraph paragraphArray = document.getParagraphArray(i);
+            document.getParagraph(paragraphArray.getCTP());
+            int paragraphPos = document.getPosOfParagraph(paragraphArray);
+            System.out.println("查询的pos:" + paragraphPos);
+            list.add(paragraphPos);
+        }
+        System.out.println("删除前长度：" + document.getBodyElements().size());
+        Collections.reverse(list);
+        for (Integer i : list) {
+            document.removeBodyElement(i);
+        }
+        System.out.println("删除后长度：" + document.getBodyElements().size());
+    }
+
+    private static void removeBodySection(XWPFDocument document) {
+        NodeList nodes = document.getDocument().getBody().getDomNode().getChildNodes();
+        Node node = nodes.item(nodes.getLength() - 1);
+        document.getDocument().getBody().getDomNode().removeChild(node);
+    }
+
+    private static void addPageBreak(XWPFDocument document, CTSectPr sectPr) {
+        System.out.println("***************添加分节符开始***************");
+        List<IBodyElement> bodyElements = document.getBodyElements();
+        int size = bodyElements.size();
+        XWPFParagraph paragraph = null;
+        if (size > 0) {
+            IBodyElement element = bodyElements.get(size - 1);
+            if (element instanceof XWPFParagraph) {
+                paragraph = (XWPFParagraph) element;
+            }
+        }
+        if (paragraph == null) {
+            System.out.println("最后一个元素不是段落，新增一个段落");
+            paragraph = document.createParagraph();
+        }
+
+        CTP ctp = paragraph.getCTP();
+        System.out.println("段落添加前：" + ctp.xmlText());
+        CTPPr pPr = ctp.getPPr();
+        if (pPr == null) {
+            pPr = ctp.addNewPPr();
+        }
+        pPr.setSectPr(sectPr);
+        System.out.println("段落添加后：" + ctp.xmlText());
+        System.out.println("***************添加分节符结束***************");
+    }
+
     private static void appendBody(XWPFDocument src, XWPFDocument append) throws Exception {
         CTBody srcBody = src.getDocument().getBody();
         CTBody appendBody = append.getDocument().getBody();
