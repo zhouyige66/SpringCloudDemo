@@ -32,6 +32,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.*;
 
 /**
@@ -43,7 +44,8 @@ import java.util.*;
 public class Docx4jTest {
 
     public static void main(String[] args) {
-        addImageByTemplateTest();
+//        addImageByTemplateTest();
+        mergeTest();
     }
 
     private static void addImageByCode() {
@@ -460,20 +462,21 @@ public class Docx4jTest {
 
     public static void mergeTest() {
         String[] paths = {
-//                "C:\\data1\\share\\data\\word\\AP1.doc",
-//                "C:\\data1\\share\\data\\word\\AR1.doc",
-//                "C:\\data1\\share\\data\\word\\AR2.doc",
-//                "C:\\data1\\share\\data\\word\\AR3.doc",
-                "C:\\data1\\share\\data\\word\\BC1.doc",
-                "C:\\data1\\share\\data\\word\\CC1.doc",
-//                "C:\\data1\\share\\data\\word\\EC1.doc",
-//                "C:\\data1\\share\\data\\word\\FB1.doc",
-//                "C:\\data1\\share\\data\\word\\FC1.doc",
-//                "C:\\data1\\share\\data\\word\\IC1.doc",
-                "C:\\data1\\share\\data\\word\\IH1.doc"
+                "C:\\Users\\Roy Z Zhou\\Desktop\\word\\AP-1.doc",
+//                "C:\\Users\\Roy Z Zhou\\Desktop\\word\\AP-2.doc",
+//                "C:\\Users\\Roy Z Zhou\\Desktop\\word\\AP-3.doc",
+//                "C:\\Users\\Roy Z Zhou\\Desktop\\word\\AP-4.doc",
+                "C:\\Users\\Roy Z Zhou\\Desktop\\word\\AR-1.doc",
+//                "C:\\Users\\Roy Z Zhou\\Desktop\\word\\AR-2.doc",
+//                "C:\\Users\\Roy Z Zhou\\Desktop\\word\\AR-3.doc",
+//                "C:\\Users\\Roy Z Zhou\\Desktop\\word\\AR-4.doc",
+                "C:\\Users\\Roy Z Zhou\\Desktop\\word\\EIC-1.doc",
+//                "C:\\Users\\Roy Z Zhou\\Desktop\\word\\EIC-2.doc",
+//                "C:\\Users\\Roy Z Zhou\\Desktop\\word\\EIC-3.doc",
+//                "C:\\Users\\Roy Z Zhou\\Desktop\\word\\EIC-4.doc"
         };
 
-        String generateWordPath = "C:\\data1\\share\\data\\word\\merge.doc";
+        String generateWordPath = "C:\\Users\\Roy Z Zhou\\Desktop\\word\\merge.doc";
         List<String> fileList = Arrays.asList(paths);
         long startTime = System.currentTimeMillis();
         merge(fileList, generateWordPath);
@@ -524,11 +527,24 @@ public class Docx4jTest {
 
                 // 在当前文件后追加word
                 for (int i = 1; i < fileList.size(); i++) {
+                    P p = new P();
+                    PPr pPr = new PPr();
+                    SectPr sectPr = new SectPr();
+                    SectPr.Type type = new SectPr.Type();
+                    type.setVal("nextPage");
+                    sectPr.setType(type);
+                    CTPageNumber ctPageNumber = new CTPageNumber();
+                    ctPageNumber.setStart(BigInteger.valueOf(1));
+                    sectPr.setPgNumType(ctPageNumber);
+                    pPr.setSectPr(sectPr);
+                    p.setPPr(pPr);
+                    mainDocumentPart.addObject(p);
+
                     // 插入分隔符
-                    Br br = new Br();
-                    br.setType(STBrType.PAGE);
-                    br.setClear(STBrClear.LEFT);
-                    mainDocumentPart.addObject(br);
+//                    Br br = new Br();
+//                    br.setType(STBrType.PAGE);
+//                    br.setClear(STBrClear.LEFT);
+//                    mainDocumentPart.addObject(br);
 
                     PartName partName = new PartName("/part_" + i + ".docx");
                     System.out.println("part：" + partName.getName());
