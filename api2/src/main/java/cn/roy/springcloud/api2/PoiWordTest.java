@@ -5,6 +5,7 @@ import org.apache.poi.POIXMLRelation;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.openxml4j.opc.PackagePart;
+import org.apache.poi.wp.usermodel.HeaderFooterType;
 import org.apache.poi.xwpf.usermodel.Document;
 import org.apache.poi.xwpf.usermodel.*;
 import org.apache.xmlbeans.XmlException;
@@ -46,25 +47,19 @@ import static org.openxmlformats.schemas.wordprocessingml.x2006.main.STHdrFtr.DE
 public class PoiWordTest {
 
     public static void main(String[] args) {
-        String[] paths = {
-//                "C:\\Users\\Roy Z Zhou\\Desktop\\word\\AP-1.doc",
-//                "C:\\Users\\Roy Z Zhou\\Desktop\\word\\AP-2.doc",
-//                "C:\\Users\\Roy Z Zhou\\Desktop\\word\\AP-3.doc",
-//                "C:\\Users\\Roy Z Zhou\\Desktop\\word\\AP-4.doc",
-//                "C:\\Users\\Roy Z Zhou\\Desktop\\word\\AR-1.doc",
-//                "C:\\Users\\Roy Z Zhou\\Desktop\\word\\AR-2.doc",
-//                "C:\\Users\\Roy Z Zhou\\Desktop\\word\\AR-3.doc",
-//                "C:\\Users\\Roy Z Zhou\\Desktop\\word\\AR-4.doc",
-                "C:\\Users\\Roy Z Zhou\\Desktop\\word\\EIC-1.doc",
-                "C:\\Users\\Roy Z Zhou\\Desktop\\word\\EIC-2.doc",
-                "C:\\Users\\Roy Z Zhou\\Desktop\\word\\EIC-3.doc",
-                "C:\\Users\\Roy Z Zhou\\Desktop\\word\\EIC-4.doc"
-        };
+        List<String> fileList = new ArrayList<>();
+        File file = new File("C:\\Users\\Roy Z Zhou\\Desktop\\word");
+        if (file.isDirectory()) {
+            File[] files = file.listFiles();
+            for (File itemFile : files) {
+                if (itemFile.isFile() && (itemFile.getName().endsWith(".doc") || itemFile.getName().endsWith(".docx"))) {
+                    fileList.add(itemFile.getPath());
+                }
+            }
+        }
 
-        String generateWordPath = "C:\\Users\\Roy Z Zhou\\Desktop\\word\\merge.doc";
-        List<String> fileList = Arrays.asList(paths);
+        String generateWordPath = "C:\\Users\\Roy Z Zhou\\Desktop\\merge.doc";
         long startTime = System.currentTimeMillis();
-//        mergeByPoi(fileList, generateWordPath);
         mergeByPoiAndDocx4j(fileList, generateWordPath);
         System.out.println("耗时：" + ((System.currentTimeMillis() - startTime) / 1000) + "S");
     }
@@ -75,30 +70,44 @@ public class PoiWordTest {
         if (CollectionUtils.isEmpty(fileList)) {
             return false;
         }
+
+        List<String> mergeList = new ArrayList<>();
+        CTHdrFtr defaultCTHdrFtr = null;
         try {
-            List<String> mergeList = new ArrayList<>();
             List<CTSectPr> ctSectPrList = new ArrayList<>();
             for (String filePath : fileList) {
+                System.out.println("路径：" + filePath);
                 File file = new File(filePath);
                 OPCPackage opcPackage = OPCPackage.open(file);
                 XWPFDocument document = new XWPFDocument(opcPackage);
 
                 // 设置页码
+                CTHdrFtrRef[] ctHdrFtrRefs = null;
                 List<XWPFFooter> footerList = document.getFooterList();
-                XWPFFooter footer = footerList.get(0);
-                CTHdrFtr ctHdrFtr = footer._getHdrFtr();
-                String s = ctHdrFtr.xmlText();
-                s = s.replace("NUMPAGES", "SECTIONPAGES");
-                CTHdrFtr parse = CTHdrFtr.Factory.parse(s);
-                footer.setHeaderFooter(parse);
-                String relationId = document.getRelationId(footer);
-
+                XWPFFooter footer;
+                if (footerList.size() > 0) {
+                    footer = footerList.get(0);
+                    CTHdrFtr ctHdrFtr = footer._getHdrFtr();
+                    String s = ctHdrFtr.xmlText();
+                    s = s.replace("NUMPAGES", "SECTIONPAGES");
+                    CTHdrFtr parse = CTHdrFtr.Factory.parse(s);
+                    if (defaultCTHdrFtr == null) {
+                        defaultCTHdrFtr = parse;
+                    }
+                    footer.setHeaderFooter(parse);
+                } else {
+                    // 创建一个footer，用于页码
+                    footer = document.createFooter(HeaderFooterType.DEFAULT);
+                    footer.setHeaderFooter(defaultCTHdrFtr);
+                }
                 // 创建footer关联关系
-                CTHdrFtrRef[] ctHdrFtrRefs = new CTHdrFtrRef[1];
+                String relationId = document.getRelationId(footer);
+                ctHdrFtrRefs = new CTHdrFtrRef[1];
                 CTHdrFtrRef ctHdrFtrRef = CTHdrFtrRef.Factory.newInstance();
                 ctHdrFtrRef.setType(DEFAULT);
                 ctHdrFtrRef.setId(relationId);
                 ctHdrFtrRefs[0] = ctHdrFtrRef;
+
                 // 拿到本document的分隔符
                 CTBody body = document.getDocument().getBody();
                 CTSectPr bodySectPr = body.getSectPr();
@@ -115,16 +124,19 @@ public class PoiWordTest {
                 copySec.setHeaderReferenceArray(null);
                 setSectionTypeAndPgNumberType(copySec);
                 ctSectPrList.add(copySec);
+
                 // 删除所有分节符
                 removeSection(document);
                 // 设置body分节符
-                bodySectPr.setRsidSect(copySec.getRsidSect());
-                bodySectPr.setFooterReferenceArray(ctHdrFtrRefs);
-                bodySectPr.setHeaderReferenceArray(null);
+                bodySectPr.set(copySec);
 
-//                String newFile = filePath.replace(".", "_copy.");
-//                document.write(new FileOutputStream(new File(newFile)));
-                mergeList.add(filePath);
+                String tempFileName = file.getName().replace(".", "_copy.");
+                File tempDir = new File(file.getParent(), File.separator + "temp");
+                tempDir.mkdirs();
+                File tempFile = new File(tempDir,tempFileName);
+                document.write(new FileOutputStream(tempFile));
+
+                mergeList.add(tempFile.getPath());
             }
 
             mergeByDocx4j(mergeList, mergedFilePath, ctSectPrList);
@@ -135,6 +147,13 @@ public class PoiWordTest {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            for (String path : mergeList) {
+                File file = new File(path);
+                if (file.exists()) {
+                    file.delete();
+                }
+            }
         }
         return false;
     }
@@ -185,7 +204,7 @@ public class PoiWordTest {
 
         P p = new P();
         String s1 = originSectPr.xmlText();
-        s1 = s1.replace("xml-fragment","w:sectPr");
+        s1 = s1.replace("xml-fragment", "w:sectPr");
         try {
             SectPr sec = (SectPr) XmlUtils.unmarshalString(s1);
             p.setRsidR(sec.getRsidR());
