@@ -18,6 +18,7 @@ import org.docx4j.openpackaging.parts.PartName;
 import org.docx4j.openpackaging.parts.WordprocessingML.AltChunkType;
 import org.docx4j.openpackaging.parts.WordprocessingML.AlternativeFormatInputPart;
 import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart;
+import org.docx4j.openpackaging.parts.WordprocessingML.StyleDefinitionsPart;
 import org.docx4j.openpackaging.parts.relationships.Namespaces;
 import org.docx4j.relationships.Relationship;
 import org.docx4j.wml.CTColumns;
@@ -71,8 +72,25 @@ public class PoiWordTest {
             return false;
         }
 
+        File mergeFile = new File(mergedFilePath);
+        File parentFile = mergeFile.getParentFile();
+        if (!parentFile.exists()) {
+            parentFile.mkdirs();
+        }
+        if (fileList.size() == 1) {
+            try {
+                XWPFDocument document = new XWPFDocument(new FileInputStream(new File(fileList.get(0))));
+                document.write(new FileOutputStream(mergeFile));
+                return true;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return false;
+        }
+
+        CTHdrFtr defaultHeaderCTHdrFtr = createDefaultHeader();
+        CTHdrFtr defaultFooterCTHdrFtr = createDefaultFooter();
         List<String> mergeList = new ArrayList<>();
-        CTHdrFtr defaultCTHdrFtr = null;
         try {
             List<CTSectPr> ctSectPrList = new ArrayList<>();
             for (String filePath : fileList) {
@@ -82,31 +100,8 @@ public class PoiWordTest {
                 XWPFDocument document = new XWPFDocument(opcPackage);
 
                 // 设置页码
-                CTHdrFtrRef[] ctHdrFtrRefs = null;
-                List<XWPFFooter> footerList = document.getFooterList();
-                XWPFFooter footer;
-                if (footerList.size() > 0) {
-                    footer = footerList.get(0);
-                    CTHdrFtr ctHdrFtr = footer._getHdrFtr();
-                    String s = ctHdrFtr.xmlText();
-                    s = s.replace("NUMPAGES", "SECTIONPAGES");
-                    CTHdrFtr parse = CTHdrFtr.Factory.parse(s);
-                    if (defaultCTHdrFtr == null) {
-                        defaultCTHdrFtr = parse;
-                    }
-                    footer.setHeaderFooter(parse);
-                } else {
-                    // 创建一个footer，用于页码
-                    footer = document.createFooter(HeaderFooterType.DEFAULT);
-                    footer.setHeaderFooter(defaultCTHdrFtr);
-                }
-                // 创建footer关联关系
-                String relationId = document.getRelationId(footer);
-                ctHdrFtrRefs = new CTHdrFtrRef[1];
-                CTHdrFtrRef ctHdrFtrRef = CTHdrFtrRef.Factory.newInstance();
-                ctHdrFtrRef.setType(DEFAULT);
-                ctHdrFtrRef.setId(relationId);
-                ctHdrFtrRefs[0] = ctHdrFtrRef;
+                CTHdrFtrRef[] headerRef = getHeaderRef(document, defaultHeaderCTHdrFtr);
+                CTHdrFtrRef[] footerRef = getFooterRef(document, defaultFooterCTHdrFtr);
 
                 // 拿到本document的分隔符
                 CTBody body = document.getDocument().getBody();
@@ -120,8 +115,6 @@ public class PoiWordTest {
                 copySec.setRsidR(firstSec.getRsidR());
                 copySec.setRsidRPr(firstSec.getRsidRPr());
                 copySec.setRsidSect(firstSec.getRsidSect());
-                copySec.setFooterReferenceArray(ctHdrFtrRefs);
-                copySec.setHeaderReferenceArray(null);
                 setSectionTypeAndPgNumberType(copySec);
                 ctSectPrList.add(copySec);
 
@@ -129,17 +122,17 @@ public class PoiWordTest {
                 removeSection(document);
                 // 设置body分节符
                 bodySectPr.set(copySec);
+                bodySectPr.setHeaderReferenceArray(headerRef);
+                bodySectPr.setFooterReferenceArray(footerRef);
 
                 String tempFileName = file.getName().replace(".", "_copy.");
                 File tempDir = new File(file.getParent(), File.separator + "temp");
                 tempDir.mkdirs();
-                File tempFile = new File(tempDir,tempFileName);
+                File tempFile = new File(tempDir, tempFileName);
                 document.write(new FileOutputStream(tempFile));
-
                 mergeList.add(tempFile.getPath());
             }
-
-            mergeByDocx4j(mergeList, mergedFilePath, ctSectPrList);
+            mergeByDocx4j(mergeList, mergeFile, ctSectPrList);
             return true;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -156,6 +149,302 @@ public class PoiWordTest {
             }
         }
         return false;
+    }
+
+    private static List<String> preProcessFileList(List<String> fileList) {
+        if (CollectionUtils.isEmpty(fileList)) {
+            return null;
+        }
+        // 过滤不存在的文件
+        ListIterator<String> stringListIterator = fileList.listIterator();
+        while (stringListIterator.hasNext()) {
+            String filePath = stringListIterator.next();
+            File file = new File(filePath);
+            if (!file.exists()) {
+                fileList.remove(filePath);
+            }
+        }
+        if (CollectionUtils.isEmpty(fileList)) {
+            return null;
+        }
+        return fileList;
+    }
+
+    private static CTHdrFtrRef[] getHeaderRef(XWPFDocument document, CTHdrFtr ctHdrFtr) {
+        List<XWPFHeader> headerList = document.getHeaderList();
+        XWPFHeader header = null;
+        if (headerList.size() == 0) {
+            header = document.createHeader(HeaderFooterType.DEFAULT);
+            header.setHeaderFooter((CTHdrFtr) ctHdrFtr.copy());
+        } else {
+            header = headerList.get(0);
+        }
+
+        // 检测header是否包含其他元素
+        List<XWPFParagraph> paragraphs = header.getParagraphs();
+        if (paragraphs.size() == 0) {
+            // 插入一个极小的段落
+            XWPFParagraph paragraph = header.createParagraph();
+            CTPPr ctpPr = paragraph.getCTP().addNewPPr();
+            CTParaRPr ctParaRPr = ctpPr.addNewRPr();
+            CTHpsMeasure ctHpsMeasure = CTHpsMeasure.Factory.newInstance();
+            ctHpsMeasure.setVal(BigInteger.valueOf(2));
+            ctParaRPr.setSz(ctHpsMeasure);
+        }
+
+        // 创建header关联关系
+        String relationId = document.getRelationId(header);
+        CTHdrFtrRef[] ctHdrFtrRefs = new CTHdrFtrRef[1];
+        CTHdrFtrRef ctHdrFtrRef = CTHdrFtrRef.Factory.newInstance();
+        ctHdrFtrRef.setType(DEFAULT);
+        ctHdrFtrRef.setId(relationId);
+        ctHdrFtrRefs[0] = ctHdrFtrRef;
+
+        return ctHdrFtrRefs;
+    }
+
+    private static CTHdrFtrRef[] getFooterRef(XWPFDocument document, CTHdrFtr ctHdrFtr) {
+        List<XWPFFooter> footerList = document.getFooterList();
+        XWPFFooter footer;
+        if (footerList.size() == 0) {
+            footer = document.createFooter(HeaderFooterType.DEFAULT);
+            footer.setHeaderFooter(ctHdrFtr);
+        } else {
+            footer = footerList.get(0);
+            String s = footer._getHdrFtr().xmlText();
+            s = s.replace("NUMPAGES", "SECTIONPAGES");
+            try {
+                CTHdrFtr parse = CTHdrFtr.Factory.parse(s);
+                footer.setHeaderFooter(parse);
+            } catch (XmlException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // 检测footer是否包含其他元素
+        List<XWPFParagraph> paragraphs = footer.getParagraphs();
+        if (paragraphs.size() == 0) {
+            // 插入一个极小的段落
+            XWPFParagraph paragraph = footer.createParagraph();
+            CTPPr ctpPr = paragraph.getCTP().addNewPPr();
+            CTParaRPr ctParaRPr = ctpPr.addNewRPr();
+            CTHpsMeasure ctHpsMeasure = CTHpsMeasure.Factory.newInstance();
+            ctHpsMeasure.setVal(BigInteger.valueOf(2));
+            ctParaRPr.setSz(ctHpsMeasure);
+        }
+
+        // 创建footer关联关系
+        String relationId = document.getRelationId(footer);
+        CTHdrFtrRef[] ctHdrFtrRefs = new CTHdrFtrRef[1];
+        CTHdrFtrRef ctHdrFtrRef = CTHdrFtrRef.Factory.newInstance();
+        ctHdrFtrRef.setType(DEFAULT);
+        ctHdrFtrRef.setId(relationId);
+        ctHdrFtrRefs[0] = ctHdrFtrRef;
+
+        return ctHdrFtrRefs;
+    }
+
+    private static CTHdrFtr createDefaultHeader(){
+        String s = "<xml-fragment mc:Ignorable=\"w14 w15 w16se wp14\" xmlns:cx=\"http://schemas.microsoft.com/office/drawing/2014/chartex\"\n" +
+                "       xmlns:cx1=\"http://schemas.microsoft.com/office/drawing/2015/9/8/chartex\"\n" +
+                "       xmlns:m=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"\n" +
+                "       xmlns:mc=\"http://schemas.openxmlformats.org/markup-compatibility/2006\"\n" +
+                "       xmlns:o=\"urn:schemas-microsoft-com:office:office\"\n" +
+                "       xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"\n" +
+                "       xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\"\n" +
+                "       xmlns:w10=\"urn:schemas-microsoft-com:office:word\"\n" +
+                "       xmlns:w14=\"http://schemas.microsoft.com/office/word/2010/wordml\"\n" +
+                "       xmlns:w15=\"http://schemas.microsoft.com/office/word/2012/wordml\"\n" +
+                "       xmlns:w16se=\"http://schemas.microsoft.com/office/word/2015/wordml/symex\"\n" +
+                "       xmlns:wne=\"http://schemas.microsoft.com/office/word/2006/wordml\"\n" +
+                "       xmlns:wp=\"http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing\"\n" +
+                "       xmlns:wp14=\"http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing\"\n" +
+                "       xmlns:wpc=\"http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas\"\n" +
+                "       xmlns:wpg=\"http://schemas.microsoft.com/office/word/2010/wordprocessingGroup\"\n" +
+                "       xmlns:wpi=\"http://schemas.microsoft.com/office/word/2010/wordprocessingInk\"\n" +
+                "       xmlns:wps=\"http://schemas.microsoft.com/office/word/2010/wordprocessingShape\">\n" +
+                "    <w:p w:rsidR=\"00D93820\" w:rsidRDefault=\"00D93820\">\n" +
+                "        <w:pPr>\n" +
+                "            <w:tabs>\n" +
+                "                <w:tab w:pos=\"2300\" w:val=\"left\"/>\n" +
+                "            </w:tabs>\n" +
+                "            <w:ind w:right=\"-36\"/>\n" +
+                "            <w:rPr>\n" +
+                "                <w:rFonts w:ascii=\"宋体\" w:eastAsia=\"宋体\" w:hAnsi=\"宋体\"/>\n" +
+                "                <w:b/>\n" +
+                "                <w:kern w:val=\"2\"/>\n" +
+                "                <w:sz w:val=\"22\"/>\n" +
+                "                <w:szCs w:val=\"22\"/>\n" +
+                "            </w:rPr>\n" +
+                "        </w:pPr>\n" +
+                "    </w:p>\n" +
+                "</xml-fragment>";
+        CTHdrFtr defaultHeaderCTHdrFtr = null;
+        try {
+            defaultHeaderCTHdrFtr = CTHdrFtr.Factory.parse(s);
+        } catch (XmlException e) {
+            e.printStackTrace();
+        }
+
+        return defaultHeaderCTHdrFtr;
+    }
+
+    private static CTHdrFtr createDefaultFooter(){
+        String s1 = "<xml-fragment mc:Ignorable=\"w14 w15 w16se wp14\" xmlns:cx=\"http://schemas.microsoft.com/office/drawing/2014/chartex\"\n" +
+                "       xmlns:cx1=\"http://schemas.microsoft.com/office/drawing/2015/9/8/chartex\"\n" +
+                "       xmlns:m=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"\n" +
+                "       xmlns:mc=\"http://schemas.openxmlformats.org/markup-compatibility/2006\"\n" +
+                "       xmlns:o=\"urn:schemas-microsoft-com:office:office\"\n" +
+                "       xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"\n" +
+                "       xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\"\n" +
+                "       xmlns:w10=\"urn:schemas-microsoft-com:office:word\"\n" +
+                "       xmlns:w14=\"http://schemas.microsoft.com/office/word/2010/wordml\"\n" +
+                "       xmlns:w15=\"http://schemas.microsoft.com/office/word/2012/wordml\"\n" +
+                "       xmlns:w16se=\"http://schemas.microsoft.com/office/word/2015/wordml/symex\"\n" +
+                "       xmlns:wne=\"http://schemas.microsoft.com/office/word/2006/wordml\"\n" +
+                "       xmlns:wp=\"http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing\"\n" +
+                "       xmlns:wp14=\"http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing\"\n" +
+                "       xmlns:wpc=\"http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas\"\n" +
+                "       xmlns:wpg=\"http://schemas.microsoft.com/office/word/2010/wordprocessingGroup\"\n" +
+                "       xmlns:wpi=\"http://schemas.microsoft.com/office/word/2010/wordprocessingInk\"\n" +
+                "       xmlns:wps=\"http://schemas.microsoft.com/office/word/2010/wordprocessingShape\">\n" +
+                "    <w:sdt>\n" +
+                "        <w:sdtPr>\n" +
+                "            <w:id w:val=\"1927000404\"/>\n" +
+                "            <w:docPartObj>\n" +
+                "                <w:docPartGallery w:val=\"Page Numbers (Top of Page)\"/>\n" +
+                "                <w:docPartUnique/>\n" +
+                "            </w:docPartObj>\n" +
+                "        </w:sdtPr>\n" +
+                "        <w:sdtEndPr/>\n" +
+                "        <w:sdtContent>\n" +
+                "            <w:p w:rsidR=\"00D93820\" w:rsidRDefault=\"009662B6\">\n" +
+                "                <w:pPr>\n" +
+                "                    <w:pStyle w:val=\"Footer\"/>\n" +
+                "                    <w:jc w:val=\"center\"/>\n" +
+                "                    <w:rPr>\n" +
+                "                        <w:b/>\n" +
+                "                        <w:bCs/>\n" +
+                "                        <w:sz w:val=\"24\"/>\n" +
+                "                        <w:szCs w:val=\"24\"/>\n" +
+                "                    </w:rPr>\n" +
+                "                </w:pPr>\n" +
+                "                <w:r>\n" +
+                "                    <w:rPr>\n" +
+                "                        <w:lang w:val=\"zh-CN\"/>\n" +
+                "                    </w:rPr>\n" +
+                "                    <w:t xml:space=\"preserve\"> </w:t>\n" +
+                "                </w:r>\n" +
+                "                <w:r>\n" +
+                "                    <w:rPr>\n" +
+                "                        <w:b/>\n" +
+                "                        <w:bCs/>\n" +
+                "                        <w:sz w:val=\"24\"/>\n" +
+                "                        <w:szCs w:val=\"24\"/>\n" +
+                "                    </w:rPr>\n" +
+                "                    <w:fldChar w:fldCharType=\"begin\"/>\n" +
+                "                </w:r>\n" +
+                "                <w:r>\n" +
+                "                    <w:rPr>\n" +
+                "                        <w:b/>\n" +
+                "                        <w:bCs/>\n" +
+                "                        <w:sz w:val=\"24\"/>\n" +
+                "                        <w:szCs w:val=\"24\"/>\n" +
+                "                    </w:rPr>\n" +
+                "                    <w:instrText>PAGE</w:instrText>\n" +
+                "                </w:r>\n" +
+                "                <w:r>\n" +
+                "                    <w:rPr>\n" +
+                "                        <w:b/>\n" +
+                "                        <w:bCs/>\n" +
+                "                        <w:sz w:val=\"24\"/>\n" +
+                "                        <w:szCs w:val=\"24\"/>\n" +
+                "                    </w:rPr>\n" +
+                "                    <w:fldChar w:fldCharType=\"separate\"/>\n" +
+                "                </w:r>\n" +
+                "                <w:r w:rsidR=\"00E73185\">\n" +
+                "                    <w:rPr>\n" +
+                "                        <w:b/>\n" +
+                "                        <w:bCs/>\n" +
+                "                        <w:noProof/>\n" +
+                "                        <w:sz w:val=\"24\"/>\n" +
+                "                        <w:szCs w:val=\"24\"/>\n" +
+                "                    </w:rPr>\n" +
+                "                    <w:t>1</w:t>\n" +
+                "                </w:r>\n" +
+                "                <w:r>\n" +
+                "                    <w:rPr>\n" +
+                "                        <w:b/>\n" +
+                "                        <w:bCs/>\n" +
+                "                        <w:sz w:val=\"24\"/>\n" +
+                "                        <w:szCs w:val=\"24\"/>\n" +
+                "                    </w:rPr>\n" +
+                "                    <w:fldChar w:fldCharType=\"end\"/>\n" +
+                "                </w:r>\n" +
+                "                <w:r>\n" +
+                "                    <w:rPr>\n" +
+                "                        <w:lang w:val=\"zh-CN\"/>\n" +
+                "                    </w:rPr>\n" +
+                "                    <w:t xml:space=\"preserve\"> / </w:t>\n" +
+                "                </w:r>\n" +
+                "                <w:r>\n" +
+                "                    <w:rPr>\n" +
+                "                        <w:b/>\n" +
+                "                        <w:bCs/>\n" +
+                "                        <w:sz w:val=\"24\"/>\n" +
+                "                        <w:szCs w:val=\"24\"/>\n" +
+                "                    </w:rPr>\n" +
+                "                    <w:fldChar w:fldCharType=\"begin\"/>\n" +
+                "                </w:r>\n" +
+                "                <w:r>\n" +
+                "                    <w:rPr>\n" +
+                "                        <w:b/>\n" +
+                "                        <w:bCs/>\n" +
+                "                        <w:sz w:val=\"24\"/>\n" +
+                "                        <w:szCs w:val=\"24\"/>\n" +
+                "                    </w:rPr>\n" +
+                "                    <w:instrText>SECTIONPAGES</w:instrText>\n" +
+                "                </w:r>\n" +
+                "                <w:r>\n" +
+                "                    <w:rPr>\n" +
+                "                        <w:b/>\n" +
+                "                        <w:bCs/>\n" +
+                "                        <w:sz w:val=\"24\"/>\n" +
+                "                        <w:szCs w:val=\"24\"/>\n" +
+                "                    </w:rPr>\n" +
+                "                    <w:fldChar w:fldCharType=\"separate\"/>\n" +
+                "                </w:r>\n" +
+                "                <w:r w:rsidR=\"00E73185\">\n" +
+                "                    <w:rPr>\n" +
+                "                        <w:b/>\n" +
+                "                        <w:bCs/>\n" +
+                "                        <w:noProof/>\n" +
+                "                        <w:sz w:val=\"24\"/>\n" +
+                "                        <w:szCs w:val=\"24\"/>\n" +
+                "                    </w:rPr>\n" +
+                "                    <w:t>5</w:t>\n" +
+                "                </w:r>\n" +
+                "                <w:r>\n" +
+                "                    <w:rPr>\n" +
+                "                        <w:b/>\n" +
+                "                        <w:bCs/>\n" +
+                "                        <w:sz w:val=\"24\"/>\n" +
+                "                        <w:szCs w:val=\"24\"/>\n" +
+                "                    </w:rPr>\n" +
+                "                    <w:fldChar w:fldCharType=\"end\"/>\n" +
+                "                </w:r>\n" +
+                "            </w:p>\n" +
+                "        </w:sdtContent>\n" +
+                "    </w:sdt>\n" +
+                "</xml-fragment>";
+        CTHdrFtr defaultFooterCTHdrFtr = null;
+        try {
+            defaultFooterCTHdrFtr = CTHdrFtr.Factory.parse(s1);
+        } catch (XmlException e) {
+            e.printStackTrace();
+        }
+
+        return defaultFooterCTHdrFtr;
     }
 
     private static P createP(CTSectPr originSectPr) {
@@ -220,16 +509,20 @@ public class PoiWordTest {
         return p;
     }
 
-    private static boolean mergeByDocx4j(List<String> fileList, String mergedFilePath, List<CTSectPr> ctSectPrList) {
+    private static boolean mergeByDocx4j(List<String> fileList, File mergeFile, List<CTSectPr> ctSectPrList) {
         try {
             WordprocessingMLPackage wordprocessingMLPackage = WordprocessingMLPackage.createPackage();
             MainDocumentPart mainDocumentPart = wordprocessingMLPackage.getMainDocumentPart();
-            // 在当前文件后追加word
+            // 清除默认的段落样式（阻止header影响格式）
+            StyleDefinitionsPart styleDefinitionsPart = mainDocumentPart.getStyleDefinitionsPart();
+            Styles contents = styleDefinitionsPart.getContents();
+            DocDefaults docDefaults = contents.getDocDefaults();
+            docDefaults.setPPrDefault(new DocDefaults.PPrDefault());
             for (int i = 0; i < fileList.size(); i++) {
-                PartName partName = new PartName("/part_" + i + ".docx");
+                File docFile = new File(fileList.get(i));
+                PartName partName = new PartName("/word/part/" + docFile.getName());
                 AlternativeFormatInputPart afiPart = new AlternativeFormatInputPart(partName);
                 afiPart.setAltChunkType(AltChunkType.WordprocessingML);
-                File docFile = new File(fileList.get(i));
                 afiPart.setBinaryData(new FileInputStream(docFile));
                 Relationship altChunkRel = mainDocumentPart.addTargetPart(afiPart);
                 altChunkRel.setTargetMode("Internal");
@@ -246,16 +539,12 @@ public class PoiWordTest {
                 P p = createP(ctSectPrList.get(i));
                 mainDocumentPart.addObject(p);
             }
+            // 去除尾页空白页
             SectPr sectPr = mainDocumentPart.getContents().getBody().getSectPr();
             SectPr.PgSz pgSz = sectPr.getPgSz();
             pgSz.setH(BigInteger.ZERO);
             pgSz.setW(BigInteger.ZERO);
 
-            File mergeFile = new File(mergedFilePath);
-            File parentFile = mergeFile.getParentFile();
-            if (!parentFile.exists()) {
-                parentFile.mkdirs();
-            }
             wordprocessingMLPackage.save(mergeFile);
 
             return true;
@@ -399,25 +688,6 @@ public class PoiWordTest {
         }
 
         return false;
-    }
-
-    private static List<String> preProcessFileList(List<String> fileList) {
-        if (CollectionUtils.isEmpty(fileList)) {
-            return null;
-        }
-        // 过滤不存在的文件
-        ListIterator<String> stringListIterator = fileList.listIterator();
-        while (stringListIterator.hasNext()) {
-            String filePath = stringListIterator.next();
-            File file = new File(filePath);
-            if (!file.exists()) {
-                fileList.remove(filePath);
-            }
-        }
-        if (CollectionUtils.isEmpty(fileList)) {
-            return null;
-        }
-        return fileList;
     }
 
     private static void processDocumentRelationShip(XWPFDocument mainDocument, XWPFDocument document) {
