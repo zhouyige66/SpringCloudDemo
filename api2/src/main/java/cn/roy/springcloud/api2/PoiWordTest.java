@@ -48,20 +48,21 @@ import static org.openxmlformats.schemas.wordprocessingml.x2006.main.STHdrFtr.DE
 public class PoiWordTest {
 
     public static void main(String[] args) {
-        List<String> fileList = new ArrayList<>();
-        File file = new File("C:\\Users\\Roy Z Zhou\\Desktop\\word");
-        if (file.isDirectory()) {
-            File[] files = file.listFiles();
-            for (File itemFile : files) {
-                if (itemFile.isFile() && (itemFile.getName().endsWith(".doc") || itemFile.getName().endsWith(".docx"))) {
-                    fileList.add(itemFile.getPath());
-                }
-            }
-        }
-
-        String generateWordPath = "C:\\Users\\Roy Z Zhou\\Desktop\\merge.doc";
+//        List<String> fileList = new ArrayList<>();
+//        File file = new File("C:\\Users\\Roy Z Zhou\\Desktop\\word");
+//        if (file.isDirectory()) {
+//            File[] files = file.listFiles();
+//            for (File itemFile : files) {
+//                if (itemFile.isFile() && (itemFile.getName().endsWith(".doc") || itemFile.getName().endsWith(".docx"))) {
+//                    fileList.add(itemFile.getPath());
+//                }
+//            }
+//        }
+//
+//        String generateWordPath = "C:\\Users\\Roy Z Zhou\\Desktop\\merge.doc";
         long startTime = System.currentTimeMillis();
-        mergeByPoiAndDocx4j(fileList, generateWordPath);
+//        mergeByPoiAndDocx4j(fileList, generateWordPath);
+        addQRCode2WordByPOI();
         System.out.println("耗时：" + ((System.currentTimeMillis() - startTime) / 1000) + "S");
     }
 
@@ -244,7 +245,7 @@ public class PoiWordTest {
         return ctHdrFtrRefs;
     }
 
-    private static CTHdrFtr createDefaultHeader(){
+    private static CTHdrFtr createDefaultHeader() {
         String s = "<xml-fragment mc:Ignorable=\"w14 w15 w16se wp14\" xmlns:cx=\"http://schemas.microsoft.com/office/drawing/2014/chartex\"\n" +
                 "       xmlns:cx1=\"http://schemas.microsoft.com/office/drawing/2015/9/8/chartex\"\n" +
                 "       xmlns:m=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"\n" +
@@ -289,7 +290,7 @@ public class PoiWordTest {
         return defaultHeaderCTHdrFtr;
     }
 
-    private static CTHdrFtr createDefaultFooter(){
+    private static CTHdrFtr createDefaultFooter() {
         String s1 = "<xml-fragment mc:Ignorable=\"w14 w15 w16se wp14\" xmlns:cx=\"http://schemas.microsoft.com/office/drawing/2014/chartex\"\n" +
                 "       xmlns:cx1=\"http://schemas.microsoft.com/office/drawing/2015/9/8/chartex\"\n" +
                 "       xmlns:m=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"\n" +
@@ -865,64 +866,40 @@ public class PoiWordTest {
         srcBody.set(makeBody);
     }
 
-    private static class ChunkRelation extends POIXMLRelation {
-        public static final ChunkRelation AF_CHUNK = new ChunkRelation(
-                "application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml",
-                Namespaces.AF, "/word/part#.docx", (Class) null);
-
-        public ChunkRelation(String type, String rel, String defaultName, Class<? extends POIXMLDocumentPart> cls) {
-            super(type, rel, defaultName, cls);
-        }
-    }
-
     /**********功能：添加二维码**********/
-    private static void addQRCode2Word() {
-        String docFilePath = "C:\\Users\\Roy Z Zhou\\Desktop\\fsdownload\\SHA-EC-1907-001873-EIC-00001-temp.doc";
+    private static void addQRCode2WordByPOI() {
+        String docFilePath = "C:\\Users\\Roy Z Zhou\\Desktop\\word\\test.doc";
         String imgFilePath = "C:\\Users\\Roy Z Zhou\\Pictures\\1.jpeg";
-        String generateFilePath = "C:\\Users\\Roy Z Zhou\\Desktop\\fsdownload\\SHA-EC-1907-001873-EIC-00001-temp_test.doc";
         File file = new File(docFilePath);
         XWPFDocument document = null;
         try {
             document = new XWPFDocument(new FileInputStream(file));
             CTBody body = document.getDocument().getBody();
             CTP[] pArray = body.getPArray();
-            boolean needAdd = false;
             CTP ctp;
             if (pArray.length > 0) {
                 ctp = pArray[0];
             } else {
                 ctp = document.createParagraph().getCTP();
-                needAdd = true;
             }
-
-            XWPFParagraph paragraph = document.getParagraph(ctp);
-            XWPFRun run = paragraph.createRun();
-            CTDrawing ctDrawing = run.getCTR().addNewDrawing();
 
             String relationId = document.addPictureData(new FileInputStream(new File(imgFilePath)),
                     Document.PICTURE_TYPE_JPEG);
             XWPFPictureData picData = (XWPFPictureData) document.getRelationById(relationId);
             String fileName = picData.getFileName();
-            String rEmbedId = paragraph.getPart().getRelationId(picData);
             int picId = new Random().nextInt(10000);
             HashMap<String, String> map = new HashMap<>();
-            map.put("rEmbedId", rEmbedId);
+            map.put("rEmbedId", relationId);
             map.put("docName", "Picture " + picId);
             map.put("picId", Integer.toString(picId));
             map.put("picName", fileName);
-            String drawingStr = replace(map);
+            String anchorStr = replace(map);
 
-            CTAnchor parse = CTAnchor.Factory.parse(drawingStr);
-            ctDrawing.set(parse);
+            CTDrawing drawing = ctp.addNewR().addNewDrawing();
+            CTAnchor anchor = CTAnchor.Factory.parse(anchorStr);
+            drawing.set(anchor);
 
-//            XmlOptions optionsOuter = new XmlOptions();
-//            optionsOuter.setSaveOuter();
-//            String pString = ctp.xmlText(optionsOuter);
-//            String replace = pString.replace("<w:drawing/>", drawingStr);
-//            CTP newCtp = CTP.Factory.parse(replace);
-//            ctp.set(newCtp);
-
-            File mergeFile = new File(generateFilePath);
+            File mergeFile = new File(docFilePath.replace(".", "_1."));
             File parentFile = mergeFile.getParentFile();
             if (!parentFile.exists()) {
                 parentFile.mkdirs();
@@ -938,12 +915,43 @@ public class PoiWordTest {
     }
 
     private static String replace(HashMap<String, String> map) {
-        String template = "<wp:anchor xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\"\n" +
+        String template =
+                "<wp:anchor xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\"\n" +
+                "           xmlns:b=\"http://schemas.openxmlformats.org/officeDocument/2006/bibliography\"\n" +
+                "           xmlns:c=\"http://schemas.openxmlformats.org/drawingml/2006/chart\"\n" +
+                "           xmlns:c14=\"http://schemas.microsoft.com/office/drawing/2007/8/2/chart\"\n" +
+                "           xmlns:cdr=\"http://schemas.openxmlformats.org/drawingml/2006/chartDrawing\"\n" +
+                "           xmlns:comp=\"http://schemas.openxmlformats.org/drawingml/2006/compatibility\"\n" +
+                "           xmlns:cppr=\"http://schemas.microsoft.com/office/2006/coverPageProps\"\n" +
+                "           xmlns:dgm=\"http://schemas.openxmlformats.org/drawingml/2006/diagram\"\n" +
+                "           xmlns:dsp=\"http://schemas.microsoft.com/office/drawing/2008/diagram\"\n" +
+                "           xmlns:lc=\"http://schemas.openxmlformats.org/drawingml/2006/lockedCanvas\"\n" +
+                "           xmlns:m=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"\n" +
+                "           xmlns:mc=\"http://schemas.openxmlformats.org/markup-compatibility/2006\"\n" +
+                "           xmlns:o=\"urn:schemas-microsoft-com:office:office\" xmlns:oda=\"http://opendope.org/answers\"\n" +
+                "           xmlns:odc=\"http://opendope.org/conditions\" xmlns:odgm=\"http://opendope.org/SmartArt/DataHierarchy\"\n" +
+                "           xmlns:odi=\"http://opendope.org/components\" xmlns:odq=\"http://opendope.org/questions\"\n" +
+                "           xmlns:odx=\"http://opendope.org/xpaths\" xmlns:pic=\"http://schemas.openxmlformats.org/drawingml/2006/picture\"\n" +
+                "           xmlns:pvml=\"urn:schemas-microsoft-com:office:powerpoint\"\n" +
                 "           xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"\n" +
+                "           xmlns:sl=\"http://schemas.openxmlformats.org/schemaLibrary/2006/main\" xmlns:v=\"urn:schemas-microsoft-com:vml\"\n" +
+                "           xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\"\n" +
+                "           xmlns:w10=\"urn:schemas-microsoft-com:office:word\"\n" +
+                "           xmlns:w14=\"http://schemas.microsoft.com/office/word/2010/wordml\"\n" +
+                "           xmlns:w15=\"http://schemas.microsoft.com/office/word/2012/wordml\"\n" +
+                "           xmlns:w16cid=\"http://schemas.microsoft.com/office/word/2016/wordml/cid\"\n" +
+                "           xmlns:w16se=\"http://schemas.microsoft.com/office/word/2015/wordml/symex\"\n" +
+                "           xmlns:we=\"http://schemas.microsoft.com/office/webextensions/webextension/2010/11\"\n" +
+                "           xmlns:wetp=\"http://schemas.microsoft.com/office/webextensions/taskpanes/2010/11\"\n" +
+                "           xmlns:wne=\"http://schemas.microsoft.com/office/word/2006/wordml\"\n" +
                 "           xmlns:wp=\"http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing\"\n" +
-                "                   distT=\"0\" distB=\"0\" distL=\"114300\" distR=\"114300\" simplePos=\"0\"\n" +
-                "                   relativeHeight=\"251658240\" behindDoc=\"0\" locked=\"0\" layoutInCell=\"1\"\n" +
-                "                   allowOverlap=\"1\">\n" +
+                "           xmlns:wp14=\"http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing\"\n" +
+                "           xmlns:wps=\"http://schemas.microsoft.com/office/word/2010/wordprocessingShape\"\n" +
+                "           xmlns:xdr=\"http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing\"\n" +
+                "           xmlns:xvml=\"urn:schemas-microsoft-com:office:excel\"\n"+
+                "           distT=\"0\" distB=\"0\" distL=\"114300\" distR=\"114300\" simplePos=\"0\"\n" +
+                "           relativeHeight=\"251658240\" behindDoc=\"0\" locked=\"0\" layoutInCell=\"0\"\n" +
+                "           allowOverlap=\"1\">\n" +
                 "            <wp:simplePos x=\"0\" y=\"0\"/>\n" +
                 "            <wp:positionH relativeFrom=\"margin\">\n" +
                 "                <wp:align>right</wp:align>\n" +
@@ -969,21 +977,13 @@ public class PoiWordTest {
                 "                            <pic:cNvPicPr/>\n" +
                 "                        </pic:nvPicPr>\n" +
                 "                        <pic:blipFill>\n" +
-                "                            <a:blip r:embed=\"${rEmbedId}\" cstate=\"print\">\n" +
-                "                                <a:extLst>\n" +
-                "                                    <a:ext>\n" +
-                "                                        <a14:useLocalDpi\n" +
-                "                                                xmlns:a14=\"http://schemas.microsoft.com/office/drawing/2010/main\"\n" +
-                "                                                val=\"0\"/>\n" +
-                "                                    </a:ext>\n" +
-                "                                </a:extLst>\n" +
-                "                            </a:blip>\n" +
+                "                            <a:blip r:embed=\"${rEmbedId}\" />\n" +
                 "                            <a:stretch>\n" +
                 "                                <a:fillRect/>\n" +
                 "                            </a:stretch>\n" +
                 "                        </pic:blipFill>\n" +
                 "                        <pic:spPr>\n" +
-                "                            <a:xfrm flipH=\"1\">\n" +
+                "                            <a:xfrm>\n" +
                 "                                <a:off x=\"0\" y=\"0\"/>\n" +
                 "                                <a:ext cx=\"818985\" cy=\"818985\"/>\n" +
                 "                            </a:xfrm>\n" +
