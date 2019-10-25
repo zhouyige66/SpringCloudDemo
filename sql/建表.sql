@@ -18,7 +18,7 @@ CREATE TABLE `api` (
   KEY `index_name` (`name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8 COMMENT='接口表';
 
-CREATE TABLE `api_count` (
+CREATE TABLE `api_statistics` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `api_id` bigint(20) NOT NULL COMMENT '实体名称',
   `cost_time` bigint(20) NOT NULL COMMENT '耗时',
@@ -29,7 +29,7 @@ CREATE TABLE `api_count` (
   KEY `index_api_id` (`api_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='接口调用计数表';
 
-CREATE TABLE `entity` (
+CREATE TABLE `api_entity` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '实体名称',
   `properties` varchar(10000) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '属性',
@@ -40,7 +40,7 @@ CREATE TABLE `entity` (
   KEY `index_name` (`name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=621 DEFAULT CHARSET=utf8 COMMENT='接口请求参数实体表';
 
-CREATE TABLE `parameter` (
+CREATE TABLE `api_parameter` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '参数名称',
   `description` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '参数描述',

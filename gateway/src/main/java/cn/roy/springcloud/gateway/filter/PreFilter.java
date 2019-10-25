@@ -42,6 +42,7 @@ public class PreFilter extends ZuulFilter {
         log.info("请求开始，请求ID：{}，开始时间：{}", request.hashCode(), time.getTime());
         log.info(String.format("%s request to %s", request.getMethod(), request.getRequestURL().toString()));
 
+        // 统一header处理
         ctx.addZuulRequestHeader("baseInfo","kk20");
         return null;
     }

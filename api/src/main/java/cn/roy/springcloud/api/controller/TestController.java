@@ -1,8 +1,8 @@
 package cn.roy.springcloud.api.controller;
 
-import cn.roy.springcloud.api.dao.bean.Processor;
-import cn.roy.springcloud.api.dao.mapper.ProcessorMapper;
+import cn.roy.springcloud.api.http.TestDto;
 import cn.roy.springcloud.api.service.call.RemoteCallService;
+import cn.roy.springcloud.common.http.ResultData;
 import com.netflix.hystrix.contrib.javanica.annotation.DefaultProperties;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
@@ -12,12 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 /**
  * @Description: 测试
@@ -41,9 +39,6 @@ public class TestController {
     @Autowired
     private RemoteCallService remoteCallService;
 
-    @Autowired
-    private ProcessorMapper processorMapper;
-
     /**
      * ApiOperation使用说明
      * value:接口功能
@@ -52,16 +47,13 @@ public class TestController {
      */
     @ApiOperation(value = "用户名接口", notes = "功能：获取配置中心配置的用户名")
     @GetMapping("name")
-    public String name(HttpServletRequest request) {
+    public ResultData name(HttpServletRequest request) {
         String baseInfo = request.getHeader("baseInfo");
         System.out.println("读取的baseInfo参数：" + baseInfo);
-        return "从配置中心读取的名字为：" + userName;
-    }
 
-    @ApiOperation(value = "多数据源测试", notes = "功能：多DB切换测试")
-    @GetMapping("slave/{wrId}")
-    public List<Processor> slave(@PathVariable("wrId") long wrId) {
-        return processorMapper.selectAssigneeByWorkRequestId(wrId);
+        TestDto testDto = new TestDto(userName);
+        ResultData resultData = ResultData.success(testDto);
+        return resultData;
     }
 
     @ApiOperation(value = "服务处理时间4S", notes = "功能：供其他服务调用接口")

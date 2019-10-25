@@ -1,14 +1,14 @@
 package cn.roy.springcloud.api.service.impl;
 
-import cn.roy.springcloud.api.dao.bean.*;
-import cn.roy.springcloud.api.dao.mapper.ApiMapper;
-import cn.roy.springcloud.api.dao.mapper.EntityMapper;
-import cn.roy.springcloud.api.dao.mapper.ParameterMapper;
-import cn.roy.springcloud.api.entity.ApiEntity;
-import cn.roy.springcloud.api.entity.ParameterEntity;
-import cn.roy.springcloud.api.entity.ResultData;
+import cn.roy.springcloud.api.bean.ApiBean;
+import cn.roy.springcloud.api.bean.ParameterBean;
+import cn.roy.springcloud.api.dao.mapper.ApiEntityModelMapper;
+import cn.roy.springcloud.api.dao.mapper.ApiModelMapper;
+import cn.roy.springcloud.api.dao.mapper.ApiParameterModelMapper;
+import cn.roy.springcloud.api.dao.model.*;
 import cn.roy.springcloud.api.service.SwaggerDataDealService;
 import cn.roy.springcloud.api.util.ExportUtil;
+import cn.roy.springcloud.common.http.ResultData;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -45,8 +45,8 @@ import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static cn.roy.springcloud.api.entity.ResultData.CODE_PARAMETER_ERROR;
-import static cn.roy.springcloud.api.entity.ResultData.CODE_SERVER_ERROR;
+import static cn.roy.springcloud.common.http.ResultData.CODE_DATA_NULL;
+import static cn.roy.springcloud.common.http.ResultData.CODE_REQUEST_ERROR;
 
 /**
  * @Description: 数据导入处理
@@ -59,11 +59,11 @@ public class SwaggerDataDealServiceImpl implements SwaggerDataDealService {
     private static final Logger logger = LoggerFactory.getLogger(SwaggerDataDealService.class);
 
     @Autowired
-    private ApiMapper apiMapper;
+    private ApiModelMapper apiModelMapper;
     @Autowired
-    private EntityMapper entityMapper;
+    private ApiEntityModelMapper apiEntityModelMapper;
     @Autowired
-    private ParameterMapper parameterMapper;
+    private ApiParameterModelMapper apiParameterModelMapper;
 
     @Resource(name = "master")
     private DataSource dataSource;
@@ -73,7 +73,7 @@ public class SwaggerDataDealServiceImpl implements SwaggerDataDealService {
     public ResultData importApiFromFile(String filePath) throws IOException {
         File file = new File(filePath);
         if (!file.exists()) {
-            return ResultData.fail(CODE_PARAMETER_ERROR, "文件不存在");
+            return ResultData.fail(CODE_REQUEST_ERROR, "文件不存在");
         }
 
         InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(file),
@@ -110,7 +110,7 @@ public class SwaggerDataDealServiceImpl implements SwaggerDataDealService {
             return dealJsonData(swaggerData);
         } else {
             logger.info("返回编码：" + code);
-            return ResultData.serverError("链接指定URL出错，链接返回码：" + code);
+            return ResultData.requestError("链接指定URL出错，链接返回码：" + code);
         }
     }
 
@@ -130,10 +130,10 @@ public class SwaggerDataDealServiceImpl implements SwaggerDataDealService {
                 JSONObject object = propertiesJson.getJSONObject(property);
                 bodySaveJson.put(property, object.getString("type") + "/" + object.getString("description"));
             }
-            Entity entity = new Entity();
-            entity.withName(key)
+            ApiEntityModel apiEntityModel = new ApiEntityModel();
+            apiEntityModel.withName(key)
                     .withProperties(bodySaveJson.toString());
-            entityMapper.insertSelective(entity);
+            apiEntityModelMapper.insertSelective(apiEntityModel);
         }
 
         // 存储api以及参数
@@ -159,7 +159,7 @@ public class SwaggerDataDealServiceImpl implements SwaggerDataDealService {
                     String des = paramJson.getString("description");
                     if (in.equals("body")) {
                         JSONObject schemaJson = JSON.parseObject(paramJson.getString("schema"));
-                        EntityQuery query = new EntityQuery();
+                        ApiEntityModelQuery query = new ApiEntityModelQuery();
                         if (schemaJson.containsKey("entity")) {
                             String ref = schemaJson.getString("entity");
                             String[] split = ref.split("/");
@@ -168,7 +168,7 @@ public class SwaggerDataDealServiceImpl implements SwaggerDataDealService {
 
                             query.createCriteria().andNameEqualTo(entityName);
                             // 查询实体Id
-                            List<Entity> entities = entityMapper.selectByExample(query);
+                            List<ApiEntityModel> entities = apiEntityModelMapper.selectByExample(query);
                             if (entities != null && entities.size() > 0) {
                                 bodyId = entities.get(0).getId();
                             }
@@ -201,31 +201,31 @@ public class SwaggerDataDealServiceImpl implements SwaggerDataDealService {
                             logger.info("搜索关键字：{}", searchKey);
                             query.createCriteria().andNameEqualTo(searchKey);
                             // 查询实体Id
-                            List<Entity> entities = entityMapper.selectByExample(query);
+                            List<ApiEntityModel> entities = apiEntityModelMapper.selectByExample(query);
                             if (entities != null && entities.size() > 0) {
                                 bodyId = entities.get(0).getId();
                             } else {
                                 // 未查到，直接插入数据库，然后赋值
-                                Entity entity = new Entity();
-                                entity.withName(searchKey).withProperties(type);
-                                entityMapper.insertSelective(entity);
-                                bodyId = entity.getId();
+                                ApiEntityModel apiEntityModel = new ApiEntityModel();
+                                apiEntityModel.withName(searchKey).withProperties(type);
+                                apiEntityModelMapper.insertSelective(apiEntityModel);
+                                bodyId = apiEntityModel.getId();
                             }
                         }
                     } else {
-                        Parameter parameter = new Parameter();
-                        parameter.withName(paramJson.getString("name"))
+                        ApiParameterModel apiParameterModel = new ApiParameterModel();
+                        apiParameterModel.withName(paramJson.getString("name"))
                                 .withDescription(des)
                                 .withType(paramJson.getString("type"))
                                 .withRequired(paramJson.getBoolean("required"));
-                        parameterMapper.insertSelective(parameter);
-                        long parameterId = parameter.getId();
+                        apiParameterModelMapper.insertSelective(apiParameterModel);
+                        long parameterId = apiParameterModel.getId();
                         parameterIdList.add(parameterId);
                     }
                 }
             }
             // 查询对应的参数类型
-            Api api = new Api();
+            ApiModel api = new ApiModel();
             api.withName(key)
                     .withController(controller)
                     .withDescription(getOrPostJson.getString("summary"))
@@ -233,11 +233,10 @@ public class SwaggerDataDealServiceImpl implements SwaggerDataDealService {
                     .withMethod(method)
                     .withBody(bodyId)
                     .withParameterids(JSON.toJSONString(parameterIdList));
-
-            apiMapper.insertSelective(api);
+            apiModelMapper.insertSelective(api);
         }
 
-        return ResultData.success(null);
+        return ResultData.success();
     }
 
     /**
@@ -255,7 +254,7 @@ public class SwaggerDataDealServiceImpl implements SwaggerDataDealService {
             e.printStackTrace();
         }
         if (MapUtils.isEmpty(urlMap)) {
-            return ResultData.fail(CODE_PARAMETER_ERROR, "指定文件不存在");
+            return ResultData.fail(CODE_REQUEST_ERROR, "指定文件不存在");
         }
 
         try {
@@ -269,7 +268,7 @@ public class SwaggerDataDealServiceImpl implements SwaggerDataDealService {
     @Override
     public ResultData exportApiDoc(List<String> apiNameList) {
         if (CollectionUtils.isEmpty(apiNameList)) {
-            return ResultData.fail(CODE_PARAMETER_ERROR, "查询接口列表为空");
+            return ResultData.fail(CODE_REQUEST_ERROR, "查询接口列表为空");
         }
 
         Map<String, Integer> urlMap = new HashedMap<>();
@@ -296,47 +295,47 @@ public class SwaggerDataDealServiceImpl implements SwaggerDataDealService {
             sortKeys[urlMap.get(key)] = key;
         }
 
-        List<ApiEntity> apiEntityList = new ArrayList<>();
+        List<ApiBean> apiBeanList = new ArrayList<>();
         for (String url : sortKeys) {
-            ApiQuery apiQuery = new ApiQuery();
-            apiQuery.createCriteria().andNameEqualTo(url);
-            List<Api> apiList = apiMapper.selectByExample(apiQuery);
-            if (CollectionUtils.isEmpty(apiList)) {
+            ApiModelQuery apiModelQuery = new ApiModelQuery();
+            apiModelQuery.createCriteria().andNameEqualTo(url);
+            List<ApiModel> apiModelList = apiModelMapper.selectByExample(apiModelQuery);
+            if (CollectionUtils.isEmpty(apiModelList)) {
                 continue;
             }
 
-            Api api = apiList.get(0);
-            logger.info("查询api：" + JSON.toJSONString(api));
+            ApiModel apiModel = apiModelList.get(0);
+            logger.info("查询api：" + JSON.toJSONString(apiModel));
 
-            ApiEntity apiEntity = new ApiEntity();
-            apiEntity.setName(api.getName());
-            apiEntity.setController(api.getController());
-            apiEntity.setDescription(api.getDescription());
-            apiEntity.setMethod(api.getMethod());
+            ApiBean apiBean = new ApiBean();
+            apiBean.setName(apiModel.getName());
+            apiBean.setController(apiModel.getController());
+            apiBean.setDescription(apiModel.getDescription());
+            apiBean.setMethod(apiModel.getMethod());
             // 参数处理
-            String parameterids = api.getParameterids();
+            String parameterids = apiModel.getParameterids();
             List<Long> parameterIdList = JSON.parseArray(parameterids, Long.class);
             if (!CollectionUtils.isEmpty(parameterIdList)) {
-                List<ParameterEntity> parameterEntityList = new ArrayList<>();
+                List<ParameterBean> parameterBeanList = new ArrayList<>();
                 for (Long pId : parameterIdList) {
-                    Parameter parameter = parameterMapper.selectByPrimaryKey(pId);
+                    ApiParameterModel parameter = apiParameterModelMapper.selectByPrimaryKey(pId);
                     logger.info("查询parameter：" + JSON.toJSONString(parameter));
 
-                    ParameterEntity parameterEntity = new ParameterEntity();
-                    parameterEntity.setName(parameter.getName());
-                    parameterEntity.setDescription(parameter.getDescription());
-                    parameterEntity.setRequired(parameter.getRequired());
-                    parameterEntity.setType(parameter.getType());
+                    ParameterBean parameterBean = new ParameterBean();
+                    parameterBean.setName(parameter.getName());
+                    parameterBean.setDescription(parameter.getDescription());
+                    parameterBean.setRequired(parameter.getRequired());
+                    parameterBean.setType(parameter.getType());
 
-                    parameterEntityList.add(parameterEntity);
+                    parameterBeanList.add(parameterBean);
                 }
-                apiEntity.setParameterEntityList(parameterEntityList);
+                apiBean.setParameterBeanList(parameterBeanList);
             }
             // body处理
-            Long bodyId = api.getBody();
+            Long bodyId = apiModel.getBody();
             if (null != bodyId) {
-                Entity entity = entityMapper.selectByPrimaryKey(bodyId);
-                apiEntity.setBodyDes(entity.getName());
+                ApiEntityModel entity = apiEntityModelMapper.selectByPrimaryKey(bodyId);
+                apiBean.setBodyDes(entity.getName());
                 String bodyStr = entity.getProperties();
                 if (bodyStr.startsWith("List")) {
                     // 读取具体类型
@@ -344,28 +343,28 @@ public class SwaggerDataDealServiceImpl implements SwaggerDataDealService {
                     int endIndex = bodyStr.indexOf(">");
                     String body = bodyStr.substring(startIndex, endIndex);
                     // 搜索
-                    EntityQuery query = new EntityQuery();
+                    ApiEntityModelQuery query = new ApiEntityModelQuery();
                     query.createCriteria().andNameEqualTo(body);
-                    List<Entity> entityList = entityMapper.selectByExample(query);
+                    List<ApiEntityModel> entityList = apiEntityModelMapper.selectByExample(query);
                     if (!CollectionUtils.isEmpty(entityList)) {
                         StringBuilder sb = new StringBuilder();
                         sb.append("[").append(entityList.get(0).getProperties())
                                 .append("]");
-                        apiEntity.setBody(sb.toString());
+                        apiBean.setBody(sb.toString());
                     } else {
-                        apiEntity.setBody(bodyStr);
+                        apiBean.setBody(bodyStr);
                     }
                 } else {
-                    apiEntity.setBody(entity.getProperties());
+                    apiBean.setBody(entity.getProperties());
                 }
             }
 
-            apiEntityList.add(apiEntity);
+            apiBeanList.add(apiBean);
         }
 
-        if (CollectionUtils.isEmpty(apiEntityList)) {
+        if (CollectionUtils.isEmpty(apiBeanList)) {
             logger.info("查询数据为空，不作处理");
-            return ResultData.fail(CODE_SERVER_ERROR, "未查出任何数据");
+            return ResultData.fail(CODE_DATA_NULL, "未查出任何数据");
         }
 
         // 创建新文件
@@ -399,7 +398,7 @@ public class SwaggerDataDealServiceImpl implements SwaggerDataDealService {
         // 设置行高
         sheet.setDefaultRowHeight((short) (20 * 20));
         // 写到excel中
-        write2Excel(sheet, apiEntityList, cellStyleBoldFont, cellStyleBackground);
+        write2Excel(sheet, apiBeanList, cellStyleBoldFont, cellStyleBackground);
         // 保存到电脑
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
         String fileName = "接口列表导出" + dateFormat.format(new Date()) + ".xlsx";
@@ -408,17 +407,17 @@ public class SwaggerDataDealServiceImpl implements SwaggerDataDealService {
         FileOutputStream out = new FileOutputStream(saveFilePath);
         workbook.write(out);
 
-        return ResultData.success(null);
+        return ResultData.success();
     }
 
-    private void write2Excel(XSSFSheet sheet, List<ApiEntity> apiEntityList, XSSFCellStyle boldFontStyle,
+    private void write2Excel(XSSFSheet sheet, List<ApiBean> apiBeanList, XSSFCellStyle boldFontStyle,
                              XSSFCellStyle backgroundStyle) {
-        if (CollectionUtils.isEmpty(apiEntityList)) {
+        if (CollectionUtils.isEmpty(apiBeanList)) {
             return;
         }
 
         int index = 0;
-        for (ApiEntity apiEntity : apiEntityList) {
+        for (ApiBean apiBean : apiBeanList) {
             XSSFRow row = sheet.createRow(index);
             createCell(row);
             for (int i = 0; i < 5; i++) {
@@ -427,7 +426,7 @@ public class SwaggerDataDealServiceImpl implements SwaggerDataDealService {
             sheet.addMergedRegion(new CellRangeAddress(index, index, 1, 4));
             row.getCell(0).setCellValue("接口名称");
 
-            row.getCell(1).setCellValue(apiEntity.getName());
+            row.getCell(1).setCellValue(apiBean.getName());
             index++;
 
             XSSFRow row2 = sheet.createRow(index);
@@ -435,7 +434,7 @@ public class SwaggerDataDealServiceImpl implements SwaggerDataDealService {
             sheet.addMergedRegion(new CellRangeAddress(index, index, 1, 4));
             row2.getCell(0).setCellValue("接口功能");
             row2.getCell(0).setCellStyle(boldFontStyle);
-            row2.getCell(1).setCellValue(apiEntity.getDescription());
+            row2.getCell(1).setCellValue(apiBean.getDescription());
             index++;
 
             XSSFRow row3 = sheet.createRow(index);
@@ -443,11 +442,11 @@ public class SwaggerDataDealServiceImpl implements SwaggerDataDealService {
             sheet.addMergedRegion(new CellRangeAddress(index, index, 1, 4));
             row3.getCell(0).setCellValue("请求方法");
             row3.getCell(0).setCellStyle(boldFontStyle);
-            row3.getCell(1).setCellValue(apiEntity.getMethod());
+            row3.getCell(1).setCellValue(apiBean.getMethod());
             index++;
 
-            List<ParameterEntity> parameterEntityList = apiEntity.getParameterEntityList();
-            if (!CollectionUtils.isEmpty(parameterEntityList)) {
+            List<ParameterBean> parameterBeanList = apiBean.getParameterBeanList();
+            if (!CollectionUtils.isEmpty(parameterBeanList)) {
                 int startIndex = index;
                 // 添加提示头
                 XSSFRow row4 = sheet.createRow(index);
@@ -458,16 +457,16 @@ public class SwaggerDataDealServiceImpl implements SwaggerDataDealService {
                 row4.getCell(4).setCellValue("是否必填");
                 index++;
 
-                for (int i = 0; i < parameterEntityList.size(); i++) {
-                    ParameterEntity parameterEntity = parameterEntityList.get(i);
+                for (int i = 0; i < parameterBeanList.size(); i++) {
+                    ParameterBean parameterBean = parameterBeanList.get(i);
 
                     XSSFRow itemRow = sheet.createRow(index);
                     createCell(itemRow);
                     // 赋值
-                    itemRow.getCell(1).setCellValue(parameterEntity.getName());
-                    itemRow.getCell(2).setCellValue(parameterEntity.getDescription());
-                    itemRow.getCell(3).setCellValue(parameterEntity.getType());
-                    itemRow.getCell(4).setCellValue(parameterEntity.isRequired());
+                    itemRow.getCell(1).setCellValue(parameterBean.getName());
+                    itemRow.getCell(2).setCellValue(parameterBean.getDescription());
+                    itemRow.getCell(3).setCellValue(parameterBean.getType());
+                    itemRow.getCell(4).setCellValue(parameterBean.isRequired());
                     index++;
                 }
 
@@ -476,13 +475,13 @@ public class SwaggerDataDealServiceImpl implements SwaggerDataDealService {
                 row4.getCell(0).setCellStyle(boldFontStyle);
             }
 
-            String body = apiEntity.getBody();
+            String body = apiBean.getBody();
             if (!StringUtils.isEmpty(body)) {
                 XSSFRow row5 = sheet.createRow(index);
                 createCell(row5);
                 sheet.addMergedRegion(new CellRangeAddress(index, index, 3, 4));
                 row5.getCell(0).setCellValue("请求body");
-                String bodyDes = apiEntity.getBodyDes();
+                String bodyDes = apiBean.getBodyDes();
                 String nameAndDes = bodyDes.split("&")[0];
                 String[] split = nameAndDes.split("@");
                 row5.getCell(0).setCellStyle(boldFontStyle);
@@ -501,7 +500,6 @@ public class SwaggerDataDealServiceImpl implements SwaggerDataDealService {
             index++;
         }
     }
-
 
     private void createCell(XSSFRow row) {
         for (int i = 0; i < 5; i++) {
@@ -523,13 +521,13 @@ public class SwaggerDataDealServiceImpl implements SwaggerDataDealService {
             statement = connection.createStatement();
             // 清除三张表数据
             String sql = "TRUNCATE TABLE api;" +
-                    "TRUNCATE TABLE entity;" +
-                    "TRUNCATE TABLE parameter";
+                    "TRUNCATE TABLE api_entity;" +
+                    "TRUNCATE TABLE api_parameter";
             statement.execute(sql);
             statement.close();
         } catch (SQLException e) {
             e.printStackTrace();
-            return ResultData.fail(CODE_SERVER_ERROR, e.getMessage());
+            return ResultData.fail(CODE_REQUEST_ERROR, e.getMessage());
         } finally {
             try {
                 if (connection != null && !connection.isClosed()) {
@@ -543,7 +541,7 @@ public class SwaggerDataDealServiceImpl implements SwaggerDataDealService {
             }
         }
 
-        return ResultData.success(null);
+        return ResultData.success();
     }
 
 }
