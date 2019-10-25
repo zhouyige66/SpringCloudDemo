@@ -123,17 +123,18 @@ public class SwaggerDataDealServiceImpl implements SwaggerDataDealService {
         Set<String> entityKeySet = entityJson.keySet();
         for (String key : entityKeySet) {
             JSONObject item = entityJson.getJSONObject(key);
-
-            JSONObject propertiesJson = item.getJSONObject("properties");
-            JSONObject bodySaveJson = new JSONObject();
-            for (String property : propertiesJson.keySet()) {
-                JSONObject object = propertiesJson.getJSONObject(property);
-                bodySaveJson.put(property, object.getString("type") + "/" + object.getString("description"));
+            if (item.containsKey("properties")) {
+                JSONObject propertiesJson = item.getJSONObject("properties");
+                JSONObject bodySaveJson = new JSONObject();
+                for (String property : propertiesJson.keySet()) {
+                    JSONObject object = propertiesJson.getJSONObject(property);
+                    bodySaveJson.put(property, object.getString("type") + "/" + object.getString("description"));
+                }
+                ApiEntityModel apiEntityModel = new ApiEntityModel();
+                apiEntityModel.withName(key)
+                        .withProperties(bodySaveJson.toString());
+                apiEntityModelMapper.insertSelective(apiEntityModel);
             }
-            ApiEntityModel apiEntityModel = new ApiEntityModel();
-            apiEntityModel.withName(key)
-                    .withProperties(bodySaveJson.toString());
-            apiEntityModelMapper.insertSelective(apiEntityModel);
         }
 
         // 存储api以及参数

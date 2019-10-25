@@ -101,19 +101,20 @@
     </if>
   </delete>
   <insert id="insert" parameterType="cn.roy.springcloud.api.dao.model.ApiStatisticsModel">
-    insert into api_statistics (id, api_id, cost_time, 
-      delete, create_time, update_time
-      )
-    values (#{id,jdbcType=BIGINT}, #{apiId,jdbcType=BIGINT}, #{costTime,jdbcType=BIGINT}, 
-      #{delete,jdbcType=BIT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
-      )
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into api_statistics (api_id, cost_time, delete, 
+      create_time, update_time)
+    values (#{apiId,jdbcType=BIGINT}, #{costTime,jdbcType=BIGINT}, #{delete,jdbcType=BIT}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="cn.roy.springcloud.api.dao.model.ApiStatisticsModel">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
     insert into api_statistics
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
       <if test="apiId != null">
         api_id,
       </if>
@@ -131,9 +132,6 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=BIGINT},
-      </if>
       <if test="apiId != null">
         #{apiId,jdbcType=BIGINT},
       </if>

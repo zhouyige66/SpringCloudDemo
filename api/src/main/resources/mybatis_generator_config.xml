@@ -58,15 +58,19 @@
             <!-- 数据库中表名有时我们都会带个前缀，而实体又不想带前缀，这个配置可以把实体的前缀去掉 -->
             <!-- <domainObjectRenamingRule searchString="^Tbl" replaceString=""/> -->
             <property name="mapperName" value="ApiModelMapper"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
         </table>
         <table tableName="api_entity" domainObjectName="ApiEntityModel">
             <property name="modelOnly" value="false"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
         </table>
         <table tableName="api_statistics" domainObjectName="ApiStatisticsModel">
             <property name="modelOnly" value="false"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
         </table>
         <table tableName="api_parameter" domainObjectName="ApiParameterModel">
             <property name="modelOnly" value="false"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
         </table>
     </context>
 </generatorConfiguration>
