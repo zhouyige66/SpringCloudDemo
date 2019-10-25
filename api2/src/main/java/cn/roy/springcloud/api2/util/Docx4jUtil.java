@@ -1,6 +1,5 @@
-package cn.roy.springcloud.api2;
+package cn.roy.springcloud.api2.util;
 
-import org.apache.commons.collections4.MapUtils;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.docx4j.XmlUtils;
@@ -41,7 +40,7 @@ import java.util.*;
  * @Date: 2019-10-02 14:51
  * @Version: v1.0
  */
-public class Docx4jTest {
+public class Docx4jUtil {
 
     public static void main(String[] args) {
 //        addImageByTemplateTest();

@@ -1,4 +1,4 @@
-package cn.roy.springcloud.api2;
+package cn.roy.springcloud.api2.util;
 
 import org.apache.poi.POIXMLDocumentPart;
 import org.apache.poi.POIXMLRelation;
@@ -45,7 +45,7 @@ import static org.openxmlformats.schemas.wordprocessingml.x2006.main.STHdrFtr.DE
  * @Date: 2019-10-15 10:08
  * @Version: v1.0
  */
-public class PoiWordTest {
+public class PoiWordUtil {
 
     public static void main(String[] args) {
 //        List<String> fileList = new ArrayList<>();
