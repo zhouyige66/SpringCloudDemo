@@ -65,6 +65,7 @@ public class GatewayApplication {
             swaggerResource.setSwaggerVersion("2.0");
             return swaggerResource;
         }
+
     }
 
 }

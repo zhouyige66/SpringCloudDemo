@@ -1,38 +1,17 @@
 package cn.roy.springcloud.gateway.config;
 
-import org.apache.http.Header;
 import org.apache.http.HttpHost;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.config.RequestConfig;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
-import org.apache.http.impl.nio.reactor.IOReactorConfig;
-import org.apache.http.message.BasicHeader;
-import org.apache.http.ssl.SSLContextBuilder;
-import org.apache.http.ssl.SSLContexts;
-import org.elasticsearch.client.Node;
-import org.elasticsearch.client.NodeSelector;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import javax.net.ssl.SSLContext;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.security.KeyManagementException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.util.Iterator;
-
 @Configuration
 public class ESRestConfig {
 
     @Bean
-    public RestClient getClient() throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
+    public RestClient getClient() {
         // 如果有多个从节点可以持续在内部new多个HttpHost，参数1是ip,参数2是HTTP端口，参数3是通信协议
         RestClientBuilder clientBuilder = RestClient.builder(new HttpHost("172.16.63.142", 9200,
                 "http"));

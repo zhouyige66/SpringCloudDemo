@@ -1,4 +1,4 @@
-package cn.roy.springcloud.gateway.es.bean;
+package cn.roy.springcloud.gateway.es.model;
 
 import java.util.Date;
 
@@ -8,7 +8,7 @@ import java.util.Date;
  * @Date: 2019-09-13 15:21
  * @Version: v1.0
  */
-public class ApiCallBean extends ESBaseBean{
+public class ApiCallModel extends ESBaseModel {
     private String name;
     private Date startTime;
     private Date endTime;

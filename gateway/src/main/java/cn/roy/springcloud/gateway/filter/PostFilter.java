@@ -1,6 +1,6 @@
 package cn.roy.springcloud.gateway.filter;
 
-import cn.roy.springcloud.gateway.es.bean.ApiCallBean;
+import cn.roy.springcloud.gateway.es.model.ApiCallModel;
 import com.alibaba.fastjson.JSON;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
@@ -53,15 +53,15 @@ public class PostFilter extends ZuulFilter {
         log.info(String.format("%s request to %s", request.getMethod(), request.getRequestURL().toString()));
 
         // 存储到ES
-        ApiCallBean apiCallBean = new ApiCallBean();
-        apiCallBean.setName(request.getRequestURI());
-        apiCallBean.setStartTime(startTime);
-        apiCallBean.setEndTime(endTime);
-        apiCallBean.setCostTime(time);
-        apiCallBean.setRemoteIp(request.getRemoteAddr());
+        ApiCallModel apiCallModel = new ApiCallModel();
+        apiCallModel.setName(request.getRequestURI());
+        apiCallModel.setStartTime(startTime);
+        apiCallModel.setEndTime(endTime);
+        apiCallModel.setCostTime(time);
+        apiCallModel.setRemoteIp(request.getRemoteAddr());
 
         Request esRequest = new Request("POST", "/api/_doc/");
-        esRequest.setJsonEntity(JSON.toJSONString(apiCallBean));
+        esRequest.setJsonEntity(JSON.toJSONString(apiCallModel));
         restClient.performRequestAsync(esRequest, new ResponseListener() {
             @Override
             public void onSuccess(Response response) {

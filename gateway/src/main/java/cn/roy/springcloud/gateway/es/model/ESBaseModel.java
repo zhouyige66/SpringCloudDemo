@@ -1,4 +1,4 @@
-package cn.roy.springcloud.gateway.es.bean;
+package cn.roy.springcloud.gateway.es.model;
 
 import java.util.Date;
 import java.util.UUID;
@@ -9,7 +9,7 @@ import java.util.UUID;
  * @Date: 2019-09-17 13:26
  * @Version: v1.0
  */
-public class ESBaseBean {
+public class ESBaseModel {
     private String id = UUID.randomUUID().toString();
     private Date createDate;
     private Date updateDate;
