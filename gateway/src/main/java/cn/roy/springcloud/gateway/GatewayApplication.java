@@ -4,6 +4,9 @@ import cn.roy.springcloud.gateway.filter.PostFilter;
 import cn.roy.springcloud.gateway.filter.PreFilter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cache.support.CompositeCacheManager;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 import org.springframework.cloud.netflix.zuul.filters.Route;
@@ -22,6 +25,7 @@ import java.util.List;
 @EnableEurekaClient
 @EnableZuulProxy
 @EnableSwagger2
+@EnableCaching
 public class GatewayApplication {
 
     public static void main(String[] args) {
@@ -36,6 +40,13 @@ public class GatewayApplication {
     @Bean
     public PostFilter postFilter() {
         return new PostFilter();
+    }
+
+    @Bean(name = "mainCacheManager")
+    @Primary
+    public CacheManager multiCacheManager(){
+        CompositeCacheManager compositeCacheManager = new CompositeCacheManager();
+        return compositeCacheManager;
     }
 
     @Component
@@ -65,7 +76,6 @@ public class GatewayApplication {
             swaggerResource.setSwaggerVersion("2.0");
             return swaggerResource;
         }
-
     }
 
 }

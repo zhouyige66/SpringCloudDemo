@@ -13,7 +13,7 @@ public class ESRestConfig {
     @Bean
     public RestClient getClient() {
         // 如果有多个从节点可以持续在内部new多个HttpHost，参数1是ip,参数2是HTTP端口，参数3是通信协议
-        RestClientBuilder clientBuilder = RestClient.builder(new HttpHost("172.16.63.142", 9200,
+        RestClientBuilder clientBuilder = RestClient.builder(new HttpHost("127.0.0.1", 9200,
                 "http"));
 
         // 设置请求头，每个请求都会带上这个请求头

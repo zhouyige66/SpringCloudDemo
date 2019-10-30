@@ -1,7 +1,8 @@
 package cn.roy.springcloud.api.controller;
 
-import cn.roy.springcloud.api.http.TestDto;
 import cn.roy.springcloud.api.service.call.RemoteCallService;
+import cn.roy.springcloud.common.base.SimpleDto;
+import cn.roy.springcloud.common.base.SimpleMapDto;
 import cn.roy.springcloud.common.http.ResultData;
 import com.netflix.hystrix.contrib.javanica.annotation.DefaultProperties;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
@@ -51,31 +52,37 @@ public class TestController {
         String baseInfo = request.getHeader("baseInfo");
         System.out.println("读取的baseInfo参数：" + baseInfo);
 
-        TestDto testDto = new TestDto(userName);
-        ResultData resultData = ResultData.success(testDto);
-        return resultData;
+        SimpleMapDto simpleMapDto = new SimpleMapDto();
+        simpleMapDto.add("name",userName);
+        return ResultData.success(simpleMapDto);
     }
 
     @ApiOperation(value = "服务处理时间4S", notes = "功能：供其他服务调用接口")
     @GetMapping("time")
-    public String time() {
+    public ResultData time() {
         try {
             Thread.sleep(4000);
+            SimpleDto stringSimpleDto = new SimpleDto();
+            stringSimpleDto.setValue("睡眠4秒");
+            return ResultData.success(stringSimpleDto);
         } catch (InterruptedException e) {
             e.printStackTrace();
+            return ResultData.serverError();
         }
-        return "睡眠4秒";
     }
 
     @ApiOperation(value = "服务处理时间6S", notes = "功能：供其他服务调用接口")
     @GetMapping("timeOver")
-    public String timeOver() {
+    public ResultData timeOver() {
         try {
             Thread.sleep(6000);
+            SimpleDto stringSimpleDto = new SimpleDto();
+            stringSimpleDto.setValue("睡眠6秒");
+            return ResultData.success(stringSimpleDto);
         } catch (InterruptedException e) {
             e.printStackTrace();
+            return ResultData.serverError();
         }
-        return "睡眠6秒";
     }
 
     @ApiOperation(value = "测试远程调用接口", notes = "功能：测试远程调用")
@@ -94,7 +101,7 @@ public class TestController {
         return remoteCallService.callTimeOverFromApi2();
     }
 
-//    HystrixCommandProperties中可查看属性含义
+    //    HystrixCommandProperties中可查看属性含义
 //    @HystrixCommand(
 //            fallbackMethod = "buildFallbackLicenseList",
 //            threadPoolKey = "licenseByOrgThreadPool",
