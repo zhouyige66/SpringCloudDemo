@@ -12,13 +12,13 @@ import org.slf4j.LoggerFactory;
  * @Date: 2019/11/8 13:38
  * @Version: v1.0
  */
-@SimpleJobHandler(jobName = "CJob",cron = "0 0/2 * * * ?",shardingItemParameters = "1-A,2-B")
+@SimpleJobHandler(jobName = "CJob", cron = "0 0/2 * * * ?", shardingTotalCount = 3,
+        shardingItemParameters = "0-N,1-A,2-B,3-C")
 public class CJob implements SimpleJob {
     private static final Logger logger = LoggerFactory.getLogger(CJob.class);
 
     @Override
     public void execute(ShardingContext shardingContext) {
-        System.out.println(shardingContext);
-        logger.info("定时任务执行了");
+        logger.info("C定时任务执行了，传递的参数：" + shardingContext);
     }
 }

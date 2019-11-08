@@ -61,16 +61,17 @@ public class EJobConfig {
                 }
 
                 SimpleJobHandler annotation = AnnotationUtils.findAnnotation(value.getClass(), SimpleJobHandler.class);
-
                 // 定义作业核心配置
-                JobCoreConfiguration simpleCoreConfig = JobCoreConfiguration.newBuilder(annotation.jobName(),
-                        annotation.cron(), annotation.shardingTotalCount()).build();
-                // 定义SIMPLE类型配置
-                SimpleJobConfiguration simpleJobConfig = new SimpleJobConfiguration(simpleCoreConfig,
+                JobCoreConfiguration jobCoreConfiguration = JobCoreConfiguration.newBuilder(annotation.jobName(),
+                        annotation.cron(), annotation.shardingTotalCount())
+                        .shardingItemParameters(annotation.shardingItemParameters())
+                        .build();
+                // 定义Simple类型配置
+                SimpleJobConfiguration simpleJobConfiguration = new SimpleJobConfiguration(jobCoreConfiguration,
                         value.getClass().getCanonicalName());
                 // 定义Lite作业根配置
-                LiteJobConfiguration simpleJobRootConfig = LiteJobConfiguration.newBuilder(simpleJobConfig).build();
-
+                LiteJobConfiguration simpleJobRootConfig = LiteJobConfiguration.newBuilder(simpleJobConfiguration)
+                        .build();
                 // 配置JobScheduler
                 JobScheduler jobScheduler = new JobScheduler(createRegistryCenter(), simpleJobRootConfig);
                 jobScheduler.init();
