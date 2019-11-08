@@ -3,13 +3,15 @@ package cn.roy.springcloud.common.http;
 import cn.roy.springcloud.common.base.BaseDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import java.io.Serializable;
+
 /**
  * @Description: http请求返回实体
  * @Author: Roy Z
  * @Date: 2019-10-25 09:47
  * @Version: v1.0
  */
-public class ResultData {
+public class ResultData implements Serializable {
     // 操作成功
     public static int CODE_SUCCESS = 200;
     // 请求错误

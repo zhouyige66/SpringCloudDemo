@@ -12,6 +12,7 @@ import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 import org.springframework.cloud.netflix.zuul.filters.Route;
 import org.springframework.cloud.netflix.zuul.filters.RouteLocator;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import springfox.documentation.swagger.web.SwaggerResource;
@@ -26,6 +27,7 @@ import java.util.List;
 @EnableZuulProxy
 @EnableSwagger2
 @EnableCaching
+@EnableAspectJAutoProxy(proxyTargetClass = true)
 public class GatewayApplication {
 
     public static void main(String[] args) {

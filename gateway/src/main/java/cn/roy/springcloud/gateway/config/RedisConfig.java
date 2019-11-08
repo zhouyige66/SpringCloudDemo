@@ -3,6 +3,9 @@ package cn.roy.springcloud.gateway.config;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.support.CompositeCacheManager;
@@ -11,9 +14,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
-import org.springframework.data.redis.cache.RedisCacheWriter;
+import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.*;
+import org.springframework.data.redis.listener.PatternTopic;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
@@ -33,10 +38,14 @@ import java.util.Arrays;
 @Order(2)
 @EnableRedisHttpSession(maxInactiveIntervalInSeconds = 60) //注解，开启redis集中session管理
 public class RedisConfig {
+    private static final Logger logger = LoggerFactory.getLogger(RedisConfig.class);
+
+    @Autowired
+    private RedisConnectionFactory factory;
 
     @Bean
     @SuppressWarnings("all")
-    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory factory) {
+    public RedisTemplate<String, Object> redisTemplate() {
         RedisTemplate<String, Object> template = new RedisTemplate<String, Object>();
         template.setConnectionFactory(factory);
         Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
@@ -84,21 +93,6 @@ public class RedisConfig {
     }
 
     /**********功能：缓存相关**********/
-
-    @Bean
-    public CacheManager cacheManager(RedisTemplate<String, Object>  redisTemplate,
-                                     @Qualifier("mainCacheManager") CacheManager manager) {
-        // configure and return an implementation of Spring's CacheManager SPI
-        RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig();
-        redisCacheConfiguration.entryTtl(Duration.ofSeconds(60));
-        RedisCacheManager redisCacheManager = new RedisCacheManager(
-                RedisCacheWriter.lockingRedisCacheWriter(redisTemplate.getConnectionFactory()),
-                redisCacheConfiguration);
-        CompositeCacheManager cacheManager = (CompositeCacheManager) manager;
-        cacheManager.setCacheManagers(Arrays.asList(redisCacheManager));
-        return redisCacheManager;
-    }
-
     @Bean
     public CookieSerializer cookieSerializer() {
         DefaultCookieSerializer defaultCookieSerializer = new DefaultCookieSerializer();
@@ -109,6 +103,33 @@ public class RedisConfig {
         // 设置各web应用返回的cookiePath一致
         defaultCookieSerializer.setCookiePath("/");
         return defaultCookieSerializer;
+    }
+
+    @Bean
+    public CacheManager cacheManager(@Qualifier("mainCacheManager") CacheManager manager) {
+        RedisCacheManager redisCacheManager = RedisCacheManager.builder(factory)
+                .cacheDefaults(RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(3)))
+                .transactionAware()
+                .build();
+        CompositeCacheManager cacheManager = (CompositeCacheManager) manager;
+        cacheManager.setCacheManagers(Arrays.asList(redisCacheManager));
+        return redisCacheManager;
+    }
+
+    @Bean("cacheRedisMessageListenerContainer")
+    public RedisMessageListenerContainer redisMessageListenerContainer() {
+        RedisMessageListenerContainer redisMessageListenerContainer = new RedisMessageListenerContainer();
+        redisMessageListenerContainer.setConnectionFactory(factory);
+        redisMessageListenerContainer.addMessageListener((Message message, byte[] pattern) -> {
+            logger.info("收到过期消息：{}", message);
+            // 清除本地缓存
+
+        }, new PatternTopic("__keyevent@*__:expired"));
+//        redisMessageListenerContainer.addMessageListener((Message message, byte[] pattern) -> {
+//            logger.info("收到keyspace消息：" + message);
+//        }, new PatternTopic("__keyspace@*__:*"));
+
+        return redisMessageListenerContainer;
     }
 
 }

@@ -1,6 +1,7 @@
 package cn.roy.springcloud.gateway.util;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
 import org.springframework.data.redis.core.BoundListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -640,5 +641,9 @@ public class RedisUtil {
     }
 
     //=========BoundListOperations 用法 End============
+
+    public void publish(Cache cache) {
+        redisTemplate.convertAndSend("cache", cache);
+    }
 
 }

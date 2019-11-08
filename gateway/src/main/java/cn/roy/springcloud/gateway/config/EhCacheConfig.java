@@ -1,6 +1,5 @@
 package cn.roy.springcloud.gateway.config;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
@@ -10,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ClassPathResource;
 
+import javax.annotation.Resource;
 import java.util.Arrays;
 
 /**
@@ -21,6 +21,9 @@ import java.util.Arrays;
 @Configuration
 @Order(1)
 public class EhCacheConfig {
+
+    @Resource(name = "mainCacheManager")
+    CacheManager manager;
 
     /**
      * EhCacheManagerFactoryBean缓存管理器，默认的为EhCacheCacheManager
@@ -35,17 +38,12 @@ public class EhCacheConfig {
         return cacheManagerFactoryBean;
     }
 
-    /**
-     * ehcache 主要的管理器
-     */
-    @Bean
-    public CacheManager ehCacheCacheManager(EhCacheManagerFactoryBean bean,
-                                            @Qualifier("mainCacheManager") CacheManager manager) {
+    @Bean(name = "EhCacheManager")
+    public net.sf.ehcache.CacheManager ehCacheCacheManager(EhCacheManagerFactoryBean bean) {
         EhCacheCacheManager ehCacheCacheManager = new EhCacheCacheManager(bean.getObject());
         CompositeCacheManager cacheManager = (CompositeCacheManager) manager;
         cacheManager.setCacheManagers(Arrays.asList(ehCacheCacheManager));
-
-        return ehCacheCacheManager;
+        return ehCacheCacheManager.getCacheManager();
     }
 
 }

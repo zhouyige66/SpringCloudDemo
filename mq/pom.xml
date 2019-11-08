@@ -13,7 +13,7 @@
     <description>消息中间件</description>
 
     <dependencies>
-        <!--activemq-->
+        <!--activemq低版本-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-activemq</artifactId>

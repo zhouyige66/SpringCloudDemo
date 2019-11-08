@@ -1,0 +1,11 @@
+server:
+  port: 8750
+
+spring:
+  application:
+    name: job
+
+zookeeper:
+  url: 127.0.0.1
+  port: 2181
+  namespace: zk_job
