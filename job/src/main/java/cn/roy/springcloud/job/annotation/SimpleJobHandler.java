@@ -18,6 +18,8 @@ public @interface SimpleJobHandler {
 
     String jobName() default "";
 
+    String jobParameter() default "";
+
     String cron() default "";
 
     int shardingTotalCount() default 1;

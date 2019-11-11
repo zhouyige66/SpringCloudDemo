@@ -42,11 +42,11 @@ public class EJobConfig {
     @Bean
     public CoordinatorRegistryCenter createRegistryCenter() {
         String serverLists = zookeeperUrl.concat(":").concat(zookeeperPort);
-        ZookeeperConfiguration configuration = new ZookeeperConfiguration(serverLists, zookeeperNamespace);
-        CoordinatorRegistryCenter regCenter = new ZookeeperRegistryCenter(configuration);
-        regCenter.init();
+        ZookeeperConfiguration zookeeperConfiguration = new ZookeeperConfiguration(serverLists, zookeeperNamespace);
+        CoordinatorRegistryCenter registryCenter = new ZookeeperRegistryCenter(zookeeperConfiguration);
+        registryCenter.init();
 
-        return regCenter;
+        return registryCenter;
     }
 
     @Bean
@@ -64,16 +64,18 @@ public class EJobConfig {
                 // 定义作业核心配置
                 JobCoreConfiguration jobCoreConfiguration = JobCoreConfiguration.newBuilder(annotation.jobName(),
                         annotation.cron(), annotation.shardingTotalCount())
+                        .jobParameter(annotation.jobParameter())
                         .shardingItemParameters(annotation.shardingItemParameters())
                         .build();
                 // 定义Simple类型配置
                 SimpleJobConfiguration simpleJobConfiguration = new SimpleJobConfiguration(jobCoreConfiguration,
                         value.getClass().getCanonicalName());
                 // 定义Lite作业根配置
-                LiteJobConfiguration simpleJobRootConfig = LiteJobConfiguration.newBuilder(simpleJobConfiguration)
+                LiteJobConfiguration liteJobConfiguration = LiteJobConfiguration.newBuilder(simpleJobConfiguration)
+                        .overwrite(true)// 配置生效
                         .build();
                 // 配置JobScheduler
-                JobScheduler jobScheduler = new JobScheduler(createRegistryCenter(), simpleJobRootConfig);
+                JobScheduler jobScheduler = new JobScheduler(createRegistryCenter(), liteJobConfiguration);
                 jobScheduler.init();
             }
         }

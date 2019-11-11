@@ -12,8 +12,10 @@ import org.slf4j.LoggerFactory;
  * @Date: 2019/11/8 13:38
  * @Version: v1.0
  */
-@SimpleJobHandler(jobName = "CJob", cron = "0 0/2 * * * ?", shardingTotalCount = 3,
-        shardingItemParameters = "0-N,1-A,2-B,3-C")
+@SimpleJobHandler(jobName = "CJob", jobParameter = "C任务参数",
+        cron = "0 0/2 * * * ?",
+        shardingTotalCount = 3,
+        shardingItemParameters = "0=A,1=B,2=C")
 public class CJob implements SimpleJob {
     private static final Logger logger = LoggerFactory.getLogger(CJob.class);
 

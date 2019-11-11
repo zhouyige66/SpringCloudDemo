@@ -13,37 +13,42 @@
     <description>消息中间件</description>
 
     <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
         <!--activemq低版本-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-activemq</artifactId>
         </dependency>
         <!--activemq artemis-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-artemis</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-artemis</artifactId>-->
+<!--        </dependency>-->
         <!--rabbitmq-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-amqp</artifactId>
         </dependency>
-        <!--rocketmq-->
-        <dependency>
-            <groupId>org.apache.rocketmq</groupId>
-            <artifactId>rocketmq-client</artifactId>
-            <version>4.3.0</version>
-        </dependency>
-        <!--kafka-->
-        <dependency>
-            <groupId>org.springframework.kafka</groupId>
-            <artifactId>spring-kafka</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.kafka</groupId>
-            <artifactId>spring-kafka-test</artifactId>
-            <scope>test</scope>
-        </dependency>
+<!--        &lt;!&ndash;rocketmq&ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.rocketmq</groupId>-->
+<!--            <artifactId>rocketmq-client</artifactId>-->
+<!--            <version>4.3.0</version>-->
+<!--        </dependency>-->
+<!--        &lt;!&ndash;kafka&ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.kafka</groupId>-->
+<!--            <artifactId>spring-kafka</artifactId>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.kafka</groupId>-->
+<!--            <artifactId>spring-kafka-test</artifactId>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
     </dependencies>
 
 </project>
