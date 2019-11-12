@@ -16,8 +16,8 @@ import javax.jms.Message;
  * @Version: v1.0
  */
 @Component
-public class MQReceiver {
-    private static final Logger logger = LoggerFactory.getLogger(MQReceiver.class);
+public class ActiveMQReceiver {
+    private static final Logger logger = LoggerFactory.getLogger(ActiveMQReceiver.class);
 
     // 使用JmsListener配置消费者监听的队列，其中msg是接收到的消息
 //    @JmsListener(destination = ActiveMQConfig.QUEUE)
