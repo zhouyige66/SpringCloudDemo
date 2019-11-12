@@ -11,7 +11,9 @@ import org.springframework.jms.config.JmsListenerContainerFactory;
 import javax.jms.Queue;
 import javax.jms.Topic;
 
-/**
+import static javax.jms.JMSContext.AUTO_ACKNOWLEDGE;
+
+/**v
  * @Description:
  * @Author: Roy Z
  * @Date: 2019/11/11 10:42
@@ -27,6 +29,20 @@ public class ActiveMQConfig {
         return new ActiveMQConnectionFactory();
     }
 
+    /**********功能：queue模式**********/
+    @Bean
+    public Queue queue() {
+        return new ActiveMQQueue(QUEUE);
+    }
+
+    @Bean
+    public JmsListenerContainerFactory<?> jmsListenerContainerQueue() {
+        DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
+        factory.setConnectionFactory(connectionFactory());
+        factory.setSessionAcknowledgeMode(AUTO_ACKNOWLEDGE);
+        return factory;
+    }
+
     /**********功能：topic模式**********/
     @Bean
     public Topic topic() {
@@ -39,20 +55,8 @@ public class ActiveMQConfig {
         factory.setConnectionFactory(connectionFactory());
         factory.setPubSubDomain(true);//发布订阅模式
         factory.setSessionTransacted(true);
+        factory.setSessionAcknowledgeMode(AUTO_ACKNOWLEDGE);
         factory.setConcurrency("5");
-        return factory;
-    }
-
-    /**********功能：queue模式**********/
-    @Bean
-    public Queue queue() {
-        return new ActiveMQQueue(QUEUE);
-    }
-
-    @Bean
-    public JmsListenerContainerFactory<?> jmsListenerContainerQueue() {
-        DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
-        factory.setConnectionFactory(connectionFactory());
         return factory;
     }
 
