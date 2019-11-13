@@ -1,5 +1,6 @@
 package cn.roy.springcloud.api2;
 
+import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.CommandLineRunner;
@@ -17,6 +18,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @EnableFeignClients
 @EnableCircuitBreaker
 @EnableHystrixDashboard
+@EnableRabbit
 public class Api2Application extends SpringBootServletInitializer implements CommandLineRunner, ApplicationRunner {
 
     public static void main(String[] args) {

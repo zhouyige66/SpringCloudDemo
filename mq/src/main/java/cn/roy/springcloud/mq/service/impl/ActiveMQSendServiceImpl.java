@@ -5,6 +5,7 @@ import org.apache.activemq.command.ActiveMQQueue;
 import org.apache.activemq.command.ActiveMQTopic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsMessagingTemplate;
+import org.springframework.stereotype.Service;
 
 /**
  * @Description:
@@ -12,6 +13,7 @@ import org.springframework.jms.core.JmsMessagingTemplate;
  * @Date: 2019/11/12 11:11
  * @Version: v1.0
  */
+@Service
 public class ActiveMQSendServiceImpl implements ActiveMQSendService {
 
     @Autowired

@@ -1,6 +1,5 @@
-package cn.roy.springcloud.mq.receive;
+package cn.roy.springcloud.api.receiver;
 
-import cn.roy.springcloud.mq.config.ActiveMQConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jms.annotation.JmsListener;
@@ -12,7 +11,7 @@ import javax.jms.Message;
 /**
  * @Description:
  * @Author: Roy Z
- * @Date: 2019/11/11 13:36
+ * @Date: 2019/11/12 15:17
  * @Version: v1.0
  */
 @Component
@@ -27,7 +26,7 @@ public class ActiveMQReceiver {
 //        return msg;
 //    }
 
-    @JmsListener(destination = ActiveMQConfig.QUEUE)
+    @JmsListener(destination = ActiveMQConstants.QUEUE)
     public void handleMessage(Message msg) {
         logger.info("收到消息1：" + msg);
         try {
@@ -38,12 +37,12 @@ public class ActiveMQReceiver {
         }
     }
 
-    @JmsListener(destination = ActiveMQConfig.TOPIC, containerFactory = "jmsListenerContainerTopic", concurrency = "1")
+    @JmsListener(destination = ActiveMQConstants.TOPIC, containerFactory = "jmsListenerContainerTopic", concurrency = "1")
     public void handleMessage2(String msg) {
         logger.info("收到消息2：" + msg);
     }
 
-    @JmsListener(destination = ActiveMQConfig.TOPIC, containerFactory = "jmsListenerContainerTopic", concurrency = "1")
+    @JmsListener(destination = ActiveMQConstants.TOPIC, containerFactory = "jmsListenerContainerTopic", concurrency = "1")
     public void handleMessage3(String msg) {
         logger.info("收到消息3：" + msg);
     }

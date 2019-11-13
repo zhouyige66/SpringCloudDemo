@@ -36,6 +36,12 @@ spring:
         enabled: true
         #注册中心的服务名
         service-id: config-server
+  rabbitmq:
+    addresses: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: rabbit_mq_default
 
 # 开启熔断机制
 feign:

@@ -10,11 +10,13 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.jms.annotation.EnableJms;
 
 @SpringBootApplication
 @EnableEurekaClient
 @EnableFeignClients
 @EnableCircuitBreaker
+@EnableJms
 public class ApiApplication extends SpringBootServletInitializer implements CommandLineRunner, ApplicationRunner {
 
     public static void main(String[] args) {
