@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @Description:
  * @Author: Roy Z
@@ -48,4 +51,23 @@ public class MQSendController {
         return "success";
     }
 
+    /**********功能：rabbit发送消息测试**********/
+
+    @GetMapping("send5")
+    public String send5() {
+        rabbitMQSendService.send2Direct("direct", "key1", "发送主题信息，主题名：active_mq_topic");
+        rabbitMQSendService.send2Topic("topic", "key.*", "发送主题信息，主题名：active_mq_topic");
+        rabbitMQSendService.send2Fanout("fanout", "发送主题信息，主题名：active_mq_topic");
+        Map<String, Object> map = new HashMap<>();
+        map.put("name", "roy");
+        rabbitMQSendService.send2Headers("headers", map, "发送主题信息，主题名：active_mq_topic");
+
+        return "success";
+    }
+
+    @GetMapping("send6")
+    public String send6() {
+        rabbitMQSendService.send2Topic("direct", "key.*", "发送主题信息，主题名：active_mq_topic");
+        return "success";
+    }
 }

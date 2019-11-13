@@ -19,3 +19,6 @@ spring:
     username: guest
     password: guest
     virtual-host: rabbit_mq_default
+    #支持发送端消息的确认与返回
+    publisher-confirms: true
+    publisher-returns: true
