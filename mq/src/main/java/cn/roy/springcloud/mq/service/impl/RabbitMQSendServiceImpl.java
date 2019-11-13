@@ -31,12 +31,12 @@ public class RabbitMQSendServiceImpl implements RabbitMQSendService {
 
     @Override
     public void send2Fanout(String exchange, Object object) {
-        rabbitMessagingTemplate.convertAndSend(exchange,"",object);
+        rabbitMessagingTemplate.convertAndSend(exchange, "", object);
     }
 
     @Override
-    public void send2Headers(String routingKey, @NotNull Map<String, Object> headers, Object object) {
-        rabbitMessagingTemplate.convertAndSend(routingKey, object, headers);
+    public void send2Headers(String exchange, @NotNull Map<String, Object> headers, Object object) {
+        rabbitMessagingTemplate.convertAndSend(exchange, "", object, headers);
     }
 
 }

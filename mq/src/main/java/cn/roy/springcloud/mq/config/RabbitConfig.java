@@ -1,7 +1,9 @@
 package cn.roy.springcloud.mq.config;
 
-import org.springframework.amqp.core.*;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.FanoutExchange;
+import org.springframework.amqp.core.HeadersExchange;
+import org.springframework.amqp.core.TopicExchange;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -17,22 +19,22 @@ public class RabbitConfig {
     /**********功能：注入四种类型的exchange**********/
     @Bean
     public DirectExchange directExchange(){
-        return new DirectExchange("");
+        return new DirectExchange("direct");
     }
 
     @Bean
     public TopicExchange topicExchange(){
-        return new TopicExchange("");
+        return new TopicExchange("topic");
     }
 
     @Bean
     public FanoutExchange fanoutExchange(){
-        return new FanoutExchange("");
+        return new FanoutExchange("fanout");
     }
 
     @Bean
     public HeadersExchange headersExchange(){
-        return new HeadersExchange("");
+        return new HeadersExchange("headers");
     }
 
 }

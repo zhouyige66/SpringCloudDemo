@@ -21,6 +21,6 @@ public interface RabbitMQSendService {
 
     void send2Fanout(String exchange, Object object);
 
-    void send2Headers(String routingKey, @NotNull Map<String, Object> headers, Object object);
+    void send2Headers(String exchange, @NotNull Map<String, Object> headers, Object object);
 
 }
