@@ -11,10 +11,6 @@ import org.springframework.stereotype.Service;
 @Service
 public interface ActiveMQSendService {
 
-    void sendText2Queue(String queue, String msg);
-
-    void sendText2Topic(String topic, String msg);
-
     void send2Queue(String queue, Object obj);
 
     void send2Top(String topic, Object obj);

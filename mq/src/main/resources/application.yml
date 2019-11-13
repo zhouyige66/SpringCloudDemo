@@ -4,12 +4,6 @@ server:
 spring:
   application:
     name: mq
-  rabbitmq:
-    addresses: 127.0.0.1
-    port: 5672
-    username: guest
-    password: guest
-    virtual-host: rabbit_mq_default
   activemq:
     broker-url: tcp://127.0.0.1:61616
     user: admin
@@ -18,4 +12,10 @@ spring:
       enabled: true
       max-connections: 50
       idle-timeout: 30000
-#      expiry-timeout: 1000
+      #expiry-timeout: 1000
+  rabbitmq:
+    addresses: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: rabbit_mq_default

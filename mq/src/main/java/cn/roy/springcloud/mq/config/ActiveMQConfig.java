@@ -1,11 +1,9 @@
 package cn.roy.springcloud.mq.config;
 
-import org.apache.activemq.pool.PooledConnectionFactory;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jms.core.JmsMessagingTemplate;
-
-import javax.jms.ConnectionFactory;
 
 /**
  * @Description:
@@ -17,13 +15,8 @@ import javax.jms.ConnectionFactory;
 public class ActiveMQConfig {
 
     @Bean
-    public ConnectionFactory connectionFactory(){
-        return new PooledConnectionFactory();
-    }
-
-    @Bean
-    public JmsMessagingTemplate jmsMessagingTemplate(){
-        return new JmsMessagingTemplate(connectionFactory());
+    public MessageConverter messageConverter(){
+        return new Jackson2JsonMessageConverter();
     }
 
 }

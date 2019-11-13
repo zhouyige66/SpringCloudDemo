@@ -22,28 +22,28 @@ public class MQSendController {
 
     @GetMapping("send")
     public String send() {
-        activeMQSendService.send2Queue("active_mq_topic", "发送mq队列消息");
+        activeMQSendService.send2Queue("active_mq_queue", "发送队列消息，队列名：active_mq_queue");
 
         return "success";
     }
 
     @GetMapping("send2")
     public String send2() {
-        activeMQSendService.send2Top("active_mq_queue", "发送mq主题信息");
+        activeMQSendService.send2Queue("active_mq_topic", "发送队列信息，队列名：active_mq_topic");
 
         return "success";
     }
 
     @GetMapping("send3")
     public String send3() {
-        activeMQSendService.send2Top("active_mq_queue", "发送mq主题信息");
+        activeMQSendService.send2Top("active_mq_queue", "发送主题信息，主题名：active_mq_queue");
 
         return "success";
     }
 
     @GetMapping("send4")
     public String send4() {
-        activeMQSendService.send2Top("active_mq_queue", "发送mq主题信息");
+        activeMQSendService.send2Top("active_mq_topic", "发送主题信息，主题名：active_mq_topic");
 
         return "success";
     }
