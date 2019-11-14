@@ -1,6 +1,6 @@
 package cn.roy.springcloud.mq.service;
 
-import org.springframework.amqp.core.MessagePostProcessor;
+import cn.roy.springcloud.mq.config.RabbitConfig;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
@@ -15,12 +15,12 @@ import java.util.Map;
 @Service
 public interface RabbitMQSendService {
 
-    void send2Direct(String exchange, String routingKey, Object object);
+    void send2Direct(RabbitConfig.DirectExchangeName direct, RabbitConfig.RoutingKey routingKey, Object object);
 
-    void send2Topic(String exchange, String topic, Object object);
+    void send2Topic(RabbitConfig.TopicExchangeName topic, String routingKey, Object object);
 
-    void send2Fanout(String exchange, Object object);
+    void send2Fanout(RabbitConfig.FanoutExchangeName fanout, Object object);
 
-    void send2Headers(String exchange, @NotNull Map<String, Object> headers, Object object);
+    void send2Headers(RabbitConfig.HeadersExchangeName headers, @NotNull Map<String, Object> headersMap, Object object);
 
 }

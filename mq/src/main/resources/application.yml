@@ -22,3 +22,5 @@ spring:
     #支持发送端消息的确认与返回
     publisher-confirms: true
     publisher-returns: true
+    template:
+      mandatory: true

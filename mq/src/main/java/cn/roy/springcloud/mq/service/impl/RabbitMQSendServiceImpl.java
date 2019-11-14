@@ -1,5 +1,6 @@
 package cn.roy.springcloud.mq.service.impl;
 
+import cn.roy.springcloud.mq.config.RabbitConfig;
 import cn.roy.springcloud.mq.service.RabbitMQSendService;
 import org.springframework.amqp.rabbit.core.RabbitMessagingTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,23 +21,23 @@ public class RabbitMQSendServiceImpl implements RabbitMQSendService {
     private RabbitMessagingTemplate rabbitMessagingTemplate;
 
     @Override
-    public void send2Direct(String exchange, String routingKey, Object object) {
-        rabbitMessagingTemplate.convertAndSend(exchange, routingKey, object);
+    public void send2Direct(RabbitConfig.DirectExchangeName direct, RabbitConfig.RoutingKey routingKey, Object object) {
+        rabbitMessagingTemplate.convertAndSend(direct.getName(), routingKey.getName(), object);
     }
 
     @Override
-    public void send2Topic(String exchange, String topic, Object object) {
-        rabbitMessagingTemplate.convertAndSend(exchange, topic, object);
+    public void send2Topic(RabbitConfig.TopicExchangeName topic, String routingKey, Object object) {
+        rabbitMessagingTemplate.convertAndSend(topic.getName(), routingKey, object);
     }
 
     @Override
-    public void send2Fanout(String exchange, Object object) {
-        rabbitMessagingTemplate.convertAndSend(exchange, "", object);
+    public void send2Fanout(RabbitConfig.FanoutExchangeName fanout, Object object) {
+        rabbitMessagingTemplate.convertAndSend(fanout.getName(), "", object);
     }
 
     @Override
-    public void send2Headers(String exchange, @NotNull Map<String, Object> headers, Object object) {
-        rabbitMessagingTemplate.convertAndSend(exchange, "", object, headers);
+    public void send2Headers(RabbitConfig.HeadersExchangeName headers, @NotNull Map<String, Object> headersMap, Object object) {
+        rabbitMessagingTemplate.convertAndSend(headers.getName(), "", object, headersMap);
     }
 
 }

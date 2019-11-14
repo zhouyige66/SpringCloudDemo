@@ -1,13 +1,11 @@
 package cn.roy.springcloud.mq.controller;
 
+import cn.roy.springcloud.mq.config.RabbitConfig;
 import cn.roy.springcloud.mq.service.ActiveMQSendService;
 import cn.roy.springcloud.mq.service.RabbitMQSendService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @Description:
@@ -55,19 +53,27 @@ public class MQSendController {
 
     @GetMapping("send5")
     public String send5() {
-        rabbitMQSendService.send2Direct("direct", "key1", "发送主题信息，主题名：active_mq_topic");
-        rabbitMQSendService.send2Topic("topic", "key.*", "发送主题信息，主题名：active_mq_topic");
-        rabbitMQSendService.send2Fanout("fanout", "发送主题信息，主题名：active_mq_topic");
-        Map<String, Object> map = new HashMap<>();
-        map.put("name", "roy");
-        rabbitMQSendService.send2Headers("headers", map, "发送主题信息，主题名：active_mq_topic");
+        rabbitMQSendService.send2Direct(RabbitConfig.DirectExchangeName.DefaultName, RabbitConfig.RoutingKey.DirectA,
+                "发送direct信息给A");
+        rabbitMQSendService.send2Direct(RabbitConfig.DirectExchangeName.DefaultName, RabbitConfig.RoutingKey.DirectB,
+                "发送direct信息给B");
+        rabbitMQSendService.send2Direct(RabbitConfig.DirectExchangeName.DefaultName, RabbitConfig.RoutingKey.DirectC,
+                "发送direct信息给C");
+
+//        rabbitMQSendService.send2Topic(RabbitConfig.TopicExchangeName.DefaultName, "topic",
+//                "发送topic信息，routingKey=topic");
+//        rabbitMQSendService.send2Topic(RabbitConfig.TopicExchangeName.DefaultName, "topic.A",
+//                "发送topic信息，routingKey=topic.A");
+//        rabbitMQSendService.send2Topic(RabbitConfig.TopicExchangeName.DefaultName, "topic.A.B",
+//                "发送topic信息，routingKey=topic.A.B");
+//        rabbitMQSendService.send2Topic(RabbitConfig.TopicExchangeName.DefaultName, "topic.goods",
+//                "发送topic信息，routingKey=topic.goods");
+//        rabbitMQSendService.send2Topic(RabbitConfig.TopicExchangeName.DefaultName, "order",
+//                "发送topic信息，routingKey=order");
+//
+//        rabbitMQSendService.send2Fanout(RabbitConfig.FanoutExchangeName.DefaultName, "发送fanout消息");
 
         return "success";
     }
 
-    @GetMapping("send6")
-    public String send6() {
-        rabbitMQSendService.send2Topic("direct", "key.*", "发送主题信息，主题名：active_mq_topic");
-        return "success";
-    }
 }
