@@ -76,4 +76,28 @@ public class MQSendController {
         return "success";
     }
 
+    @GetMapping("send6")
+    public String send6() {
+        rabbitMQSendService.send2Topic(RabbitConfig.TopicExchangeName.DefaultName, "topic",
+                "发送topic信息，routingKey=topic");
+        rabbitMQSendService.send2Topic(RabbitConfig.TopicExchangeName.DefaultName, "topic.A",
+                "发送topic信息，routingKey=topic.A");
+        rabbitMQSendService.send2Topic(RabbitConfig.TopicExchangeName.DefaultName, "topic.A.B",
+                "发送topic信息，routingKey=topic.A.B");
+        rabbitMQSendService.send2Topic(RabbitConfig.TopicExchangeName.DefaultName, "topic.goods",
+                "发送topic信息，routingKey=topic.goods");
+        rabbitMQSendService.send2Topic(RabbitConfig.TopicExchangeName.DefaultName, "order",
+                "发送topic信息，routingKey=order");
+//
+//        rabbitMQSendService.send2Fanout(RabbitConfig.FanoutExchangeName.DefaultName, "发送fanout消息");
+
+        return "success";
+    }
+
+    @GetMapping("send7")
+    public String send7() {
+        rabbitMQSendService.send2Fanout(RabbitConfig.FanoutExchangeName.DefaultName, "发送fanout消息");
+        return "success";
+    }
+
 }
