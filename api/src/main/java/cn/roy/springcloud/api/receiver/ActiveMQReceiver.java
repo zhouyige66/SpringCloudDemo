@@ -37,14 +37,25 @@ public class ActiveMQReceiver {
         }
     }
 
-    @JmsListener(destination = ActiveMQConstants.TOPIC, containerFactory = "jmsListenerContainerTopic", concurrency = "1")
-    public void handleMessage2(String msg) {
+    @JmsListener(destination = ActiveMQConstants.TOPIC)
+    public void handleMessage3(Message msg) {
         logger.info("收到消息2：" + msg);
+        try {
+            // 发送消费确认通知
+            msg.acknowledge();
+        } catch (JMSException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @JmsListener(destination = ActiveMQConstants.QUEUE, containerFactory = "jmsListenerContainerTopic", concurrency = "1")
+    public void handleMessage3(String msg) {
+        logger.info("收到消息3：" + msg);
     }
 
     @JmsListener(destination = ActiveMQConstants.TOPIC, containerFactory = "jmsListenerContainerTopic", concurrency = "1")
-    public void handleMessage3(String msg) {
-        logger.info("收到消息3：" + msg);
+    public void handleMessage4(String msg) {
+        logger.info("收到消息4：" + msg);
     }
 
 }

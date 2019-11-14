@@ -4,13 +4,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
-import org.springframework.amqp.rabbit.core.CorrelationDataPostProcessor;
 import org.springframework.amqp.rabbit.core.RabbitMessagingTemplate;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -248,7 +248,14 @@ public class RabbitConfig {
         RabbitTemplate rabbitTemplate = rabbitMessagingTemplate.getRabbitTemplate();
         rabbitTemplate.setCorrelationDataPostProcessor(
                 (Message message, CorrelationData correlationData) -> {
-                    CorrelationData data = new CorrelationData(UUID.randomUUID().toString());
+                    byte[] body = message.getBody();
+                    String s = new String(body);
+                    logger.info("发送的内容为：" + s);
+                    Map<String, Object> headers = message.getMessageProperties().getHeaders();
+                    logger.info("发送的消息的属性：{}", headers);
+                    String id = UUID.randomUUID().toString();
+                    logger.info("设置的确认ID：{}", id);
+                    CorrelationData data = new CorrelationData(id);
                     return data;
                 });
         rabbitTemplate.setConfirmCallback(

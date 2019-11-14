@@ -7,6 +7,6 @@ package cn.roy.springcloud.api.receiver;
  * @Version: v1.0
  */
 public interface ActiveMQConstants {
-    String QUEUE = "active_mq_topic";
-    String TOPIC = "active_mq_queue";
+    String QUEUE = "active_mq_queue";
+    String TOPIC = "active_mq_topic";
 }
