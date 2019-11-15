@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -83,9 +84,11 @@ public class RabbitConfig {
         DirectA("direct.A"),
         DirectB("direct.B"),
         DirectC("direct.C"),
+        DirectDelay("direct.delay"),
         TopicA("topic.A.*"),
         TopicB("topic.*"),
         TopicC("topic.#");
+
 
         private final String name;
 
@@ -120,6 +123,7 @@ public class RabbitConfig {
         }
 
         String mix = "queue.mix";
+        String delay = "queue.delay";
     }
 
     /**********功能：注入queue**********/
@@ -166,6 +170,16 @@ public class RabbitConfig {
     @Bean
     public Queue mixQueue() {
         return new Queue(QueueName.mix);
+    }
+
+    // 注入延迟队列
+    @Bean
+    public Queue delayQueue() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("x-message-ttl", 30 * 1000);
+        map.put("x-dead-letter-exchange", DirectExchangeName.DefaultName.name);
+        map.put("x-dead-letter-routing-key", RoutingKey.DirectA.name);
+        return new Queue(QueueName.delay, true, false, false, map);
     }
 
     /**********功能：注入四种类型的exchange**********/
@@ -222,6 +236,9 @@ public class RabbitConfig {
         Binding headersBinding2 = BindingBuilder.bind(headersQueue2()).to(headersExchange()).where("header.B").exists();
         Binding headersBinding3 = BindingBuilder.bind(mixQueue()).to(headersExchange()).where("header.C").exists();
 
+        // 绑定延迟队列
+        Binding delayBinding = BindingBuilder.bind(delayQueue()).to(directExchange()).with(RoutingKey.DirectDelay.name);
+
         amqpAdmin.declareBinding(directBinding);
         amqpAdmin.declareBinding(directBinding2);
         amqpAdmin.declareBinding(directBinding3);
@@ -234,6 +251,8 @@ public class RabbitConfig {
         amqpAdmin.declareBinding(headersBinding);
         amqpAdmin.declareBinding(headersBinding2);
         amqpAdmin.declareBinding(headersBinding3);
+
+        amqpAdmin.declareBinding(delayBinding);
     }
 
     @Autowired

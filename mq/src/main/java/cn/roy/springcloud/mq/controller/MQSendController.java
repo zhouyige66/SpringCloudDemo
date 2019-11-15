@@ -51,6 +51,22 @@ public class MQSendController {
 
     /**********功能：rabbit发送消息测试**********/
 
+    @GetMapping("sendDelay")
+    public String sendDelayTest() {
+        rabbitMQSendService.send2Delay("发送direct信息给延迟队列：内容1", 10 * 1000);
+        try {
+            Thread.sleep(5000);
+            rabbitMQSendService.send2Direct(RabbitConfig.DirectExchangeName.DefaultName,
+                    RabbitConfig.RoutingKey.DirectDelay, "发送direct信息给延迟队列：内容2");
+
+            rabbitMQSendService.send2Delay("发送direct信息给延迟队列：内容2", 10 * 1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return "操作成功";
+    }
+
     @GetMapping("send5")
     public String send5() {
         rabbitMQSendService.send2Direct(RabbitConfig.DirectExchangeName.DefaultName, RabbitConfig.RoutingKey.DirectA,

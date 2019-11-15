@@ -23,4 +23,6 @@ public interface RabbitMQSendService {
 
     void send2Headers(RabbitConfig.HeadersExchangeName headers, @NotNull Map<String, Object> headersMap, Object object);
 
+    void send2Delay(Object object,long ttl);
+
 }
