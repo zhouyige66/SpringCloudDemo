@@ -21,6 +21,7 @@ public class MQSendController {
     @Autowired
     private RabbitMQSendService rabbitMQSendService;
 
+    /**********功能：Active MQ发送消息测试**********/
     @GetMapping("send")
     public String send() {
         activeMQSendService.send2Queue("active_mq_queue", "发送队列消息，队列名：active_mq_queue");
@@ -49,20 +50,17 @@ public class MQSendController {
         return "success";
     }
 
-    /**********功能：rabbit发送消息测试**********/
+    /**********功能：Rabbit MQ发送消息测试**********/
 
     @GetMapping("sendDelay")
     public String sendDelayTest() {
         rabbitMQSendService.send2Delay("发送消息到延迟队列：内容1，过期时间：10s", 10 * 1000);
-        rabbitMQSendService.send2Delay("发送消息到延迟队列：内容2，过期时间：15s", 15 * 1000);
-        rabbitMQSendService.send2Delay("发送消息到延迟队列：内容3，过期时间：5s", 5 * 1000);
         try {
-            Thread.sleep(5000);
+            Thread.sleep(2000);
             // 未配置消息过期时间，会受队列的过期时间影响，且后入队的消息同步收影响
-            rabbitMQSendService.send2Delay("发送消息到延迟队列：内容4，过期时间：10s", 15 * 1000);
-            rabbitMQSendService.send2Direct(RabbitConfig.DirectExchangeName.DefaultName,
-                    RabbitConfig.RoutingKey.DirectDelay, "发送消息到延迟队列：内容5，过期时间：0s");
-            rabbitMQSendService.send2Delay("发送消息到延迟队列：内容5，过期时间：10s", 15 * 1000);
+            rabbitMQSendService.send2Delay("发送消息到延迟队列：内容2，过期时间：10s", 10 * 1000);
+            Thread.sleep(500);
+            rabbitMQSendService.send2Delay("发送消息到延迟队列：内容3，过期时间：10s", 10 * 1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -79,19 +77,6 @@ public class MQSendController {
         rabbitMQSendService.send2Direct(RabbitConfig.DirectExchangeName.DefaultName, RabbitConfig.RoutingKey.DirectC,
                 "发送direct信息给C");
 
-//        rabbitMQSendService.send2Topic(RabbitConfig.TopicExchangeName.DefaultName, "topic",
-//                "发送topic信息，routingKey=topic");
-//        rabbitMQSendService.send2Topic(RabbitConfig.TopicExchangeName.DefaultName, "topic.A",
-//                "发送topic信息，routingKey=topic.A");
-//        rabbitMQSendService.send2Topic(RabbitConfig.TopicExchangeName.DefaultName, "topic.A.B",
-//                "发送topic信息，routingKey=topic.A.B");
-//        rabbitMQSendService.send2Topic(RabbitConfig.TopicExchangeName.DefaultName, "topic.goods",
-//                "发送topic信息，routingKey=topic.goods");
-//        rabbitMQSendService.send2Topic(RabbitConfig.TopicExchangeName.DefaultName, "order",
-//                "发送topic信息，routingKey=order");
-//
-//        rabbitMQSendService.send2Fanout(RabbitConfig.FanoutExchangeName.DefaultName, "发送fanout消息");
-
         return "success";
     }
 
@@ -107,8 +92,6 @@ public class MQSendController {
                 "发送topic信息，routingKey=topic.goods");
         rabbitMQSendService.send2Topic(RabbitConfig.TopicExchangeName.DefaultName, "order",
                 "发送topic信息，routingKey=order");
-//
-//        rabbitMQSendService.send2Fanout(RabbitConfig.FanoutExchangeName.DefaultName, "发送fanout消息");
 
         return "success";
     }
