@@ -267,13 +267,7 @@ public class RabbitConfig {
         RabbitTemplate rabbitTemplate = rabbitMessagingTemplate.getRabbitTemplate();
         rabbitTemplate.setCorrelationDataPostProcessor(
                 (Message message, CorrelationData correlationData) -> {
-                    byte[] body = message.getBody();
-                    String s = new String(body);
-                    logger.info("发送的内容为：" + s);
-                    Map<String, Object> headers = message.getMessageProperties().getHeaders();
-                    logger.info("发送的消息的属性：{}", headers);
                     String id = UUID.randomUUID().toString();
-                    logger.info("设置的确认ID：{}", id);
                     CorrelationData data = new CorrelationData(id);
                     return data;
                 });

@@ -54,12 +54,15 @@ public class MQSendController {
     @GetMapping("sendDelay")
     public String sendDelayTest() {
         rabbitMQSendService.send2Delay("发送消息到延迟队列：内容1，过期时间：10s", 10 * 1000);
+        rabbitMQSendService.send2Delay("发送消息到延迟队列：内容2，过期时间：15s", 15 * 1000);
+        rabbitMQSendService.send2Delay("发送消息到延迟队列：内容3，过期时间：5s", 5 * 1000);
         try {
             Thread.sleep(5000);
+            // 未配置消息过期时间，会受队列的过期时间影响，且后入队的消息同步收影响
+            rabbitMQSendService.send2Delay("发送消息到延迟队列：内容4，过期时间：10s", 15 * 1000);
             rabbitMQSendService.send2Direct(RabbitConfig.DirectExchangeName.DefaultName,
-                    RabbitConfig.RoutingKey.DirectDelay, "发送消息到延迟队列：内容2，过期时间：0s");
-
-            rabbitMQSendService.send2Delay("发送消息到延迟队列：内容3，过期时间：10s", 10 * 1000);
+                    RabbitConfig.RoutingKey.DirectDelay, "发送消息到延迟队列：内容5，过期时间：0s");
+            rabbitMQSendService.send2Delay("发送消息到延迟队列：内容5，过期时间：10s", 15 * 1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
