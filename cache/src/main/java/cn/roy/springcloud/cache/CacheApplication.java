@@ -7,9 +7,11 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 @SpringBootApplication
 @EnableCaching
+@EnableAspectJAutoProxy(proxyTargetClass = true)
 public class CacheApplication {
 
     public static void main(String[] args) {

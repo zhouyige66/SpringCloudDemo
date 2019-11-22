@@ -1,4 +1,4 @@
-package cn.roy.springcloud.gateway.cache;
+package cn.roy.springcloud.cache.cache;
 
 import org.springframework.cache.ehcache.EhCacheCache;
 import org.springframework.cache.support.AbstractValueAdaptingCache;

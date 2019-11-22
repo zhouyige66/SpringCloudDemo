@@ -1,6 +1,5 @@
-package cn.roy.springcloud.gateway.config;
+package cn.roy.springcloud.cache.cache;
 
-import cn.roy.springcloud.gateway.cache.MultipleCacheManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,5 @@
-package cn.roy.springcloud.gateway.config;
+package cn.roy.springcloud.gateway.shiro;
 
-import cn.roy.springcloud.gateway.shiro.ShiroRealm;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.cache.ehcache.EhCacheManager;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;

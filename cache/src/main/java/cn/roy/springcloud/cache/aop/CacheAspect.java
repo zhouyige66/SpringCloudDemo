@@ -1,4 +1,4 @@
-package cn.roy.springcloud.gateway.aop;
+package cn.roy.springcloud.cache.aop;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -17,7 +17,7 @@ public class CacheAspect {
 
     //切点，内部为切入点表达式
 //    @Pointcut("execution(public * org.springframework.data.redis.cache.RedisCache.put(..))")
-//    @Pointcut("execution(public * cn.roy.springcloud.gateway.controller.CacheTestController.test(..))")
+//    @Pointcut("execution(public * cn.roy.springcloud.cache.controller.CacheTestController.test(..))")
     @Pointcut("execution(public * org.springframework.data.redis.cache.RedisCacheManager.getCache(..))")
     private void pointCutMethod() {
     }

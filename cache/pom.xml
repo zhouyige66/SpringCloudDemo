@@ -34,6 +34,20 @@
             <!--（5）system：类似 provided，需要显式提供包含依赖的jar，不会从 maven 仓库下载，而是从本地文件系统获取，需要添加 systemPath 的属性来定义路径。-->
             <scope>compile</scope>
         </dependency>
+        <!--redis-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-data-redis</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
