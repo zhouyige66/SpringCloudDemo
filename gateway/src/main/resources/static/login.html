@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+</head>
+<body>
+<input type="text" id="username">
+<input type="password" id="password">
+<input type="submit" onclick="checkInput()">
+</body>
+<script type="text/javascript">
+    function checkInput() {
+        var oUserName = document.getElementById("username");
+        var oPassWord = document.getElementById("password");
+        if (oUserName) {
+            if (oUserName.value == "") {
+                alert("用户名不能为空！");
+                return false;
+            }
+        }
+
+        if (oPassWord) {
+            if (oPassWord.value == "") {
+                alert("密码不能为空！");
+                return false;
+            }
+        }
+
+        var data = {
+            "userName": oUserName,
+            "password": oPassWord
+        };
+        var xmlhttp;
+        if (window.XMLHttpRequest) {
+            // IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+            xmlhttp = new XMLHttpRequest();
+        } else {
+            // IE6, IE5 浏览器执行代码
+            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlhttp.onreadystatechange = function () {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                document.getElementById("myDiv").innerHTML = xmlhttp.responseText;
+            } else {
+                alert("结果：" + xmlhttp.readyState)
+            }
+        }
+        xmlhttp.open("POST", "/login", true);
+        xmlhttp.send(data);
+    }
+</script>
+</html>

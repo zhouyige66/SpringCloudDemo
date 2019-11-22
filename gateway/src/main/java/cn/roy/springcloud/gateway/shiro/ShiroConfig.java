@@ -6,7 +6,6 @@ import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSource
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -57,25 +56,23 @@ public class ShiroConfig {
         // 拦截器.
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String, String>();
         // 设置login URL
-        shiroFilterFactoryBean.setLoginUrl("/login");
+        shiroFilterFactoryBean.setLoginUrl("/login.html");
         // 登录成功后要跳转的链接
-        shiroFilterFactoryBean.setSuccessUrl("/LoginSuccess.action");
+//        shiroFilterFactoryBean.setSuccessUrl("/LoginSuccess.action");
         // 未授权的页面
         shiroFilterFactoryBean.setUnauthorizedUrl("/unauthorized.action");
         // src="jquery/jquery-3.2.1.min.js" 生效
         filterChainDefinitionMap.put("/jquery/*", "anon");
         // 设置登录的URL为匿名访问，因为一开始没有用户验证
-        filterChainDefinitionMap.put("/login.action", "anon");
+        filterChainDefinitionMap.put("/auth/login", "anon");
         filterChainDefinitionMap.put("/Exception.class", "anon");
         // swagger接口权限 开放
         filterChainDefinitionMap.put("/swagger-ui.html", "anon");
         filterChainDefinitionMap.put("/webjars/**", "anon");
         filterChainDefinitionMap.put("/v2/**", "anon");
         filterChainDefinitionMap.put("/swagger-resources/**", "anon");
-        // 测试接口权限
-        filterChainDefinitionMap.put("/getUser/**", "anon");
-
-        filterChainDefinitionMap.put("/*.action", "authc");
+        // 需要认证的URL
+        filterChainDefinitionMap.put("/auth/user/**", "authc");
         // 退出系统的过滤器
         filterChainDefinitionMap.put("/logout", "logout");
         // 现在资源的角色

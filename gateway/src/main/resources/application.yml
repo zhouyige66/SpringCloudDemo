@@ -45,6 +45,9 @@ zuul:
     api2:
       path: /api2/**
       serviceId: api2
+    auth:
+      path: /auth/**
+      serviceId: gateway
   retryable: true
 
 ribbon:
