@@ -25,6 +25,7 @@
         <module>config</module>
         <module>mq</module>
         <module>job</module>
+        <module>cache</module>
     </modules>
 
     <properties>

@@ -39,11 +39,11 @@ public class EhCacheConfig {
     }
 
     @Bean(name = "EhCacheManager")
-    public net.sf.ehcache.CacheManager ehCacheCacheManager(EhCacheManagerFactoryBean bean) {
+    public CacheManager ehCacheCacheManager(EhCacheManagerFactoryBean bean) {
         EhCacheCacheManager ehCacheCacheManager = new EhCacheCacheManager(bean.getObject());
         CompositeCacheManager cacheManager = (CompositeCacheManager) manager;
         cacheManager.setCacheManagers(Arrays.asList(ehCacheCacheManager));
-        return ehCacheCacheManager.getCacheManager();
+        return ehCacheCacheManager;
     }
 
 }
