@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class ESRestConfig {
+public class ESConfig {
 
     @Bean
     public RestClient getClient() {

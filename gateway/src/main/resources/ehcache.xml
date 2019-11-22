@@ -3,10 +3,9 @@
          xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd"
          updateCheck="false">
     <!-- diskStore：ehcache其实是支持内存+磁盘+堆外内存，几个层级的缓存 -->
-    <!-- 在这里设置一下，但是一般不用的 -->
-    <diskStore path="java.io.tmpdir/Tmp_EhCache" />
-    <!-- defaultCache，是默认的缓存策略 -->
-    <!-- 如果你指定的缓存策略没有找到，那么就用这个默认的缓存策略 -->
+    <diskStore path="user.dir/EhCache"/>
+
+    <!-- defaultCache，是默认的缓存策略，如果你指定的缓存策略没有找到，那么就用这个默认的缓存策略 -->
     <!-- external：如果设置为true的话，那么timeout就没有效果，缓存就会一直存在，一般默认就是false -->
     <!-- maxElementsInMemory：内存中可以缓存多少个缓存条目，在实践中，你是需要自己去计算的，比如你计算你要缓存的对象是什么？有多大？最多可以缓存多少MB，或者多少个G的数据？除以每个对象的大小，计算出最多可以放多少个对象 -->
     <!-- overflowToDisk：如果内存不够的时候，是否溢出到磁盘 -->
@@ -17,43 +16,23 @@
     <defaultCache
             eternal="false"
             maxElementsInMemory="50000"
+            maxElementsOnDisk="50000"
             overflowToDisk="false"
             diskPersistent="false"
             timeToIdleSeconds="300"
-            timeToLiveSeconds="0"
-            memoryStoreEvictionPolicy="LRU" />
+            timeToLiveSeconds="600"
+            memoryStoreEvictionPolicy="LRU"/>
+
     <!-- 手动指定的缓存策略 -->
     <!-- 比如你一个应用吧，可能要缓存很多种不同的数据，比如说商品信息，或者是其他的一些数据 -->
     <!-- 对不同的数据，缓存策略可以在这里配置多种 -->
     <cache
-            name="deptCache"
+            name="user"
             eternal="false"
             maxElementsInMemory="10000"
             overflowToDisk="false"
             diskPersistent="false"
-            timeToIdleSeconds="300"
-            timeToLiveSeconds="0"
-            memoryStoreEvictionPolicy="LRU" />
-    <cache
-            name="yearCache"
-            eternal="false"
-            maxElementsInMemory="1000"
-            overflowToDisk="false"
-            diskPersistent="false"
-            timeToIdleSeconds="300"
-            timeToLiveSeconds="0"
-            memoryStoreEvictionPolicy="LRU" />
-    <cache
-            name="quotaCache"
-            eternal="false"
-            maxElementsInMemory="50000"
-            overflowToDisk="false"
-            diskPersistent="false"
-            timeToIdleSeconds="300"
-            timeToLiveSeconds="0"
-            memoryStoreEvictionPolicy="LRU" />
-
-    <!-- ehcache这种东西，简单实用，是很快速的，1小时上手可以用在项目里了，没什么难度的 -->
-    <!-- ehcache这个技术，如果讲深了，里面的东西还是很多的，高级的feature，但是我们这里就不涉及了 -->
-
+            timeToIdleSeconds="120"
+            timeToLiveSeconds="300"
+            memoryStoreEvictionPolicy="LRU"/>
 </ehcache>

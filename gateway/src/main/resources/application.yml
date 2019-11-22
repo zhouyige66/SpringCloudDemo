@@ -25,6 +25,9 @@ spring:
   redis:
     host: 127.0.0.1
     port: 6379
+  cache:
+    ehcache:
+      config: ehcache.xml
 
 # 注册中心
 eureka:

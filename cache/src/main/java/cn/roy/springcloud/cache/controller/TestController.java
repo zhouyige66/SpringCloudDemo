@@ -26,6 +26,4 @@ public class TestController {
         return new User(id, "name_" + id);
     }
 
-
-
 }

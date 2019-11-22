@@ -48,7 +48,6 @@ public class ShiroConfig {
 
     @Bean
     public ShiroFilterFactoryBean shirFilter(DefaultWebSecurityManager securityManager) {
-        System.out.println("ShiroConfiguration.shirFilter()");
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
 
         // 必须设置 SecurityManager
@@ -66,11 +65,13 @@ public class ShiroConfig {
         // 设置登录的URL为匿名访问，因为一开始没有用户验证
         filterChainDefinitionMap.put("/login.action", "anon");
         filterChainDefinitionMap.put("/Exception.class", "anon");
-        //swagger接口权限 开放
+        // swagger接口权限 开放
         filterChainDefinitionMap.put("/swagger-ui.html", "anon");
         filterChainDefinitionMap.put("/webjars/**", "anon");
         filterChainDefinitionMap.put("/v2/**", "anon");
         filterChainDefinitionMap.put("/swagger-resources/**", "anon");
+        // 测试接口权限
+        filterChainDefinitionMap.put("/getUser/**", "anon");
 
         filterChainDefinitionMap.put("/*.action", "authc");
         // 退出系统的过滤器
@@ -82,14 +83,13 @@ public class ShiroConfig {
     }
 
     @Bean
-    public ShiroRealm getShiroRealm() {
+    public ShiroRealm shiroRealm() {
         return new ShiroRealm();
     }
 
     @Bean
     public EhCacheManager ehCacheManager() {
         EhCacheManager cacheManager = new EhCacheManager();
-        cacheManager.setCacheManagerConfigFile("classpath:ehcache.xml");
         return cacheManager;
     }
 
@@ -97,7 +97,7 @@ public class ShiroConfig {
     public DefaultWebSecurityManager securityManager() {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         // 注入自定义的realm;
-        securityManager.setRealm(getShiroRealm());
+        securityManager.setRealm(shiroRealm());
         // 注入缓存管理器;
         securityManager.setCacheManager(ehCacheManager());
         return securityManager;

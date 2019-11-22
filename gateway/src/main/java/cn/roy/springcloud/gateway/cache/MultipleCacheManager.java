@@ -4,6 +4,7 @@ import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.ehcache.EhCacheCache;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
+import org.springframework.cache.transaction.TransactionAwareCacheDecorator;
 import org.springframework.data.redis.cache.RedisCache;
 import org.springframework.data.redis.cache.RedisCacheManager;
 
@@ -46,9 +47,15 @@ public class MultipleCacheManager implements CacheManager {
     @Override
     public Cache getCache(String name) {
         EhCacheCache ehCacheCache = (EhCacheCache) ehCacheCacheManager.getCache(name);
-        RedisCache redisCache = (RedisCache) redisCacheManager.getCache(name);
-        MultipleCache cache = new MultipleCache(false, ehCacheCache, redisCache);
-        return cache;
+        Cache cache = redisCacheManager.getCache(name);
+        RedisCache redisCache;
+        if (cache instanceof RedisCache) {
+            redisCache = (RedisCache) cache;
+        } else {
+            redisCache = (RedisCache) ((TransactionAwareCacheDecorator) cache).getTargetCache();
+        }
+        MultipleCache multipleCache = new MultipleCache(false, ehCacheCache, redisCache);
+        return multipleCache;
     }
 
     @Override
