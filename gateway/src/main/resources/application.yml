@@ -27,7 +27,8 @@ spring:
     port: 6379
   cache:
     ehcache:
-      config: ehcache.xml
+      config: classpath:ehcache.xml
+    type: redis
 
 # 注册中心
 eureka:

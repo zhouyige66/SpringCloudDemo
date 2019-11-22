@@ -6,10 +6,13 @@ import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSource
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.cache.RedisCacheManager;
 
+import javax.annotation.Resource;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -86,10 +89,14 @@ public class ShiroConfig {
         return new ShiroRealm();
     }
 
+    @Resource
+    private RedisCacheManager redisCacheManager;
+
     @Bean
-    public EhCacheManager ehCacheManager() {
-        EhCacheManager cacheManager = new EhCacheManager();
-        return cacheManager;
+    public ShiroCacheManager shiroCacheManager() {
+        EhCacheManager ehCacheManager = new EhCacheManager();
+        ShiroCacheManager manager = new ShiroCacheManager(ehCacheManager, redisCacheManager);
+        return manager;
     }
 
     @Bean
@@ -98,7 +105,7 @@ public class ShiroConfig {
         // 注入自定义的realm;
         securityManager.setRealm(shiroRealm());
         // 注入缓存管理器;
-        securityManager.setCacheManager(ehCacheManager());
+        securityManager.setCacheManager(shiroCacheManager());
         return securityManager;
     }
 
