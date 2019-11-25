@@ -28,7 +28,7 @@ public class LoginController {
         }
     }
 
-    @GetMapping("user/{id}")
+    @GetMapping("/user/{id}")
     public String getUser(@PathVariable String id) {
         return "user_" + id;
     }

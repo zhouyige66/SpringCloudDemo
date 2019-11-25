@@ -51,7 +51,7 @@
                 console.log("结果：" + xmlhttp.readyState)
             }
         };
-        xmlhttp.open("POST", "http://localhost:18765/auth/login", true);
+        xmlhttp.open("POST", "/auth/login", true);
         xmlhttp.setRequestHeader('Content-Type','application/json;charset=UTF-8');
         xmlhttp.send(JSON.stringify(data));
     }

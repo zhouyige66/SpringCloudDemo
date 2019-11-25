@@ -1,9 +1,9 @@
 server:
-  port: 18765
+  port: 18766
 
 spring:
   application:
-    name: gateway
+    name: gateway2
   zipkin:
     baseUrl: http://localhost:9411
   # 日志追踪
@@ -29,6 +29,8 @@ spring:
     ehcache:
       config: classpath:ehcache.xml
     type: redis
+  session:
+    store-type: redis
 
 # 注册中心
 eureka:
@@ -47,7 +49,7 @@ zuul:
       serviceId: api2
     auth:
       path: /auth/**
-      serviceId: gateway
+      serviceId: gateway2
   retryable: true
 
 ribbon:

@@ -19,7 +19,6 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
  * @Version: v1.0
  */
 @Configuration
-@Order(2)
 public class RedisConfig {
 
     @Autowired
