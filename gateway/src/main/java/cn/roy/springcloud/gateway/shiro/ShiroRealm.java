@@ -73,7 +73,7 @@ public class ShiroRealm extends AuthorizingRealm {
         }
         // 更新以上代码
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo(roles);
-        //添加权限
+        // 添加权限
         info.setStringPermissions(permissions);
 
         return info;
