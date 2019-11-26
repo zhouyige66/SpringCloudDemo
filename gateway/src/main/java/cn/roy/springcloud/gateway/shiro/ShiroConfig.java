@@ -66,11 +66,11 @@ public class ShiroConfig {
     @Bean
     public SecurityManager securityManager() {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
-        // 注入自定义的realm;
+        // 自定义realm;
         securityManager.setRealm(shiroRealm());
-        // 注入缓存管理器;
+        // 缓存管理器;
         securityManager.setCacheManager(shiroCacheManager());
-        // 注入session管理器
+        // session管理器
 //        securityManager.setSessionManager(defaultWebSessionManager);
         return securityManager;
     }
@@ -90,6 +90,7 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/v2/**", "anon");
         filterChainDefinitionMap.put("/swagger-resources/**", "anon");
         // 需要认证的URL
+        filterChainDefinitionMap.put("/auth/test", "anon");
         filterChainDefinitionMap.put("/auth/user/**", "authc");
         // 退出系统的过滤器
         filterChainDefinitionMap.put("/logout", "logout");
@@ -100,7 +101,7 @@ public class ShiroConfig {
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         // 必须设置 SecurityManager
         shiroFilterFactoryBean.setSecurityManager(securityManager());
-        // 设置login URL
+        // 设置Login URL
         shiroFilterFactoryBean.setLoginUrl("/login.html");
         // 登录成功后要跳转的链接
 //        shiroFilterFactoryBean.setSuccessUrl("/LoginSuccess.action");

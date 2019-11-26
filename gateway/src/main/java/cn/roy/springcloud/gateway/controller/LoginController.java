@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.*;
  * @Date: 2019-11-22 17:24
  * @Version: v1.0
  */
-@RestController("auth")
+@RestController
+@RequestMapping("auth")
 public class LoginController {
 
     @PostMapping("login")
@@ -28,9 +29,14 @@ public class LoginController {
         }
     }
 
-    @GetMapping("/user/{id}")
+    @GetMapping("user/{id}")
     public String getUser(@PathVariable String id) {
         return "user_" + id;
+    }
+
+    @GetMapping("test")
+    public String test(@RequestParam String txt) {
+        return "hello " + txt;
     }
 
     public static final class User {

@@ -71,9 +71,7 @@ public class ShiroRealm extends AuthorizingRealm {
             roles.add("visit");
             permissions.add("visit:query");
         }
-        // 更新以上代码
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo(roles);
-        //添加权限
         info.setStringPermissions(permissions);
 
         return info;
