@@ -8,6 +8,7 @@ import org.springframework.cache.transaction.TransactionAwareCacheDecorator;
 import org.springframework.data.redis.cache.RedisCache;
 import org.springframework.data.redis.cache.RedisCacheManager;
 
+import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -23,7 +24,8 @@ public class MultipleCacheManager implements CacheManager {
     private EhCacheCacheManager ehCacheCacheManager;
     private RedisCacheManager redisCacheManager;
 
-    public MultipleCacheManager(EhCacheCacheManager ehCacheCacheManager, RedisCacheManager redisCacheManager) {
+    public MultipleCacheManager(@NotNull EhCacheCacheManager ehCacheCacheManager,
+                                @NotNull RedisCacheManager redisCacheManager) {
         this.ehCacheCacheManager = ehCacheCacheManager;
         this.redisCacheManager = redisCacheManager;
     }
@@ -32,16 +34,8 @@ public class MultipleCacheManager implements CacheManager {
         return ehCacheCacheManager;
     }
 
-    public void setEhCacheCacheManager(EhCacheCacheManager ehCacheCacheManager) {
-        this.ehCacheCacheManager = ehCacheCacheManager;
-    }
-
     public RedisCacheManager getRedisCacheManager() {
         return redisCacheManager;
-    }
-
-    public void setRedisCacheManager(RedisCacheManager redisCacheManager) {
-        this.redisCacheManager = redisCacheManager;
     }
 
     @Override

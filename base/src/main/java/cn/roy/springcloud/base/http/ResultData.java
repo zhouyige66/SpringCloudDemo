@@ -1,6 +1,6 @@
-package cn.roy.springcloud.common.http;
+package cn.roy.springcloud.base.http;
 
-import cn.roy.springcloud.common.base.BaseDto;
+import cn.roy.springcloud.base.dto.BaseDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.io.Serializable;

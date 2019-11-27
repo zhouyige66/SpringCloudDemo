@@ -1,7 +1,7 @@
 package cn.roy.springcloud.api.controller;
 
 import cn.roy.springcloud.api.service.SwaggerDataDealService;
-import cn.roy.springcloud.common.http.ResultData;
+import cn.roy.springcloud.base.http.ResultData;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;

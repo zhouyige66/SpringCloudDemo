@@ -1,9 +1,9 @@
 package cn.roy.springcloud.api.controller;
 
 import cn.roy.springcloud.api.service.call.RemoteCallService;
-import cn.roy.springcloud.common.base.SimpleDto;
-import cn.roy.springcloud.common.base.SimpleMapDto;
-import cn.roy.springcloud.common.http.ResultData;
+import cn.roy.springcloud.base.dto.SimpleDto;
+import cn.roy.springcloud.base.dto.SimpleMapDto;
+import cn.roy.springcloud.base.http.ResultData;
 import com.netflix.hystrix.contrib.javanica.annotation.DefaultProperties;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;

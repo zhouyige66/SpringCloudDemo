@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -15,12 +16,14 @@ import org.springframework.web.bind.annotation.RestController;
  * @Version: v1.0
  */
 @RestController
-public class CacheTestController {
-    private static final Logger logger = LoggerFactory.getLogger(CacheTestController.class);
+@RequestMapping("user")
+public class UserController {
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
-    @Cacheable(value = "user",key = "'name_'+#id")
-    @GetMapping("user/{id}")
+    @Cacheable(value = "user", key = "'name_'+#id")
+    @GetMapping("get/{id}")
     public User getUser(@PathVariable Integer id) {
+        logger.info("调用本地方法");
         try {
             Thread.sleep(3000);
         } catch (InterruptedException e) {

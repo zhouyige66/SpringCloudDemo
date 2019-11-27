@@ -60,7 +60,7 @@
         <!--基础库-->
         <dependency>
             <groupId>cn.roy.springcloud</groupId>
-            <artifactId>common</artifactId>
+            <artifactId>base</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 

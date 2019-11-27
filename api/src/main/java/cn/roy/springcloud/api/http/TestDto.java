@@ -1,6 +1,6 @@
 package cn.roy.springcloud.api.http;
 
-import cn.roy.springcloud.common.base.BaseDto;
+import cn.roy.springcloud.base.dto.BaseDto;
 
 /**
  * @Description:

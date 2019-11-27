@@ -1,5 +1,5 @@
 server:
-  port: 10001
+  port: 10004
 
 spring:
   application:
@@ -9,3 +9,6 @@ spring:
       config: classpath:ehcache.xml
     redis:
       cache-null-values: true
+  redis:
+    host: localhost
+    port: 6379

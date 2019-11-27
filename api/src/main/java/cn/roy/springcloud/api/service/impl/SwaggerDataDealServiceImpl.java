@@ -8,7 +8,7 @@ import cn.roy.springcloud.api.dao.mapper.ApiParameterModelMapper;
 import cn.roy.springcloud.api.dao.model.*;
 import cn.roy.springcloud.api.service.SwaggerDataDealService;
 import cn.roy.springcloud.api.util.ExportUtil;
-import cn.roy.springcloud.common.http.ResultData;
+import cn.roy.springcloud.base.http.ResultData;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -45,8 +45,8 @@ import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static cn.roy.springcloud.common.http.ResultData.CODE_DATA_NULL;
-import static cn.roy.springcloud.common.http.ResultData.CODE_REQUEST_ERROR;
+import static cn.roy.springcloud.base.http.ResultData.CODE_DATA_NULL;
+import static cn.roy.springcloud.base.http.ResultData.CODE_REQUEST_ERROR;
 
 /**
  * @Description: 数据导入处理

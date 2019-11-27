@@ -1,5 +1,7 @@
 package cn.roy.springcloud.cache.cache;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.ehcache.EhCacheCache;
 import org.springframework.cache.support.AbstractValueAdaptingCache;
 import org.springframework.data.redis.cache.RedisCache;
@@ -15,6 +17,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @Version: v1.0
  */
 public class MultipleCache extends AbstractValueAdaptingCache {
+    private static final Logger logger = LoggerFactory.getLogger(MultipleCache.class);
 
     private EhCacheCache ehCacheCache;
     private RedisCache redisCache;
@@ -34,14 +37,17 @@ public class MultipleCache extends AbstractValueAdaptingCache {
     protected Object lookup(Object key) {
         ValueWrapper valueWrapper = ehCacheCache.get(key);
         if (null != valueWrapper) {
+            logger.info("从EhCache中读取数据");
             return valueWrapper.get();
         }
 
         ValueWrapper redisValueWrapper = redisCache.get(key);
         if (null != redisValueWrapper) {
+            logger.info("从Redis中读取数据，同时存入EhCache");
             // 存入一级缓存
-            ehCacheCache.put(key,redisValueWrapper);
-            return redisValueWrapper.get();
+            Object object = redisValueWrapper.get();
+            ehCacheCache.put(key,object);
+            return object;
         }
 
         return null;
@@ -91,12 +97,14 @@ public class MultipleCache extends AbstractValueAdaptingCache {
 
     @Override
     public void put(Object key, Object value) {
+        logger.info("cache put操作，存入Redis与EhCache");
         redisCache.put(key,value);
         ehCacheCache.put(key,value);
     }
 
     @Override
     public ValueWrapper putIfAbsent(Object key, Object value) {
+        logger.info("cache putIfAbsent操作，存入Redis与EhCache");
         ValueWrapper ehValueWrapper = ehCacheCache.putIfAbsent(key, value);
         ValueWrapper redisValueWrapper = redisCache.putIfAbsent(key, value);
         return null;
@@ -104,12 +112,14 @@ public class MultipleCache extends AbstractValueAdaptingCache {
 
     @Override
     public void evict(Object key) {
+        logger.info("cache 删除操作");
         redisCache.evict(key);
         ehCacheCache.evict(key);
     }
 
     @Override
     public void clear() {
+        logger.info("cache 清空操作");
         redisCache.clear();
         ehCacheCache.clear();
     }

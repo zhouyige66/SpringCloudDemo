@@ -17,12 +17,12 @@
     <description>Demo project for Spring Cloud</description>
 
     <modules>
-        <module>api</module>
-        <module>api2</module>
-        <module>common</module>
-        <module>gateway</module>
+        <module>base</module>
         <module>eureka</module>
         <module>config</module>
+        <module>gateway</module>
+        <module>api</module>
+        <module>api2</module>
         <module>mq</module>
         <module>job</module>
         <module>cache</module>

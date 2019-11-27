@@ -1,6 +1,6 @@
 package cn.roy.springcloud.api.service;
 
-import cn.roy.springcloud.common.http.ResultData;
+import cn.roy.springcloud.base.http.ResultData;
 
 import java.io.IOException;
 import java.net.URISyntaxException;

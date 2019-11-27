@@ -3,6 +3,8 @@ package cn.roy.springcloud.cache.aop;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
@@ -14,37 +16,37 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 public class CacheAspect {
+    private static final Logger logger = LoggerFactory.getLogger(CacheAspect.class);
 
     //切点，内部为切入点表达式
-//    @Pointcut("execution(public * org.springframework.data.redis.cache.RedisCache.put(..))")
-//    @Pointcut("execution(public * cn.roy.springcloud.cache.controller.CacheTestController.test(..))")
-    @Pointcut("execution(public * org.springframework.data.redis.cache.RedisCacheManager.getCache(..))")
+    @Pointcut("execution(public * cn.roy.springcloud.cache.controller.*.*(..))")
     private void pointCutMethod() {
     }
 
     //声明前置通知
     @Before("pointCutMethod()")
     public void doBefore(JoinPoint point) {
-        System.out.println("doBefore");
+        logger.info("doBefore");
         return;
     }
+
 
     //声明后置通知
     @AfterReturning(pointcut = "pointCutMethod()", returning = "returnValue")
     public void doAfterReturning(JoinPoint point, Object returnValue) {
-        System.out.println("doAfterReturning");
+        logger.info("doAfterReturning");
+    }
+
+    //声明最终通知
+    @After("pointCutMethod()")
+    public void doAfter() {
+        logger.info("doAfter");
     }
 
     //声明例外通知
 //    @AfterThrowing(pointcut = "pointCutMethod()", throwing = "e")
 //    public void doAfterThrowing(Exception e) {
 //        System.out.println("doAfterThrowing");
-//    }
-
-    //声明最终通知
-//    @After("pointCutMethod()")
-//    public void doAfter() {
-//        System.out.println("doAfter");
 //    }
 
     //声明环绕通知

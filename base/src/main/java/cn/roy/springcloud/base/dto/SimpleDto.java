@@ -1,4 +1,4 @@
-package cn.roy.springcloud.common.base;
+package cn.roy.springcloud.base.dto;
 
 import java.io.Serializable;
 
