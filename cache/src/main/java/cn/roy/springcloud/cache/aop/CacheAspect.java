@@ -30,6 +30,11 @@ public class CacheAspect {
         return;
     }
 
+    //声明最终通知
+    @After("pointCutMethod()")
+    public void doAfter(JoinPoint point) {
+        logger.info("doAfter");
+    }
 
     //声明后置通知
     @AfterReturning(pointcut = "pointCutMethod()", returning = "returnValue")
@@ -37,26 +42,19 @@ public class CacheAspect {
         logger.info("doAfterReturning");
     }
 
-    //声明最终通知
-    @After("pointCutMethod()")
-    public void doAfter() {
-        logger.info("doAfter");
+    //声明例外通知
+    @AfterThrowing(pointcut = "pointCutMethod()", throwing = "e")
+    public void doAfterThrowing(Exception e) {
+        logger.info("doAfterThrowing");
     }
 
-    //声明例外通知
-//    @AfterThrowing(pointcut = "pointCutMethod()", throwing = "e")
-//    public void doAfterThrowing(Exception e) {
-//        System.out.println("doAfterThrowing");
-//    }
-
     //声明环绕通知
-//    @Around("pointCutMethod()")
-//    public Object doAround(ProceedingJoinPoint pjp) throws Throwable {
-//        Object obj = pjp.proceed();
-//
-//        System.out.println("doAround");
-//        return obj;
-//    }
+    @Around("pointCutMethod()")
+    public Object doAround(ProceedingJoinPoint pjp) throws Throwable {
+        logger.info("doAround");
+        Object obj = pjp.proceed();
+        return obj;
+    }
 
 }
 
