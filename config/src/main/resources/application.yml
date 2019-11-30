@@ -1,6 +1,15 @@
 server:
   port: 8888
 
+eureka:
+  client:
+    serviceUrl:
+      # 配置注册中心地址
+      defaultZone: http://localhost:8760/eureka/
+  instance:
+    # 服务实体注册名默认是“IP名:应用名:应用端口名”，可使用@value@读取maven中配置的属性
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${server.port}:@version@
+
 spring:
   application:
     name: config-server
@@ -32,12 +41,3 @@ spring:
 #          # 启动时候clone仓库
 #          clone-on-start: true
 #          order: 2
-
-eureka:
-  client:
-    serviceUrl:
-      # 配置注册中心地址
-      defaultZone: http://localhost:8760/eureka/
-  instance:
-    # 服务实体注册名默认是“IP名:应用名:应用端口名”，可使用@value@读取maven中配置的属性
-    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${server.port}:@version@

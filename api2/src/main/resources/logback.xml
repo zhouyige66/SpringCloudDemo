@@ -2,7 +2,7 @@
 <configuration debug="true" scan="true" scanPeriod="3600 seconds">
     <contextName>logback</contextName>
     <!--定义参数,后面可以通过${app.name}使用-->
-    <property name="log.dir" value="logs"/>
+    <property name="log.dir" value="dir/logs"/>
     <property name="app.name" value="api2"/>
 
     <!--ConsoleAppender 用于在屏幕上输出日志-->
