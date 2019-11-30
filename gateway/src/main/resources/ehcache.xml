@@ -3,7 +3,8 @@
          xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd"
          updateCheck="false">
     <!-- diskStore：ehcache其实是支持内存+磁盘+堆外内存，几个层级的缓存 -->
-    <diskStore path="user.dir/EhCache"/>
+<!--    <diskStore path="user.dir/EhCache"/>-->
+    <diskStore path="gateway/ehcache"/>
 
     <!-- defaultCache，是默认的缓存策略，如果你指定的缓存策略没有找到，那么就用这个默认的缓存策略 -->
     <!-- external：如果设置为true的话，那么timeout就没有效果，缓存就会一直存在，一般默认就是false -->
