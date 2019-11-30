@@ -15,6 +15,7 @@ eureka:
 spring:
   application:
     name: api
+  # 链路追踪
   zipkin:
     baseUrl: http://localhost:9411
   # 服务追踪
@@ -22,6 +23,7 @@ spring:
     traceId128: true
     sampler:
       probability: 1.0
+  # 配置中心
   cloud:
     config:
       #配置当不能连接配置服务器，则不能启动
@@ -73,6 +75,7 @@ spring:
           starttls:
             enable: false
             required: false
+  # mq配置
   activemq:
     broker-url: tcp://127.0.0.1:61616
     user: admin

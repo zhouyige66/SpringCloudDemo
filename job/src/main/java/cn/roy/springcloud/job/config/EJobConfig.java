@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * @Description:
+ * @Description: Elastic Job配置
  * @Author: Roy Z
  * @Date: 2019/11/8 09:43
  * @Version: v1.0
@@ -60,12 +60,13 @@ public class EJobConfig {
                     continue;
                 }
 
-                SimpleJobHandler annotation = AnnotationUtils.findAnnotation(value.getClass(), SimpleJobHandler.class);
+                SimpleJobHandler simpleJobHandler = AnnotationUtils.findAnnotation(value.getClass(),
+                        SimpleJobHandler.class);
                 // 定义作业核心配置
-                JobCoreConfiguration jobCoreConfiguration = JobCoreConfiguration.newBuilder(annotation.jobName(),
-                        annotation.cron(), annotation.shardingTotalCount())
-                        .jobParameter(annotation.jobParameter())
-                        .shardingItemParameters(annotation.shardingItemParameters())
+                JobCoreConfiguration jobCoreConfiguration = JobCoreConfiguration.newBuilder(simpleJobHandler.jobName(),
+                        simpleJobHandler.cron(), simpleJobHandler.shardingTotalCount())
+                        .jobParameter(simpleJobHandler.jobParameter())
+                        .shardingItemParameters(simpleJobHandler.shardingItemParameters())
                         .build();
                 // 定义Simple类型配置
                 SimpleJobConfiguration simpleJobConfiguration = new SimpleJobConfiguration(jobCoreConfiguration,

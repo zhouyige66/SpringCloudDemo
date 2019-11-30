@@ -1,9 +1,17 @@
 server:
   port: 8750
 
+# 注册中心
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8760/eureka/
+
 spring:
   application:
     name: job
+  zipkin:
+    baseUrl: http://localhost:9411
 
 zookeeper:
   url: 127.0.0.1
