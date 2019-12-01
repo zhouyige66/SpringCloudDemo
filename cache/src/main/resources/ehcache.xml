@@ -8,7 +8,7 @@
          user.dir :          用户当前工作目录
          java.io.tmpdir :    默认临时文件路径
      -->
-    <diskStore path="cache/ehcache"/>
+    <diskStore path="dir/ehcache/cache"/>
 
     <!--
     name:                            缓存名称
