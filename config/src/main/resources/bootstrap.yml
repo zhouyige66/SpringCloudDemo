@@ -1,7 +1,8 @@
+#加解密配置文件数据需要
 encrypt:
   keyStore:
     #jks的配置文件的路径
-    location: classpath:/roy.jks
+    location: classpath:roy.jks
     #keystore的密码
     password: 123456
     alias: RoyZZhou
