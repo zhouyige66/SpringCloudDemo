@@ -1,32 +1,33 @@
 server:
-  port: 8764
+  port: ${server.port.mq:8080}
 
 #注册中心
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:8760/eureka/
+      defaultZone: ${eureka-server.url:http://localhost:8760/eureka/}
 
 spring:
   application:
-    name: ${server.names.mq:mq_default}
+    name: ${server.name.mq:mq}
   #配置中心
   cloud:
     config:
-      #配置当不能连接配置服务器，则不能启动
       fail-fast: true
-      #配置仓库分支
       label: master
-      #配置文件的环境
       profile: test
       name: default,mq
-      #使用uri或discovery
-      #uri: http://localhost:8888/
       discovery:
-        #开启配置服务发现
         enabled: true
-        #注册中心的服务名
         service-id: config-server
+  #链路追踪
+  zipkin:
+    baseUrl: ${zipkin.url:http://localhost:9411}
+  #日志追踪
+  sleuth:
+    traceId128: true
+    sampler:
+      probability: 1.0
   activemq:
     broker-url: tcp://127.0.0.1:61616
     user: admin

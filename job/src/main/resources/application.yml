@@ -1,17 +1,33 @@
 server:
-  port: 8766
+  port: ${server.port.job:8080}
 
 #注册中心
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:8760/eureka/
+      defaultZone: ${eureka-server.url:http://localhost:8760/eureka/}
 
 spring:
   application:
-    name: job
+    name: ${server.name.job:job}
+  #配置中心
+  cloud:
+    config:
+      fail-fast: true
+      label: master
+      profile: test
+      name: default,mq
+      discovery:
+        enabled: true
+        service-id: config-server
+  #链路追踪
   zipkin:
-    baseUrl: http://localhost:9411
+    baseUrl: ${zipkin.url:http://localhost:9411}
+  #日志追踪
+  sleuth:
+    traceId128: true
+    sampler:
+      probability: 1.0
 
 zookeeper:
   url: 127.0.0.1

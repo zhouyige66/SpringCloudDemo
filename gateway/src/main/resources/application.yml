@@ -1,19 +1,28 @@
 server:
-  port: 8761
+  port: ${server.port.gateway:8080}
 
 #注册中心
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:8760/eureka/
+      defaultZone: ${eureka-server.url:http://localhost:8760/eureka/}
 
 spring:
   application:
-    name: ${services.name.gateway:zuul_gateway}
+    name: ${server.name.gateway:gateway}
+  #配置中心
+  cloud:
+    config:
+      fail-fast: true
+      label: master
+      profile: test
+      name: default,mq
+      discovery:
+        enabled: true
+        service-id: config-server
   #链路追踪
   zipkin:
-    baseUrl: http://localhost:9411
-  #日志追踪
+    baseUrl: ${zipkin.url:http://localhost:9411}
   sleuth:
     traceId128: true
     sampler:

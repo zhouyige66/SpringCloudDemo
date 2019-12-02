@@ -1,34 +1,27 @@
 server:
-  port: 8763
+  port: ${server.port.api2:8080}
 
 #注册中心
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:8760/eureka/
+      defaultZone: ${eureka-server.url:http://localhost:8760/eureka/}
 
 spring:
   application:
-    name: api2
+    name: ${server.name.api2:api2}
   #配置中心
   cloud:
     config:
-      #配置当不能连接配置服务器，则不能启动
       fail-fast: true
-      #配置仓库分支
       label: master
-      #配置文件的环境
       profile: dev
-      #使用uri或discovery
-      #uri: http://localhost:8888/
       discovery:
-        #开启配置服务发现
         enabled: true
-        #注册中心的服务名
         service-id: config-server
   #链路追踪
   zipkin:
-    baseUrl: http://localhost:9411
+    baseUrl: ${zipkin.url:http://localhost:9411}
   #日志追踪
   sleuth:
     traceId128: true

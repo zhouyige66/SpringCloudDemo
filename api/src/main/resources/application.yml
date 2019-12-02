@@ -1,12 +1,12 @@
 server:
-  port: 8762
+  port: ${server.port.api:8080}
 
 #注册中心
 eureka:
   client:
     serviceUrl:
       #注册中心地址
-      defaultZone: http://localhost:8760/eureka/
+      defaultZone: ${eureka-server.url:http://localhost:8760/eureka/}
 #    #检索服务选项，当设置为True(默认值)时，会进行服务检索,注册中心不负责检索服务
 #    fetch-registry: true
 #    #服务注册中心也会将自己作为客户端来尝试注册自己,为true（默认）时自动生效
@@ -22,7 +22,7 @@ eureka:
 #spring.cloud.config.uri：配置中心config-server的地址
 spring:
   application:
-    name: api
+    name: ${server.name.api:api}
   #配置中心
   cloud:
     config:
@@ -41,7 +41,7 @@ spring:
         service-id: config-server
   #链路追踪
   zipkin:
-    baseUrl: http://localhost:9411
+    baseUrl: ${zipkin.url:http://localhost:9411}
   #服务追踪
   sleuth:
     traceId128: true
