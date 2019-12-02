@@ -4,6 +4,9 @@ server:
 spring:
   application:
     name: ${server.name.gateway:gateway}
+  cloud:
+    config:
+      name: default,gateway
   #链路追踪
   zipkin:
     baseUrl: ${zipkin.url:http://localhost:9411}

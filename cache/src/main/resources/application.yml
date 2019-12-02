@@ -4,6 +4,9 @@ server:
 spring:
   application:
     name: ${server.name.cache:cache}
+  cloud:
+    config:
+      name: default,cache
   #链路追踪
   zipkin:
     baseUrl: ${zipkin.url:http://localhost:9411}
