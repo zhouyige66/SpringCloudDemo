@@ -1,7 +1,7 @@
 server:
   port: 8762
 
-# 注册中心
+#注册中心
 eureka:
   client:
     serviceUrl:
@@ -15,15 +15,7 @@ eureka:
 spring:
   application:
     name: api
-  # 链路追踪
-  zipkin:
-    baseUrl: http://localhost:9411
-  # 服务追踪
-  sleuth:
-    traceId128: true
-    sampler:
-      probability: 1.0
-  # 配置中心
+  #配置中心
   cloud:
     config:
       #配置当不能连接配置服务器，则不能启动
@@ -32,29 +24,38 @@ spring:
       label: master
       #配置文件的环境
       profile: dev
-      ##使用uri或discovery
+      #使用uri或discovery
       #uri: http://localhost:8888/
       discovery:
         #开启配置服务发现
         enabled: true
         #注册中心的服务名
         service-id: config-server
-  #  devtools:
-  #    add-properties: false
-  #    restart:
-  #      #热部署生效
-  #      enabled: false
-  #      #设置重启的目录
-  #      #additional-paths: src/main/java
+  #链路追踪
+  zipkin:
+    baseUrl: http://localhost:9411
+  #服务追踪
+  sleuth:
+    traceId128: true
+    sampler:
+      probability: 1.0
+  #热部署
+#  devtools:
+#    add-properties: false
+#    restart:
+#      #热部署生效
+#      enabled: false
+#      #设置重启的目录
+#      #additional-paths: src/main/java
   freemarker:
     template-loader-path: classpath:/templates/freemarker/
     #关闭缓存，即时刷新，上线前要更改为true
     cache: true
   thymeleaf:
-    #关闭缓存，即时刷新，上线前要更改为true
-    cache: true
     check-template-location: true
     prefix: classpath:/templates/thymeleaf/
+    #关闭缓存，即时刷新，上线前要更改为true
+    cache: true
   #邮箱配置
   mail:
     host: 127.0.0.1
@@ -75,7 +76,7 @@ spring:
           starttls:
             enable: false
             required: false
-  # mq配置
+  #mq配置
   activemq:
     broker-url: tcp://127.0.0.1:61616
     user: admin
@@ -181,45 +182,45 @@ datasource:
       #useGlobalDataSourceStat: true
 
 mybatis:
-  # Mapper.xml所在的位置
+  #Mapper.xml所在的位置
   mapper-locations: classpath:mapper/*.xml
-  # Entity扫描的包名
+  #Entity扫描的包名
   type-aliases-package: cn.roy.springcloud.api.dao.bean
   configuration:
     map-underscore-to-camel-case: true
-    # sql输出
+    #sql输出
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
-# 开启熔断机制
+#开启熔断机制
 feign:
   hystrix:
     # If true, an OpenFeign client will be wrapped with a Hystrix circuit breaker.
     enabled: true
 
-# 服务熔断
+#服务熔断
 hystrix:
   command:
     default:
       execution:
         isolation:
           thread:
-            # 熔断超时时长：6000ms
+            #熔断超时时长：6000ms
             timeoutInMilliseconds: 6000
 
-# 负载均衡
+#负载均衡
 ribbon:
-  # 连接超时时间(ms)
+  #连接超时时间(ms)
   ConnectTimeout: 1000
-  # 通信超时时间(ms)，解决504问题
+  #通信超时时间(ms)，解决504问题
   ReadTimeout: 5000
-  # 是否对所有操作重试
+  #是否对所有操作重试
   OkToRetryOnAllOperations: true
-  # 同一服务不同实例的重试次数
+  #同一服务不同实例的重试次数
   MaxAutoRetriesNextServer: 2
-  # 同一实例的重试次数
+  #同一实例的重试次数
   MaxAutoRetries: 1
 
-# 健康监控：加载所有的端点/默认只加载了info/health
+#健康监控：加载所有的端点/默认只加载了info/health
 management:
   endpoints:
     web:
@@ -228,8 +229,8 @@ management:
 
 mail:
   #收件人之间逗号隔开，如xxx@qq.com,yyy@163.com
-  sendTo: x@qq.com,y@163.com
-  ccTo: a@qq.com,b@163.com
+  sendTo: roy.z.zhou@163.com
+  ccTo: kk.h@163.com
 
 custom:
   names:

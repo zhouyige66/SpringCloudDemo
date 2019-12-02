@@ -1,7 +1,7 @@
 server:
   port: 8763
 
-# 注册中心
+#注册中心
 eureka:
   client:
     serviceUrl:
@@ -9,33 +9,35 @@ eureka:
     #检索服务选项，当设置为True(默认值)时，会进行服务检索,注册中心不负责检索服务
     fetch-registry: true
     #服务注册中心也会将自己作为客户端来尝试注册自己,为true（默认）时自动生效
-    # register-with-eureka: false
+    #register-with-eureka: false
 
 spring:
   application:
     name: api2
-  zipkin:
-    baseUrl: http://localhost:9411
-  # 日志追踪
-  sleuth:
-    traceId128: true
-    sampler:
-      probability: 1.0
+  #配置中心
   cloud:
     config:
-      # 配置当不能连接配置服务器，则不能启动
+      #配置当不能连接配置服务器，则不能启动
       fail-fast: true
-      # 配置仓库分支
+      #配置仓库分支
       label: master
-      # 配置文件的环境
+      #配置文件的环境
       profile: dev
-      # 使用uri或discovery
-      # uri: http://localhost:8888/
+      #使用uri或discovery
+      #uri: http://localhost:8888/
       discovery:
         #开启配置服务发现
         enabled: true
         #注册中心的服务名
         service-id: config-server
+  #链路追踪
+  zipkin:
+    baseUrl: http://localhost:9411
+  #日志追踪
+  sleuth:
+    traceId128: true
+    sampler:
+      probability: 1.0
   rabbitmq:
     addresses: 127.0.0.1
     port: 5672
@@ -43,36 +45,36 @@ spring:
     password: guest
     virtual-host: rabbit_mq_default
 
-# 开启熔断机制
+#开启熔断机制
 feign:
   hystrix:
     # If true, an OpenFeign client will be wrapped with a Hystrix circuit breaker.
     enabled: true
 
-# 服务熔断
+#服务熔断
 hystrix:
   command:
     default:
       execution:
         isolation:
           thread:
-            # 熔断超时时长：6000ms
+            #熔断超时时长：6000ms
             timeoutInMilliseconds: 6000
 
-# 负载均衡
+#负载均衡
 ribbon:
-  # 连接超时时间(ms)
+  #连接超时时间(ms)
   ConnectTimeout: 1000
-  # 通信超时时间(ms)，解决504问题
+  #通信超时时间(ms)，解决504问题
   ReadTimeout: 5000
-  # 是否对所有操作重试
+  #是否对所有操作重试
   OkToRetryOnAllOperations: true
-  # 同一服务不同实例的重试次数
+  #同一服务不同实例的重试次数
   MaxAutoRetriesNextServer: 2
-  # 同一实例的重试次数
+  #同一实例的重试次数
   MaxAutoRetries: 1
 
-# 健康监控
+#健康监控
 management:
   endpoints:
     web:

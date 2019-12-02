@@ -1,20 +1,16 @@
 server:
   port: 8764
 
-# 注册中心
+#注册中心
 eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:8760/eureka/
-    # 检索服务选项，当设置为true(默认值)时，会进行服务检索,注册中心不负责检索服务
-    fetch-registry: true
-    # 服务注册中心也会将自己作为客户端来尝试注册自己,为true（默认）时自动生效
-    # register-with-eureka: false
 
 spring:
   application:
     name: ${server.names.mq:mq_default}
-  # 配置中心
+  #配置中心
   cloud:
     config:
       #配置当不能连接配置服务器，则不能启动
@@ -31,7 +27,6 @@ spring:
         enabled: true
         #注册中心的服务名
         service-id: config-server
-
   activemq:
     broker-url: tcp://127.0.0.1:61616
     user: admin

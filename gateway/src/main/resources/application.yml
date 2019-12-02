@@ -1,18 +1,24 @@
 server:
   port: 8761
 
+#注册中心
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8760/eureka/
+
 spring:
   application:
     name: ${services.name.gateway:zuul_gateway}
-  # 链路追踪
+  #链路追踪
   zipkin:
     baseUrl: http://localhost:9411
-  # 日志追踪
+  #日志追踪
   sleuth:
     traceId128: true
     sampler:
       probability: 1.0
-  # es
+  #es
   data:
     elasticsearch:
       cluster-name: elasticsearch_zzy
@@ -22,7 +28,7 @@ spring:
   elasticsearch:
     rest:
       uris: ["127.0.0.1:9200"]
-  # redis
+  #redis
   redis:
     host: 127.0.0.1
     port: 6379
@@ -33,13 +39,7 @@ spring:
   session:
     store-type: redis
 
-# 注册中心
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://localhost:8760/eureka/
-
-# 路由配置
+#路由配置
 zuul:
   routes:
     api:
@@ -54,15 +54,15 @@ zuul:
   retryable: true
 
 ribbon:
-  # 连接超时时间(ms)
+  #连接超时时间(ms)
   ConnectTimeout: 250
-  # 通信超时时间(ms)，解决504问题
+  #通信超时时间(ms)，解决504问题
   ReadTimeout: 10000
-  # 是否对所有操作重试
+  #是否对所有操作重试
   OkToRetryOnAllOperations: true
-  # 同一服务不同实例的重试次数
+  #同一服务不同实例的重试次数
   MaxAutoRetriesNextServer: 2
-  # 同一实例的重试次数
+  #同一实例的重试次数
   MaxAutoRetries: 1
 
 hystrix:
@@ -71,7 +71,7 @@ hystrix:
       execution:
         isolation:
           thread:
-            # 熔断超时时长：10000ms
+            #熔断超时时长：10000ms
             timeoutInMilliseconds: 10000
 
 #redis
@@ -102,14 +102,11 @@ redis:
   testOnBorrow: true
   #在空闲时检查有效性, 默认false
   testWhileIdle: true
-
   #redis集群配置
   #spring.cluster.nodes=192.168.1.1:7001,192.168.1.1:7002,192.168.1.1:7003,192.168.1.1:7004,192.168.1.1:7005,192.168.1.1:7006
   #spring.cluster.max-redirects=3
-
   #哨兵模式
   #sentinel.host1=192.168.1.1
   #sentinel.port1=26379
-
 #sentinel.host2=192.168.1.2
 #sentinel.port2=26379

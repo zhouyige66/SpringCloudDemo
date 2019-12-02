@@ -1,7 +1,7 @@
 server:
   port: 8766
 
-# 注册中心
+#注册中心
 eureka:
   client:
     serviceUrl:
