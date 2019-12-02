@@ -1,5 +1,7 @@
 package cn.roy.springcloud.api;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.CommandLineRunner;
@@ -18,6 +20,7 @@ import org.springframework.jms.annotation.EnableJms;
 @EnableCircuitBreaker
 @EnableJms
 public class ApiApplication extends SpringBootServletInitializer implements CommandLineRunner, ApplicationRunner {
+    private static final Logger logger = LoggerFactory.getLogger(ApiApplication.class);
 
     public static void main(String[] args) {
         SpringApplication.run(ApiApplication.class, args);
@@ -30,12 +33,12 @@ public class ApiApplication extends SpringBootServletInitializer implements Comm
 
     @Override
     public void run(String... args) {
-        System.out.println("---CommandLineRunner---");
+        logger.info("---CommandLineRunner---");
     }
 
     @Override
     public void run(ApplicationArguments args) {
-        System.out.println("---ApplicationRunner---");
+        logger.info("---ApplicationRunner---");
     }
 
 }

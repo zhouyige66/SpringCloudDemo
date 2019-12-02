@@ -1,0 +1,17 @@
+#注册中心
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:10000/eureka/
+
+#配置中心
+spring:
+  cloud:
+    config:
+      fail-fast: true
+      label: master
+      profile: dev
+      name: default,mq
+      discovery:
+        enabled: true
+        service-id: config-server

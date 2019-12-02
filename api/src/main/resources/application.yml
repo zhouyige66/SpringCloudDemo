@@ -1,44 +1,9 @@
 server:
   port: ${server.port.api:8080}
 
-#注册中心
-eureka:
-  client:
-    serviceUrl:
-      #注册中心地址
-      defaultZone: ${eureka-server.url:http://localhost:8760/eureka/}
-#    #检索服务选项，当设置为True(默认值)时，会进行服务检索,注册中心不负责检索服务
-#    fetch-registry: true
-#    #服务注册中心也会将自己作为客户端来尝试注册自己,为true（默认）时自动生效
-#    register-with-eureka: false
-#  instance:
-#    #服务实体注册名默认是“IP名:应用名:应用端口名”，可使用@value@读取maven中配置的属性
-#    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${server.port}:@version@
-
-#/{label}/{application}-{profile}:properties:
-#spring.application.name：对应配置文件规则中的{application}部分
-#spring.cloud.config.profile：对应配置文件规则中的{profile}部分
-#spring.cloud.config.label：对应配置文件规则中的{label}部分
-#spring.cloud.config.uri：配置中心config-server的地址
 spring:
   application:
     name: ${server.name.api:api}
-  #配置中心
-  cloud:
-    config:
-      #配置当不能连接配置服务器，则不能启动
-      fail-fast: true
-      #配置仓库分支
-      label: master
-      #配置文件的环境
-      profile: dev
-      #使用uri或discovery
-      #uri: http://localhost:8888/
-      discovery:
-        #开启配置服务发现
-        enabled: true
-        #注册中心的服务名
-        service-id: config-server
   #链路追踪
   zipkin:
     baseUrl: ${zipkin.url:http://localhost:9411}

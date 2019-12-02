@@ -34,6 +34,9 @@ public class TestController {
     @Value("${server.port}")
     private int port;
 
+    @Value("${zipkin.url}")
+    private String zipkinUrl;
+
     @Value("${user.name}")
     private String userName;
 
@@ -53,7 +56,9 @@ public class TestController {
         System.out.println("读取的baseInfo参数：" + baseInfo);
 
         SimpleMapDto simpleMapDto = new SimpleMapDto();
-        simpleMapDto.add("name",userName);
+        simpleMapDto.add("name", userName);
+        simpleMapDto.add("port", port);
+        simpleMapDto.add("zipkin", zipkinUrl);
         return ResultData.success(simpleMapDto);
     }
 

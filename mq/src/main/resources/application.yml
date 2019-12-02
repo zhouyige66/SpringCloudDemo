@@ -1,29 +1,12 @@
 server:
   port: ${server.port.mq:8080}
 
-#注册中心
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: ${eureka-server.url:http://localhost:8760/eureka/}
-
 spring:
   application:
     name: ${server.name.mq:mq}
-  #配置中心
-  cloud:
-    config:
-      fail-fast: true
-      label: master
-      profile: test
-      name: default,mq
-      discovery:
-        enabled: true
-        service-id: config-server
   #链路追踪
   zipkin:
     baseUrl: ${zipkin.url:http://localhost:9411}
-  #日志追踪
   sleuth:
     traceId128: true
     sampler:
