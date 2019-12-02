@@ -5,7 +5,15 @@ server:
 eureka:
   client:
     serviceUrl:
+      #注册中心地址
       defaultZone: http://localhost:8760/eureka/
+#    #检索服务选项，当设置为True(默认值)时，会进行服务检索,注册中心不负责检索服务
+#    fetch-registry: true
+#    #服务注册中心也会将自己作为客户端来尝试注册自己,为true（默认）时自动生效
+#    register-with-eureka: false
+#  instance:
+#    #服务实体注册名默认是“IP名:应用名:应用端口名”，可使用@value@读取maven中配置的属性
+#    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${server.port}:@version@
 
 #/{label}/{application}-{profile}:properties:
 #spring.application.name：对应配置文件规则中的{application}部分
