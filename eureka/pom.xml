@@ -5,10 +5,10 @@
     <parent>
         <groupId>cn.roy.springcloud</groupId>
         <artifactId>demo</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>${parent-release-version}</version>
     </parent>
     <artifactId>eureka</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>${release-version}</version>
     <name>eureka</name>
     <description>eureka注册中心</description>
 
