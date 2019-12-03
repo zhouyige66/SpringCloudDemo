@@ -37,6 +37,7 @@ spring:
 
 #路由配置
 zuul:
+  retryable: true
   routes:
     api:
       path: /api/**
@@ -47,7 +48,6 @@ zuul:
 #    auth:
 #      path: /auth/**
 #      serviceId: ${spring.application.name}
-  retryable: true
 
 ribbon:
   #连接超时时间(ms)
