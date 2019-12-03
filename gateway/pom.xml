@@ -63,13 +63,6 @@
             <version>1.2.60</version>
         </dependency>
 
-        <!--基础库-->
-        <dependency>
-            <groupId>cn.roy.springcloud</groupId>
-            <artifactId>base</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-
         <!--shiro相关-->
         <dependency>
             <groupId>org.apache.shiro</groupId>
@@ -100,6 +93,7 @@
             <version>2.10.6</version>
             <scope>provided</scope>
         </dependency>
+
         <!--redis-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -108,6 +102,13 @@
         <dependency>
             <groupId>org.springframework.session</groupId>
             <artifactId>spring-session-data-redis</artifactId>
+        </dependency>
+
+        <!--基础库-->
+        <dependency>
+            <groupId>cn.roy.springcloud</groupId>
+            <artifactId>base</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

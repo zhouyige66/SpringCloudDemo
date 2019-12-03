@@ -33,6 +33,7 @@ public class HelloController {
 
     @GetMapping("name")
     @ApiOperation(value = "查询用户名接口", notes = "功能：查询配置用户名称")
+    @RefreshScope
     public String name() {
         return "从配置中心读取的名字为：" + userName;
     }

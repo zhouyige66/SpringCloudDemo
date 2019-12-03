@@ -28,3 +28,6 @@ spring:
         enabled: true
         #注册中心的服务名
         service-id: CONFIG-SERVER
+      #配置配置中心访问密码
+      username: roy
+      password: 123456
