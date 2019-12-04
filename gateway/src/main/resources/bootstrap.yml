@@ -13,7 +13,7 @@ spring:
       profile: dev
       discovery:
         enabled: true
-        service-id: config-server
+        service-id: server_config_center
       #配置配置中心访问密码
       username: roy
       password: 123456

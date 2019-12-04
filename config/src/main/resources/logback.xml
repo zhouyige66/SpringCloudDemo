@@ -1,7 +1,9 @@
 <!-- Logback configuration. See http://logback.qos.ch/manual/index.html -->
 <configuration scan="true" scanPeriod="10 seconds">
-    <property name="logDir" value="dir/logs"/>
-    <property name="appName" value="config"/>
+
+    <springProperty scope="context" name="logHome" source="log.home" defaultValue="dir/logs"/>
+    <springProperty scope="context" name="logPath" source="log.path" defaultValue="config"/>
+    <property name="logDir" value="${logHome}/${logPath}"/>
 
     <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
@@ -15,9 +17,9 @@
     </appender>
 
     <appender name="debug" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${logDir}/${appName}/debug.txt</file>
+        <file>${logDir}/debug.txt</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${log.dir}/${appName}/debug.%d{yyyy-MM-dd}.%i.txt</fileNamePattern>
+            <fileNamePattern>${logDir}/debug.%d{yyyy-MM-dd}.%i.txt</fileNamePattern>
             <!--单个日志文件大小-->
             <maxFileSize>200MB</maxFileSize>
             <!--归档文件保存历史记录天数-->
@@ -38,9 +40,9 @@
     </appender>
 
     <appender name="info" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${logDir}/${appName}/info.txt</file>
+        <file>${logDir}/info.txt</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${log.dir}/${appName}/info.%d{yyyy-MM-dd}.%i.txt</fileNamePattern>
+            <fileNamePattern>${logDir}/info.%d{yyyy-MM-dd}.%i.txt</fileNamePattern>
             <maxFileSize>200MB</maxFileSize>
             <maxHistory>30</maxHistory>
             <totalSizeCap>10GB</totalSizeCap>
@@ -58,9 +60,9 @@
     </appender>
 
     <appender name="warn" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${logDir}/${appName}/warn.txt</file>
+        <file>${logDir}/warn.txt</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${logDir}/${appName}/warn.%d{yyyy-MM-dd}.%i.txt</fileNamePattern>
+            <fileNamePattern>${logDir}/warn.%d{yyyy-MM-dd}.%i.txt</fileNamePattern>
             <maxFileSize>200MB</maxFileSize>
             <maxHistory>30</maxHistory>
             <totalSizeCap>10GB</totalSizeCap>
@@ -78,9 +80,9 @@
     </appender>
 
     <appender name="error" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${logDir}/${appName}/error.txt</file>
+        <file>${logDir}/error.txt</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${logDir}/${appName}/error.%d{yyyy-MM-dd}.%i.txt</fileNamePattern>
+            <fileNamePattern>${logDir}/error.%d{yyyy-MM-dd}.%i.txt</fileNamePattern>
             <maxFileSize>200MB</maxFileSize>
             <maxHistory>30</maxHistory>
             <totalSizeCap>10GB</totalSizeCap>

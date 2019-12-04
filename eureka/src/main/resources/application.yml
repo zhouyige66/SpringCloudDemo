@@ -13,3 +13,12 @@ eureka:
       # 注册中心安全验证，配置的地址格式为：http://<username>:<password>@<host>:<port>/<servername>
       # 其中<username>为安全校验的用户名，<password>为该用户的密码
       defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+
+spring:
+  application:
+    name: server_eureka
+
+#日志保存路径
+log:
+  home: dir/logs #日志主目录
+  path: eureka #日志父级目录

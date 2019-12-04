@@ -10,7 +10,7 @@ spring:
     #spring.application.name：对应配置文件规则中的{application}部分
     #spring.cloud.config.profile：对应配置文件规则中的{profile}部分
     #spring.cloud.config.label：对应配置文件规则中的{label}部分
-    #spring.cloud.config.uri：配置中心config-server的地址
+    #spring.cloud.config.uri：配置中心server_config_center的地址
     config:
       server:
         native:
