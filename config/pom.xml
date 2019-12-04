@@ -26,7 +26,7 @@
         <!--配置中心（已经包含健康监控）-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-server_config_center</artifactId>
+            <artifactId>spring-cloud-config-server</artifactId>
         </dependency>
 
         <!--基础安全认证-->
