@@ -7,9 +7,9 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 @SpringBootApplication
+@EnableEurekaClient
 @EnableCaching
 @EnableAspectJAutoProxy(proxyTargetClass = true)
-@EnableEurekaClient
 public class CacheApplication {
 
     public static void main(String[] args) {

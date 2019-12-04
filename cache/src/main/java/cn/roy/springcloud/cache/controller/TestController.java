@@ -1,6 +1,7 @@
 package cn.roy.springcloud.cache.controller;
 
-import cn.roy.springcloud.cache.bean.User;
+import cn.roy.springcloud.base.dto.SimpleDto;
+import cn.roy.springcloud.base.http.ResultData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
@@ -22,14 +23,16 @@ public class TestController {
 
     @Cacheable(value = "user", key = "'name_'+#id")
     @GetMapping("user/{id}")
-    public User getUser(@PathVariable Integer id) {
+    public ResultData getUser(@PathVariable Integer id) {
         logger.info("调用本地方法");
         try {
             Thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return new User(id, "name_" + id);
+        SimpleDto dto = new SimpleDto();
+        dto.setValue(String.valueOf(id));
+        return ResultData.success(dto);
     }
 
 }
