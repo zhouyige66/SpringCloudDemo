@@ -10,8 +10,8 @@ spring:
   #配置基础的安全认证
   security:
     user:
-      name: '{cipher}AQCApvF1nuHUNHPXkzMErRHbkkrLb8P81RxKFtAcQ/upB8tFjjU6zX4i/nRZ5r8lPd8/EIl4IitWNFsz6omdBgpbU3rGEWJZ7i/0/sX2xHTx8V3gJ7r7E82/lg7WWsjDbj0Wy78PA1E0b65YgAX+hZe3Sw4t5AVZfyXlfGS3mFb7hDGAX9b7UMBrHg4CQu3waRrFsyIpuMui1ZdKLKN2O5i8R0BxH3KCm5br+QGa0PaUjwlwlh12HfRpulKuSiv2kL1p3mH8gUR/2PZe0nXwosA5lYGJvgZ5L4W7zKseYXyrGzDthedLHTtjfrTTVDLXVekO6xNoRvzwNY+0C7BKe/wLTKcmtToCLLGbNNPvGyWhkWBudaOaqGwrLMKYdd9TwPg='
-      password: '{cipher}AQCFF04P7km7uXLsKnpX5p9DIYxU1FLyBMCNBY9MT4hrJTaiKj77GyHhzNU4C1AglYwMgqE0hPuz5BFRqiGWqx/tVOXfhNUsWsDHGfl3hP/Xbl+mc+HHCdejKzzy9Ifkj2/s2oMvFBf9YDUMr5/dEayucsD/A4fv5SA0amgqq5iCPZax1E68N2+ZklwgR5og6GXXrQZKc9TAau9DGsnec1FKU3rmTPfp1ZAGsPLYg9gouGe3Cj6wnq/IEEDoLy1ygwEVvy8v2jbHQB+aLPc57jocbW9DyKIOQrjfi6hs1QBiMpPTqAT46v/7V5If5BjzuBV7yr8yZOWu8RNjv0zG3pD9E6UyrcjCwfY9b2R2kb/JG8hWEA3u9/GTI5FHvSYBf2c='
+      name: roy
+      password: GTI5FHvSYBf2c=
 
 #动态刷新配置 ---需要忽略权限拦截
 management:

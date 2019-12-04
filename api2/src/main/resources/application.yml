@@ -7,14 +7,6 @@ spring:
   cloud:
     config:
       name: default,api2
-  #链路追踪
-  zipkin:
-    baseUrl: ${zipkin.url:http://localhost:9411}
-  #日志追踪
-  sleuth:
-    traceId128: true
-    sampler:
-      probability: 1.0
   rabbitmq:
     addresses: 127.0.0.1
     port: 5672

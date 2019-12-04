@@ -1,9 +1,21 @@
+#加解密配置文件数据需要
+encrypt:
+  keyStore:
+    #jks的配置文件的路径
+    location: classpath:roy.jks
+    #keystore的密码
+    password: 123456
+    alias: RoyZZhou
+    #keypass密码
+    secret: 123456
 #注册中心
 eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:10000/eureka/
-
+  instance:
+    prefer-ip-address: true
+#配置中心
 spring:
   cloud:
     #/{label}/{application}-{profile}:properties:
@@ -31,14 +43,3 @@ spring:
           #启动时候clone仓库
           clone-on-start: true
           order: 2
-
-#加解密配置文件数据需要
-encrypt:
-  keyStore:
-    #jks的配置文件的路径
-    location: classpath:roy.jks
-    #keystore的密码
-    password: 123456
-    alias: RoyZZhou
-    #keypass密码
-    secret: 123456

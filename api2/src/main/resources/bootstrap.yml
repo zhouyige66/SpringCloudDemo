@@ -14,5 +14,13 @@ spring:
       discovery:
         enabled: true
         service-id: server_config_center
-      username: roy
-      password: 123456
+      #配置中心认证信息
+      name: roy
+      password: GTI5FHvSYBf2c=
+  #链路追踪
+  zipkin:
+    baseUrl: http://localhost:9411
+  sleuth:
+    traceId128: true
+    sampler:
+      probability: 1.0

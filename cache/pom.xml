@@ -13,22 +13,11 @@
     <description>Cache Test Demo</description>
 
     <dependencies>
-        <!--注册中心-->
+        <!--基础库-->
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
-        </dependency>
-
-        <!--配置中心-->
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-config-client</artifactId>
-        </dependency>
-
-        <!--链路追踪-->
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-sleuth-zipkin</artifactId>
+            <groupId>cn.roy.springcloud</groupId>
+            <artifactId>base</artifactId>
+            <version>${release-version}</version>
         </dependency>
 
         <!--mvc支持-->
@@ -54,6 +43,7 @@
             <!--（5）system：类似 provided，需要显式提供包含依赖的jar，不会从 maven 仓库下载，而是从本地文件系统获取，需要添加 systemPath 的属性来定义路径。-->
             <scope>compile</scope>
         </dependency>
+
         <!--redis-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
