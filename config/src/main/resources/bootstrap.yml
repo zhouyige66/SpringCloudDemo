@@ -14,8 +14,9 @@ spring:
     config:
       server:
         native:
-          #注意，Windows中的绝对路径需要额外的“/”
-          search-locations: /Users/zzy/code/J2EEProject/ConfigCenter
+          #注意，Windows中的绝对路径使用的“/”代替“\”
+#          search-locations: /Users/zzy/code/J2EEProject/ConfigCenter
+          search-locations: C:/Users/Roy Z Zhou/Music/ConfigCenter
           order: 1
         #配置读取远程仓库文件
         git:
@@ -23,8 +24,8 @@ spring:
           uri: https://gitee.com/zhouyige66/ConfigCenter.git
           #仓库路径
           searchPaths: /**
-          username: 751664206@qq.com
-          password: kk209257@g
+          username: '{cipher}AQA1CoMJiriRuRKtVEF/IjSmasURZ6kmDxrdJ5Vvx4pZV3hjR4KNXMGALRZVnQHCH4r9mftO65xGZv57923r0zqLyqsDtC5j31YmJvTT3wQvMt9W9r9eV28BU7iBoCHGadUz7/ltIIHx5Sg7PMMYcoITIJ9YXkEQIVq5F7CDyqPi62mE/epr4iJqWd/xJEG43/2MP7W8vU11N3ZaR2kH0xW68H/3e4t9BiRvipNbU8IOFTy85gO8wxJqMP0lHuudE4xPCr5JV7pE+l6xeRyynrFjzYxoW7NI/ZZYLlVmw188JhG4IObSCGKTUI+uVR4/RBjm1PV2ejJAyEAkDgSBM1HfjFxZewpww2t1gkeQoSTyr/qShaJxLMKH6QV4MGaNkblAqFYBan1lLZXPKNKmQxaP'
+          password: '{cipher}AQB6ijVvrNAxU1zj6c6gxiRl2Iw88uLZtIHliLAHRysgF3aj3X8W8zJez40PQfZq5D8ur8idARRLvSy7n+Q6HrzOFsNOEK8CrDcLIpklspTq+RUCuFqa5K+iWvFP8pwdAFyGYbSybmeXaAMmuMytq41gGwihjhk4sKHFo3dS7n9jrcw0x/jhz77b+XnMNPMR3MNa5uv7H5VCwB1vwYk4m5m6ohdAuLayTYJ7c5WDmA669dm+HX1XnSd8iQSeO46RkEEeTuuFjdcvVLNLfuyf28Tv/1vIvJyFz3qxh/Pqq+Ko7aoAY4wo38Noq+CpSJWrRbHAXXf4SXh7zQNFAlJegTcuj62ZT9rqyoOOTtIntWJfa+MFQ0ADHm0SP6wKt3j5pnk='
           #跳过ssl认证
           skip-ssl-validation: true
           #启动时候clone仓库
