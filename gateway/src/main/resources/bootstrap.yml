@@ -11,9 +11,9 @@ spring:
       fail-fast: true
       label: master
       profile: dev
+      name: default,gateway
       discovery:
         enabled: true
         service-id: server_config_center
-      #配置配置中心访问密码
       username: roy
       password: 123456

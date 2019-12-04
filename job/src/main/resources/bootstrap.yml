@@ -11,8 +11,10 @@ spring:
       fail-fast: true
       label: master
       profile: dev
+      name: default,job
       discovery:
         enabled: true
         service-id: server_config_center
+      #配置中心认证信息
       username: roy
       password: 123456

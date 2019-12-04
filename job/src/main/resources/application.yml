@@ -4,9 +4,6 @@ server:
 spring:
   application:
     name: ${server.name.job:job}
-  cloud:
-    config:
-      name: default,job
   #链路追踪
   zipkin:
     baseUrl: ${zipkin.url:http://localhost:9411}

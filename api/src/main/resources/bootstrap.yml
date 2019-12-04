@@ -20,14 +20,16 @@ spring:
       fail-fast: true
       #仓库分支
       label: master
-      #文件的环境
+      #配置别名（按不同环境使用，如dev、test）
       profile: dev
+      #配置文件名前缀（多个文件用逗号分隔）
+      name: default,api
       #使用uri或discovery
       discovery:
         #开启配置服务发现
         enabled: true
         #注册中心的服务名
         service-id: server_config_center
-      #配置配置中心访问密码
+      #配置中心访问密码
       username: roy
       password: 123456

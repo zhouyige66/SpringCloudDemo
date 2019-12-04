@@ -11,6 +11,7 @@ spring:
       fail-fast: true
       label: master
       profile: dev
+      name: default,mq
       discovery:
         enabled: true
         service-id: server_config_center

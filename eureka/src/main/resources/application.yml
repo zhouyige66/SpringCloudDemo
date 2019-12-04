@@ -18,7 +18,4 @@ spring:
   application:
     name: server_eureka
 
-#日志保存路径
-log:
-  home: dir/logs #日志主目录
-  path: eureka #日志父级目录
+

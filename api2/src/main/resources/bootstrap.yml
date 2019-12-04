@@ -11,16 +11,9 @@ spring:
       fail-fast: true
       label: master
       profile: dev
+      name: default,api2
       discovery:
         enabled: true
         service-id: server_config_center
-      #配置中心认证信息
-      name: roy
-      password: GTI5FHvSYBf2c=
-  #链路追踪
-  zipkin:
-    baseUrl: http://localhost:9411
-  sleuth:
-    traceId128: true
-    sampler:
-      probability: 1.0
+      username: roy
+      password: 123456

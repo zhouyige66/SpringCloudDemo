@@ -3,7 +3,7 @@
 
     <springProperty scope="context" name="logHome" source="log.home" defaultValue="dir/logs"/>
     <springProperty scope="context" name="logPath" source="log.path" defaultValue="eureka"/>
-    <property name="logDir" value="${logHome}/${logPath}"/>
+    <property name="logDir" value="${logHome}/${logPath}" defaultValue="dir/logs/eureka"/>
 
     <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
