@@ -41,10 +41,10 @@ zuul:
   routes:
     api:
       path: /api/**
-      serviceId: api
+      serviceId: ${server.name.api}
     api2:
       path: /api2/**
-      serviceId: api2
+      serviceId: ${server.name.api2}
 #    auth:
 #      path: /auth/**
 #      serviceId: ${spring.application.name}
