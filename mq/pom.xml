@@ -13,22 +13,11 @@
     <description>消息中间件</description>
 
     <dependencies>
-        <!--注册中心-->
+        <!--基础库-->
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
-        </dependency>
-
-        <!--配置中心-->
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-config-client</artifactId>
-        </dependency>
-
-        <!--链路追踪-->
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-sleuth-zipkin</artifactId>
+            <groupId>cn.roy.springcloud</groupId>
+            <artifactId>base</artifactId>
+            <version>${release-version}</version>
         </dependency>
 
         <!--mvc支持-->
