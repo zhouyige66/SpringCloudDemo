@@ -16,4 +16,4 @@ spring:
         enabled: true
         service-id: server_config_center
       username: roy
-      password: 1223456
+      password: 123456
