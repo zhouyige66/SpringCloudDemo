@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -39,37 +40,20 @@ public class HelloController {
     }
 
     @ApiOperation(value = "服务处理时间4S", notes = "功能：供其他服务调用接口")
-    @GetMapping("time")
-    public String time() {
+    @GetMapping("timeOut/{time}")
+    public String time(@PathVariable Integer time) {
         try {
-            Thread.sleep(4000);
+            Thread.sleep(time);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return "睡眠4秒";
+        return "睡眠时间：" + time;
     }
 
     @ApiOperation(value = "服务处理时间6S", notes = "功能：供其他服务调用接口")
-    @GetMapping("timeOver")
-    public String timeOver() {
-        try {
-            Thread.sleep(6000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return "睡眠6秒";
-    }
-
-    @GetMapping("callTime")
-    @ApiOperation(value = "远程接口调用，未超时", notes = "功能：远程调用测试接口")
-    public String callTime() {
-        return remoteCallService.callTimeFromApi();
-    }
-
-    @GetMapping("callTimeOver")
-    @ApiOperation(value = "远程接口调用，超时", notes = "功能：远程调用测试接口")
-    public String callTimeOver() {
-        return remoteCallService.callTimeOverFromApi();
+    @GetMapping("call/{time}")
+    public String call(@PathVariable Integer time) {
+        return remoteCallService.timeOut(time);
     }
 
 }

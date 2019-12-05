@@ -1,7 +1,10 @@
 package cn.roy.springcloud.api2.service.call;
 
 import cn.roy.springcloud.api2.fallback.RemoteCallServiceFallback;
+import io.swagger.models.auth.In;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -14,10 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @FeignClient(name = "api", fallback = RemoteCallServiceFallback.class)
 public interface RemoteCallService {
 
-    @RequestMapping(value = "/test/time", method = RequestMethod.GET)
-    String callTimeFromApi();
-
-    @RequestMapping(value = "/test/timeOver", method = RequestMethod.GET)
-    String callTimeOverFromApi();
+    @GetMapping(value = "/test/timeOut/{time}")
+    String timeOut(@PathVariable Integer time);
 
 }

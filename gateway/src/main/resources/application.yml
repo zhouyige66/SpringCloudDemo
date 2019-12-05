@@ -25,6 +25,40 @@ spring:
   redis:
     host: 127.0.0.1
     port: 6379
+  #  #redis机器ip
+  #  hostname: 127.0.0.1
+  #  #redis端口
+  #  port: 6379
+  #  #redis密码
+  #  password:
+  #  #redis超时时间（毫秒），如果不设置，取默认值2000
+  #  timeout: 10000
+  #  #最大空闲数
+  #  maxIdle: 300
+  #  #连接池的最大数据库连接数。设为0表示无限制,如果是jedis 2.4以后用redis.maxTotal
+  #  #maxActive=600
+  #  #控制一个pool可分配多少个jedis实例,用来替换上面的redis.maxActive,如果是jedis 2.4以后用该属性
+  #  maxTotal: 1000
+  #  #最大建立连接等待时间。如果超过此时间将接到异常。设为-1表示无限制。
+  #  maxWaitMillis: 1000
+  #  #连接的最小空闲时间 默认1800000毫秒(30分钟)
+  #  minEvictableIdleTimeMillis: 300000
+  #  #每次释放连接的最大数目,默认3
+  #  numTestsPerEvictionRun: 1024
+  #  #逐出扫描的时间间隔(毫秒) 如果为负数,则不运行逐出线程, 默认-1
+  #  timeBetweenEvictionRunsMillis: 30000
+  #  #是否在从池中取出连接前进行检验,如果检验失败,则从池中去除连接并尝试取出另一个
+  #  testOnBorrow: true
+  #  #在空闲时检查有效性, 默认false
+  #  testWhileIdle: true
+  #  #redis集群配置
+  #  #spring.cluster.nodes=192.168.1.1:7001,192.168.1.1:7002,192.168.1.1:7003,192.168.1.1:7004,192.168.1.1:7005,192.168.1.1:7006
+  #  #spring.cluster.max-redirects=3
+  #  #哨兵模式
+  #  #sentinel.host1=192.168.1.1
+  #  #sentinel.port1=26379
+  ##sentinel.host2=192.168.1.2
+  ##sentinel.port2=26379
   cache:
     ehcache:
       config: classpath:ehcache.xml
@@ -32,9 +66,20 @@ spring:
   session:
     store-type: redis
 
+#  如果hystrix.command.default.execution.timeout.enabled为true,则会有两个执行方法超时的配置,一个就是ribbon的ReadTimeout,一个就是熔断器hystrix的timeoutInMilliseconds, 此时谁的值小谁生效
+#  如果hystrix.command.default.execution.timeout.enabled为false,则熔断器不进行超时熔断,而是根据ribbon的ReadTimeout抛出的异常而熔断,也就是取决于ribbon
+#  ribbon的ConnectTimeout,配置的是请求服务的超时时间,除非服务找不到,或者网络原因,这个时间才会生效
+#  ribbon还有MaxAutoRetries对当前实例的重试次数,MaxAutoRetriesNextServer对切换实例的重试次数, 如果ribbon的ReadTimeout超时,或者ConnectTimeout连接超时,会进行重试操作
+#  由于ribbon的重试机制,通常熔断的超时时间需要配置的比ReadTimeout长,ReadTimeout比ConnectTimeout长,否则还未重试,就熔断了
+#  为了确保重试机制的正常运作,理论上（以实际情况为准）建议hystrix的超时时间为:(1 + MaxAutoRetries + MaxAutoRetriesNextServer) * ReadTimeout
 #路由配置
 zuul:
   retryable: true
+  host:
+    #路由的连接时间，默认2000
+    connect-timeout-millis: 2000
+    #数据传输时间，默认10000
+    socket-timeout-millis: 5000
   routes:
     api:
       path: /api/**
@@ -42,87 +87,56 @@ zuul:
     api2:
       path: /api2/**
       serviceId: ${server.name.api2}
-#    auth:
-#      path: /auth/**
-#      serviceId: ${spring.application.name}
 
+#负载均衡器
 ribbon:
-  #连接超时时间(ms)
-  ConnectTimeout: 250
-  #通信超时时间(ms)，解决504问题
-  ReadTimeout: 10000
-  #是否对所有操作重试
-  OkToRetryOnAllOperations: true
-  #同一服务不同实例的重试次数
-  MaxAutoRetriesNextServer: 2
-  #同一实例的重试次数
-  MaxAutoRetries: 1
+  #对所有操作请求都进行重试,默认false
+  OkToRetryOnAllOperations: false
+  #负载均衡超时时间，默认值5000，可解决504问题
+  ReadTimeout: 5000
+  #ribbon请求连接的超时时间，默认值2000
+  ConnectTimeout: 2000
+  #对当前实例的重试次数，默认0
+  MaxAutoRetries: 0
+  #对切换实例的重试次数，默认1
+  MaxAutoRetriesNextServer: 1
 
+#熔断器
 hystrix:
   command:
     default:
+      #default全局有效，service id指定应用有效
       execution:
+        timeout:
+          #如果enabled设置为false，则请求超时交给ribbon控制,为true,则超时作为熔断根据
+          enabled: true
         isolation:
           thread:
-            #熔断超时时长：10000ms
+            #断路器超时时间，默认1000ms
             timeoutInMilliseconds: 10000
-
-#redis
-redis:
-  #redis机器ip
-  hostname: 127.0.0.1
-  #redis端口
-  port: 6379
-  #redis密码
-  password:
-  #redis超时时间（毫秒），如果不设置，取默认值2000
-  timeout: 10000
-  #最大空闲数
-  maxIdle: 300
-  #连接池的最大数据库连接数。设为0表示无限制,如果是jedis 2.4以后用redis.maxTotal
-  #maxActive=600
-  #控制一个pool可分配多少个jedis实例,用来替换上面的redis.maxActive,如果是jedis 2.4以后用该属性
-  maxTotal: 1000
-  #最大建立连接等待时间。如果超过此时间将接到异常。设为-1表示无限制。
-  maxWaitMillis: 1000
-  #连接的最小空闲时间 默认1800000毫秒(30分钟)
-  minEvictableIdleTimeMillis: 300000
-  #每次释放连接的最大数目,默认3
-  numTestsPerEvictionRun: 1024
-  #逐出扫描的时间间隔(毫秒) 如果为负数,则不运行逐出线程, 默认-1
-  timeBetweenEvictionRunsMillis: 30000
-  #是否在从池中取出连接前进行检验,如果检验失败,则从池中去除连接并尝试取出另一个
-  testOnBorrow: true
-  #在空闲时检查有效性, 默认false
-  testWhileIdle: true
-  #redis集群配置
-  #spring.cluster.nodes=192.168.1.1:7001,192.168.1.1:7002,192.168.1.1:7003,192.168.1.1:7004,192.168.1.1:7005,192.168.1.1:7006
-  #spring.cluster.max-redirects=3
-  #哨兵模式
-  #sentinel.host1=192.168.1.1
-  #sentinel.port1=26379
-#sentinel.host2=192.168.1.2
-#sentinel.port2=26379
+#feign.hystrix.enabled: true
 
 #内置Endpoints
-#id	desc	Sensitive
-#auditevents	显示当前应用程序的审计事件信息	Yes
-#beans	显示应用Spring Beans的完整列表	Yes
-#caches	显示可用缓存信息	Yes
-#conditions	显示自动装配类的状态及及应用信息	Yes
-#configprops	显示所有 @ConfigurationProperties 列表	Yes
-#env	显示 ConfigurableEnvironment 中的属性	Yes
-#flyway	显示 Flyway 数据库迁移信息	Yes
-#health	显示应用的健康信息（未认证只显示status，认证显示全部信息详情）	No
-#info	显示任意的应用信息（在资源文件写info.xxx即可）	No
-#liquibase	展示Liquibase 数据库迁移	Yes
-#metrics	展示当前应用的 metrics 信息	Yes
-#mappings	显示所有 @RequestMapping 路径集列表	Yes
-#scheduledtasks	显示应用程序中的计划任务	Yes
-#sessions	允许从Spring会话支持的会话存储中检索和删除用户会话。	Yes
-#shutdown	允许应用以优雅的方式关闭（默认情况下不启用）	Yes
-#threaddump	执行一个线程dump	Yes
-#httptrace	显示HTTP跟踪信息（默认显示最后100个HTTP请求 - 响应交换）	Yes
+#auditevents	显示当前应用程序的审计事件信息
+#beans	        显示应用Spring Beans的完整列表
+#caches	        显示可用缓存信息
+#conditions	    显示自动装配类的状态及及应用信息
+#configprops	显示所有 @ConfigurationProperties 列表
+#env	        显示 ConfigurableEnvironment 中的属性
+#flyway	        显示 Flyway 数据库迁移信息
+#health	        显示应用的健康信息（未认证只显示status，认证显示全部信息详情）
+#info	        显示任意的应用信息（在资源文件写info.xxx即可）
+#liquibase	    展示Liquibase 数据库迁移
+#metrics	    展示当前应用的 metrics 信息
+#mappings	    显示所有 @RequestMapping 路径集列表
+#scheduledtasks	显示应用程序中的计划任务
+#sessions	    允许从Spring会话支持的会话存储中检索和删除用户会话。
+#shutdown	    允许应用以优雅的方式关闭（默认情况下不启用）
+#httptrace	    显示HTTP跟踪信息（默认显示最后100个HTTP请求 - 响应交换）
+#loggers	    显示和修改配置的loggers
+#logfile	    返回log file中的内容(如果logging.file或者logging.path被设置)
+#threaddump	    执行一个线程dump
+#heapdump	    返回一个GZip压缩的JVM堆dump
 management:
   #定义管理端点可用地址与端口
   server:
@@ -132,9 +146,12 @@ management:
     web:
       exposure:
         #对外开放端口
-        include: info,health,monitoring
+        include: info,health,monitoring,metrics,loggers
         #关闭端口
         exclude: sessions
+  endpoint:
+    health:
+      show-details: always
 
 javamelody:
   # Enable JavaMelody auto-configuration (optional, default: true)

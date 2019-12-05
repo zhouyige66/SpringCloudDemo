@@ -11,7 +11,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication
 @EnableEurekaClient
-@EnableZuulProxy
+@EnableZuulProxy // 已开启熔断器
 @EnableSwagger2
 @EnableCaching
 @EnableAspectJAutoProxy(proxyTargetClass = true)

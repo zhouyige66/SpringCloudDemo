@@ -9,10 +9,13 @@ import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,6 +33,7 @@ import javax.servlet.http.HttpServletRequest;
 @Api(tags = "Test相关接口")
 @DefaultProperties(defaultFallback = "defaultFallback")
 public class TestController {
+    private static final Logger logger = LoggerFactory.getLogger(TestController.class);
 
     @Value("${server.port}")
     private int port;
@@ -62,27 +66,13 @@ public class TestController {
         return ResultData.success(simpleMapDto);
     }
 
-    @ApiOperation(value = "服务处理时间4S", notes = "功能：供其他服务调用接口")
-    @GetMapping("time")
-    public ResultData time() {
+    @ApiOperation(value = "模拟服务处理请求接口", notes = "功能：供其他服务调用接口")
+    @GetMapping("timeOut/{time}")
+    public ResultData time(@PathVariable Integer time) {
         try {
-            Thread.sleep(4000);
+            Thread.sleep(time);
             SimpleDto stringSimpleDto = new SimpleDto();
-            stringSimpleDto.setValue("睡眠4秒");
-            return ResultData.success(stringSimpleDto);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            return ResultData.serverError();
-        }
-    }
-
-    @ApiOperation(value = "服务处理时间6S", notes = "功能：供其他服务调用接口")
-    @GetMapping("timeOver")
-    public ResultData timeOver() {
-        try {
-            Thread.sleep(6000);
-            SimpleDto stringSimpleDto = new SimpleDto();
-            stringSimpleDto.setValue("睡眠6秒");
+            stringSimpleDto.setValue("睡眠时间：" + time);
             return ResultData.success(stringSimpleDto);
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -91,46 +81,39 @@ public class TestController {
     }
 
     @ApiOperation(value = "测试远程调用接口", notes = "功能：测试远程调用")
-    @GetMapping("call")
-    public String call() {
-        return remoteCallService.callTimeFromApi2();
+    @GetMapping("call/{time}")
+    public String call(@PathVariable Integer time) {
+        return remoteCallService.timeOut(time);
     }
 
-    @HystrixCommand(fallbackMethod = "fallback",
+    @HystrixCommand(
+            fallbackMethod = "fallback",
             commandProperties = {
                     @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "3000")
             })
     @ApiOperation(value = "测试远程调用接口", notes = "功能：测试远程调用")
-    @GetMapping("call2")
-    public String call2() {
-        return remoteCallService.callTimeOverFromApi2();
+    @GetMapping("call2/{time}")
+    public String call2(@PathVariable Integer time) {
+        return remoteCallService.timeOut(time);
     }
 
-    //    HystrixCommandProperties中可查看属性含义
-//    @HystrixCommand(
-//            fallbackMethod = "buildFallbackLicenseList",
-//            threadPoolKey = "licenseByOrgThreadPool",
-//            threadPoolProperties = {
-//                    @HystrixProperty(name = "coreSize",value="30"),
-//                    @HystrixProperty(name="maxQueueSize", value="10")
-//            }
-//    )
-    @HystrixCommand(fallbackMethod = "fallback",
+    @HystrixCommand(
+            fallbackMethod = "fallback",
             commandProperties = {
                     @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "5500")
             })
     @ApiOperation(value = "测试远程调用接口", notes = "功能：测试远程调用")
-    @GetMapping("call3")
-    public String call3() {
-        return remoteCallService.callTimeOverFromApi2();
+    @GetMapping("call3/{time}")
+    public String call3(@PathVariable Integer time) {
+        return remoteCallService.timeOut(time);
     }
 
     private String fallback() {
-        return "太拥挤了，请稍后再试";
+        return "调用定制方法，服务熔断（降级了）";
     }
 
     private String defaultFallback() {
-        return "默认太拥挤了，请稍后再试";
+        return "调用默认方法，服务熔断（降级了）";
     }
 
 }
