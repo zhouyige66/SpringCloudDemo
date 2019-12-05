@@ -32,6 +32,12 @@
             <artifactId>spring-cloud-sleuth-zipkin</artifactId>
         </dependency>
 
+        <!--健康检查（刷新配置等）-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
         <!--JSON工具-->
         <dependency>
             <groupId>com.alibaba</groupId>
