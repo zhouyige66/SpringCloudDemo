@@ -5,14 +5,16 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 
 @SpringBootApplication
+@EnableEurekaClient
 public class MqApplication implements ApplicationRunner {
 
     @Value("${spring.application.name}")
     private String name;
 
-    @Value("${server.names.mq}")
+    @Value("${server.name.mq}")
     private String name2;
 
     public static void main(String[] args) {
@@ -26,3 +28,4 @@ public class MqApplication implements ApplicationRunner {
     }
 
 }
+

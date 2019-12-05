@@ -2,7 +2,6 @@ package cn.roy.springcloud.cache.controller;
 
 import cn.roy.springcloud.base.dto.SimpleDto;
 import cn.roy.springcloud.base.http.ResultData;
-import cn.roy.springcloud.cache.bean.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
