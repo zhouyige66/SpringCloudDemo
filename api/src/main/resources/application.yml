@@ -59,6 +59,42 @@ spring:
       idle-timeout: 30000
       #expiry-timeout: 1000
 
+#开启熔断机制
+feign:
+  hystrix:
+    # If true, an OpenFeign client will be wrapped with a Hystrix circuit breaker.
+    enabled: true
+#熔断器
+hystrix:
+  command:
+    default:
+      #default全局有效，service id指定应用有效
+      execution:
+        timeout:
+          #如果enabled设置为false，则请求超时交给ribbon控制,为true,则超时作为熔断根据
+          enabled: true
+        isolation:
+          thread:
+            #断路器超时时间，默认1000ms
+            timeoutInMilliseconds: 10000
+#负载均衡
+ribbon:
+  #连接超时时间(ms)
+  ConnectTimeout: 2000
+  #通信超时时间(ms)，解决504问题
+  ReadTimeout: 5000
+  #是否对所有操作重试
+  OkToRetryOnAllOperations: true
+  #同一实例的重试次数
+  MaxAutoRetries: 0
+  #同一服务不同实例的重试次数
+  MaxAutoRetriesNextServer: 1
+#健康监控：加载所有的端点/默认只加载了info/health
+management:
+  endpoints:
+    web:
+      exposure:
+        include: *
 #数据源
 datasource:
   #主库
@@ -152,7 +188,7 @@ datasource:
       connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
       #合并多个DruidDataSource的监控数据
       #useGlobalDataSourceStat: true
-
+#mybatis
 mybatis:
   #Mapper.xml所在的位置
   mapper-locations: classpath:mapper/*.xml
@@ -162,49 +198,12 @@ mybatis:
     map-underscore-to-camel-case: true
     #sql输出
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-
-#开启熔断机制
-feign:
-  hystrix:
-    # If true, an OpenFeign client will be wrapped with a Hystrix circuit breaker.
-    enabled: true
-
-#服务熔断
-hystrix:
-  command:
-    default:
-      execution:
-        isolation:
-          thread:
-            #熔断超时时长：6000ms
-            timeoutInMilliseconds: 6000
-
-#负载均衡
-ribbon:
-  #连接超时时间(ms)
-  ConnectTimeout: 1000
-  #通信超时时间(ms)，解决504问题
-  ReadTimeout: 5000
-  #是否对所有操作重试
-  OkToRetryOnAllOperations: true
-  #同一服务不同实例的重试次数
-  MaxAutoRetriesNextServer: 2
-  #同一实例的重试次数
-  MaxAutoRetries: 1
-
-#健康监控：加载所有的端点/默认只加载了info/health
-management:
-  endpoints:
-    web:
-      exposure:
-        include=*:
-
-mail:
-  #收件人之间逗号隔开，如xxx@qq.com,yyy@163.com
-  sendTo: roy.z.zhou@163.com
-  ccTo: kk.h@163.com
-
+#自定义
 custom:
+  mail:
+    #收件人之间逗号隔开，如xxx@qq.com,yyy@163.com
+    sendTo: roy.z.zhou@163.com
+    ccTo: kk.h@163.com
   names:
     - roy.z.zhou
     - kk20

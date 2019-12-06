@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 @RefreshScope
 @RestController
 @RequestMapping("test")
-@Api(tags = "Test相关接口")
+@Api(tags = "TestController相关接口")
 @DefaultProperties(defaultFallback = "defaultFallback")
 public class TestController {
     private static final Logger logger = LoggerFactory.getLogger(TestController.class);
@@ -66,9 +66,9 @@ public class TestController {
         return ResultData.success(simpleMapDto);
     }
 
-    @ApiOperation(value = "模拟服务处理请求接口", notes = "功能：供其他服务调用接口")
+    @ApiOperation(value = "模拟服务处理请求接口", notes = "功能：模拟后台耗时处理")
     @GetMapping("timeOut/{time}")
-    public ResultData time(@PathVariable Integer time) {
+    public ResultData timeOut(@PathVariable Integer time) {
         try {
             Thread.sleep(time);
             SimpleDto stringSimpleDto = new SimpleDto();

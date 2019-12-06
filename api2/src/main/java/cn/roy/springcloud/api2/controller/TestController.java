@@ -19,9 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RefreshScope
 @RestController
-@RequestMapping("hello")
-@Api(tags = "HelloController相关接口")
-public class HelloController {
+@RequestMapping("test")
+@Api(tags = "TestController相关接口")
+public class TestController {
 
     @Value("${server.port}")
     private int port;
@@ -39,9 +39,9 @@ public class HelloController {
         return "从配置中心读取的名字为：" + userName;
     }
 
-    @ApiOperation(value = "服务处理时间4S", notes = "功能：供其他服务调用接口")
+    @ApiOperation(value = "模拟服务处理请求接口", notes = "功能：模拟后台耗时处理")
     @GetMapping("timeOut/{time}")
-    public String time(@PathVariable Integer time) {
+    public String timeOut(@PathVariable Integer time) {
         try {
             Thread.sleep(time);
         } catch (InterruptedException e) {
@@ -50,7 +50,7 @@ public class HelloController {
         return "睡眠时间：" + time;
     }
 
-    @ApiOperation(value = "服务处理时间6S", notes = "功能：供其他服务调用接口")
+    @ApiOperation(value = "远程服务调用测试", notes = "功能：远程服务调用测试")
     @GetMapping("call/{time}")
     public String call(@PathVariable Integer time) {
         return remoteCallService.timeOut(time);
