@@ -16,7 +16,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) {
         //ignore
-        web.ignoring().antMatchers("/encrypt","/encrypt/*", "/health", "/decrypt");
+        web.ignoring().antMatchers("/encrypt","/encrypt/*", "/health", "/decrypt","/refresh");
     }
 
 }

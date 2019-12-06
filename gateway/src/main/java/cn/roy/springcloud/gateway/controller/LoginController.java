@@ -1,9 +1,11 @@
 package cn.roy.springcloud.gateway.controller;
 
+import com.netflix.hystrix.contrib.javanica.annotation.DefaultProperties;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("auth")
+@DefaultProperties(defaultFallback = "fallback")
 public class LoginController {
 
     @PostMapping("login")
@@ -58,6 +61,10 @@ public class LoginController {
         public void setPassword(String password) {
             this.password = password;
         }
+    }
+
+    private String fallback(@Nullable Object obj) {
+        return "调用默认降级方法";
     }
 
 }
