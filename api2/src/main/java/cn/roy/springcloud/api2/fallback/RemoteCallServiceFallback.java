@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 public class RemoteCallServiceFallback implements RemoteCallService {
 
     @Override
-    public String timeOut(Integer time) {
+    public String timeout(Integer time) {
         return "FeignClient调用远程服务超时，进行降级操作";
 
     }

@@ -26,6 +26,8 @@ feign:
 hystrix:
   command:
     default:
+      timeout:
+        enabled: true
       execution:
         isolation:
           thread:

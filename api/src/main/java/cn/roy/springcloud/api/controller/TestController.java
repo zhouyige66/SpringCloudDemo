@@ -110,11 +110,11 @@ public class TestController {
         return remoteCallService.timeout(time);
     }
 
-    private String fallback() {
+    private String fallback(Integer time) {
         return "调用定制方法，服务熔断（降级了）";
     }
 
-    private String defaultFallback() {
+    private String defaultFallback(Integer time) {
         return "调用默认方法，服务熔断（降级了）";
     }
 
