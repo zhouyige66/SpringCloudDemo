@@ -26,10 +26,10 @@ import java.util.Map;
 @Api(tags = "Mail相关接口")
 public class MailController {
 
-    @Value("#{'${custtom.mail.sendTo}'.split(',')}")
+    @Value("#{'${custom.mail.sendTo}'.split(',')}")
     private String[] sendTo;
 
-    @Value("#{'${custtom.mail.ccTo}'.split(',')}")
+    @Value("#{'${custom.mail.ccTo}'.split(',')}")
     private String[] ccTo;
 
     @Autowired

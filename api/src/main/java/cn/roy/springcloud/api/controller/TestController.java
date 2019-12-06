@@ -94,17 +94,19 @@ public class TestController {
     @ApiOperation(value = "测试远程调用接口", notes = "功能：测试远程调用")
     @GetMapping("call2/{time}")
     public String call2(@PathVariable Integer time) {
+        logger.info("command超时时间设置为：3000，请求时间：{}",time);
         return remoteCallService.timeOut(time);
     }
 
     @HystrixCommand(
             fallbackMethod = "fallback",
             commandProperties = {
-                    @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "5500")
+                    @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "4500")
             })
     @ApiOperation(value = "测试远程调用接口", notes = "功能：测试远程调用")
     @GetMapping("call3/{time}")
     public String call3(@PathVariable Integer time) {
+        logger.info("command超时时间设置为：4500，请求时间：{}",time);
         return remoteCallService.timeOut(time);
     }
 

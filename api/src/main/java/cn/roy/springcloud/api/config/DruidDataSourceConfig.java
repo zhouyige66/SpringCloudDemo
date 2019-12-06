@@ -54,7 +54,7 @@ public class DruidDataSourceConfig implements EnvironmentAware {
     }
 
     @Bean
-    public DynamicDataSource dynamicDataSource(@Qualifier("master") DataSource masterDataSource,
+    public DataSource dynamicDataSource(@Qualifier("master") DataSource masterDataSource,
                                         @Qualifier("slave") SlaveDatasource slaveDatasource) {
         DynamicDataSource dynamicDataSource = new DynamicDataSource();
         Map<Object, Object> targetDatasource = new HashedMap<>();
