@@ -14,7 +14,7 @@ spring:
       name: default,job
       discovery:
         enabled: true
-        service-id: server_config_center
+        service-id: ConfigCenterServer
       #配置中心认证信息
       username: roy
       password: 123456

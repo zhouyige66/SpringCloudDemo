@@ -1,5 +1,7 @@
 package cn.roy.springcloud.api2;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -20,6 +22,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @EnableHystrixDashboard
 @EnableRabbit
 public class Api2Application extends SpringBootServletInitializer implements CommandLineRunner, ApplicationRunner {
+    private static final Logger logger = LoggerFactory.getLogger(Api2Application.class);
 
     public static void main(String[] args) {
         SpringApplication.run(Api2Application.class, args);
@@ -32,12 +35,12 @@ public class Api2Application extends SpringBootServletInitializer implements Com
 
     @Override
     public void run(String... args) throws Exception {
-        System.out.println("---CommandLineRunner---");
+        logger.info("---CommandLineRunner---");
     }
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        System.out.println("---ApplicationRunner---");
+        logger.info("---ApplicationRunner---");
     }
 
 }

@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: server_config_center
+    name: ConfigCenterServer
   #配置读取本地文件
   profiles:
     active: native

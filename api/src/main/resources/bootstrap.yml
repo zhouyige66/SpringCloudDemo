@@ -29,7 +29,7 @@ spring:
         #开启配置服务发现
         enabled: true
         #注册中心的服务名
-        service-id: server_config_center
+        service-id: ConfigCenterServer
       #配置中心访问密码
       username: roy
       password: 123456
