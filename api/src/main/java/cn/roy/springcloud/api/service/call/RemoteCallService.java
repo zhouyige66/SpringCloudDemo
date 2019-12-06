@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 @FeignClient(name = "${server.name.api2}", fallback = RemoteCallServiceFallback.class)
 public interface RemoteCallService {
 
-    @GetMapping(value = "/test/timeOut/{time}")
-    String timeOut(@PathVariable Integer time);
+    @GetMapping(value = "/test/timeout/{time}")
+    String timeout(@PathVariable Integer time);
 
 }

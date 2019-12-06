@@ -40,8 +40,8 @@ public class TestController {
     }
 
     @ApiOperation(value = "模拟服务处理请求接口", notes = "功能：模拟后台耗时处理")
-    @GetMapping("timeOut/{time}")
-    public String timeOut(@PathVariable Integer time) {
+    @GetMapping("timeout/{time}")
+    public String timeout(@PathVariable Integer time) {
         try {
             Thread.sleep(time);
         } catch (InterruptedException e) {
@@ -53,7 +53,7 @@ public class TestController {
     @ApiOperation(value = "远程服务调用测试", notes = "功能：远程服务调用测试")
     @GetMapping("call/{time}")
     public String call(@PathVariable Integer time) {
-        return remoteCallService.timeOut(time);
+        return remoteCallService.timeout(time);
     }
 
 }

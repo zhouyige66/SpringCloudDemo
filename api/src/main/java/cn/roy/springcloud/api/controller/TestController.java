@@ -67,8 +67,8 @@ public class TestController {
     }
 
     @ApiOperation(value = "模拟服务处理请求接口", notes = "功能：模拟后台耗时处理")
-    @GetMapping("timeOut/{time}")
-    public ResultData timeOut(@PathVariable Integer time) {
+    @GetMapping("timeout/{time}")
+    public ResultData timeout(@PathVariable Integer time) {
         try {
             Thread.sleep(time);
             SimpleDto stringSimpleDto = new SimpleDto();
@@ -83,7 +83,7 @@ public class TestController {
     @ApiOperation(value = "测试远程调用接口", notes = "功能：测试远程调用")
     @GetMapping("call/{time}")
     public String call(@PathVariable Integer time) {
-        return remoteCallService.timeOut(time);
+        return remoteCallService.timeout(time);
     }
 
     @HystrixCommand(
@@ -95,7 +95,7 @@ public class TestController {
     @GetMapping("call2/{time}")
     public String call2(@PathVariable Integer time) {
         logger.info("command超时时间设置为：3000，请求时间：{}",time);
-        return remoteCallService.timeOut(time);
+        return remoteCallService.timeout(time);
     }
 
     @HystrixCommand(
@@ -107,7 +107,7 @@ public class TestController {
     @GetMapping("call3/{time}")
     public String call3(@PathVariable Integer time) {
         logger.info("command超时时间设置为：4500，请求时间：{}",time);
-        return remoteCallService.timeOut(time);
+        return remoteCallService.timeout(time);
     }
 
     private String fallback() {
