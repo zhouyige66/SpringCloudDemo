@@ -54,12 +54,11 @@ public class DruidDataSourceConfig implements EnvironmentAware {
     }
 
     @Bean
-    public DataSource dynamicDataSource(@Qualifier("master") DataSource masterDataSource,
-                                        @Qualifier("slave") SlaveDatasource slaveDatasource) {
+    public DataSource dynamicDataSource() {
         DynamicDataSource dynamicDataSource = new DynamicDataSource();
         Map<Object, Object> targetDatasource = new HashedMap<>();
-        targetDatasource.put(DynamicDataSource.DynamicDataSourceType.getMasterType(), masterDataSource);
-        List<DruidDataSource> slave = slaveDatasource.getSlave();
+        targetDatasource.put(DynamicDataSource.DynamicDataSourceType.getMasterType(), master());
+        List<DruidDataSource> slave = slave().getSlave();
         if (!CollectionUtils.isEmpty(slave)) {
             int i = 0;
             for (DruidDataSource dataSource : slave) {
@@ -67,7 +66,7 @@ public class DruidDataSourceConfig implements EnvironmentAware {
                 i++;
             }
         }
-        dynamicDataSource.setDefaultTargetDataSource(masterDataSource);
+        dynamicDataSource.setDefaultTargetDataSource(master());
         dynamicDataSource.setTargetDataSources(targetDatasource);
         return dynamicDataSource;
     }
@@ -76,8 +75,8 @@ public class DruidDataSourceConfig implements EnvironmentAware {
      * 配置事务管理器
      */
     @Bean
-    public DataSourceTransactionManager transactionManager(DynamicDataSource dataSource) throws Exception {
-        return new DynamicDataSourceTransactionManager(dataSource);
+    public DataSourceTransactionManager transactionManager() throws Exception {
+        return new DynamicDataSourceTransactionManager(dynamicDataSource());
     }
 
 //    @Bean
