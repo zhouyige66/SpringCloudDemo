@@ -20,8 +20,6 @@ import org.springframework.data.redis.core.RedisKeyExpiredEvent;
 import org.springframework.data.redis.listener.KeyExpirationEventMessageListener;
 import org.springframework.data.redis.listener.PatternTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
-import org.springframework.session.web.http.CookieSerializer;
-import org.springframework.session.web.http.DefaultCookieSerializer;
 
 import java.time.Duration;
 
@@ -39,18 +37,6 @@ public class CacheConfig {
     private ApplicationContext applicationContext;
     @Autowired
     private RedisConnectionFactory redisConnectionFactory;
-
-    @Bean
-    public CookieSerializer cookieSerializer() {
-        DefaultCookieSerializer defaultCookieSerializer = new DefaultCookieSerializer();
-        // cookie名字
-        defaultCookieSerializer.setCookieName("sessionId");
-        // 不同子域时设置
-        // defaultCookieSerializer.setDomainName("xxx.com");
-        // 设置各web应用返回的cookiePath一致
-        defaultCookieSerializer.setCookiePath("/");
-        return defaultCookieSerializer;
-    }
 
     @Bean("cacheRedisMessageListenerContainer")
     public RedisMessageListenerContainer redisMessageListenerContainer() {
