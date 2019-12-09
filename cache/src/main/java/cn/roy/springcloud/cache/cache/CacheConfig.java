@@ -70,7 +70,7 @@ public class CacheConfig {
     public void registerRedisKeyExpiredListener() {
         RedisMessageListenerContainer container = redisMessageListenerContainer();
         KeyExpirationEventMessageListener listener = new KeyExpirationEventMessageListener(container);
-        listener.init();
+//        listener.init();
         listener.setApplicationEventPublisher(applicationContext);
     }
 
