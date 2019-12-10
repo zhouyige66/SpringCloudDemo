@@ -30,7 +30,7 @@
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>DEBUG</level>
             <onMatch>ACCEPT</onMatch>
-            <onMismatch>DENY</onMismatch>
+            <onMismatch>ACCEPT</onMismatch>
         </filter>
         <encoder>
             <pattern>

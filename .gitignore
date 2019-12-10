@@ -7,7 +7,7 @@ target/*
 mvnw
 mvnw.cmd
 */target
-zdir/cache
+zdir/ehcache
 zdir/logs
 
 ### STS ###
