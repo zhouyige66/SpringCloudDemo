@@ -15,7 +15,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.Message;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisKeyExpiredEvent;
 import org.springframework.data.redis.listener.KeyExpirationEventMessageListener;
 import org.springframework.data.redis.listener.PatternTopic;
@@ -35,20 +35,20 @@ public class CacheConfig {
 
     @Autowired
     private ApplicationContext applicationContext;
-    @Autowired
-    private RedisConnectionFactory redisConnectionFactory;
+
+    @Bean
+    public LettuceConnectionFactory connectionFactory() {
+        return new LettuceConnectionFactory();
+    }
 
     @Bean("cacheRedisMessageListenerContainer")
     public RedisMessageListenerContainer redisMessageListenerContainer() {
         RedisMessageListenerContainer redisMessageListenerContainer = new RedisMessageListenerContainer();
-        redisMessageListenerContainer.setConnectionFactory(redisConnectionFactory);
+        redisMessageListenerContainer.setConnectionFactory(connectionFactory());
         redisMessageListenerContainer.addMessageListener((Message message, byte[] pattern) -> {
             logger.info("收到过期消息：{}", message);
             //TODO 清除本地缓存
         }, new PatternTopic("__keyevent@*__:expired"));
-//        redisMessageListenerContainer.addMessageListener((Message message, byte[] pattern) -> {
-//            logger.info("收到keyspace消息：" + message);
-//        }, new PatternTopic("__keyspace@*__:*"));
         return redisMessageListenerContainer;
     }
 
@@ -56,7 +56,7 @@ public class CacheConfig {
     public void registerRedisKeyExpiredListener() {
         RedisMessageListenerContainer container = redisMessageListenerContainer();
         KeyExpirationEventMessageListener listener = new KeyExpirationEventMessageListener(container);
-//        listener.init();
+        listener.init();
         listener.setApplicationEventPublisher(applicationContext);
     }
 
@@ -76,7 +76,7 @@ public class CacheConfig {
 
     @Bean
     public RedisCacheManager redisCacheManager() {
-        RedisCacheManager redisCacheManager = RedisCacheManager.builder(redisConnectionFactory)
+        RedisCacheManager redisCacheManager = RedisCacheManager.builder(connectionFactory())
                 .cacheDefaults(RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(3)))
                 .transactionAware()
                 .build();

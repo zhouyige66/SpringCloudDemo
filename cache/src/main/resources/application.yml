@@ -11,11 +11,13 @@ spring:
     traceId128: true
     sampler:
       probability: 1.0
-  cache:
-    ehcache:
-      config: classpath:ehcache.xml
-    redis:
-      cache-null-values: true
   redis:
     host: 127.0.0.1
     port: 6379
+    timeout: 10s
+  cache:
+    ehcache:
+      config: classpath:ehcache.xml
+    type: redis
+  session:
+    store-type: redis
