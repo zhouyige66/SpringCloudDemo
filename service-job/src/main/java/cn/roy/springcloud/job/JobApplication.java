@@ -2,7 +2,6 @@ package cn.roy.springcloud.job;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 
 /**
  * @Description:
@@ -11,7 +10,6 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
  * @Version: v1.0
  */
 @SpringBootApplication
-@EnableEurekaClient
 public class JobApplication {
 
     public static void main(String[] args) {

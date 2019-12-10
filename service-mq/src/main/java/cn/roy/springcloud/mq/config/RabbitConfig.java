@@ -206,54 +206,54 @@ public class RabbitConfig {
     @Autowired
     private AmqpAdmin amqpAdmin;
 
-    @Bean
-    public void register() {
-        amqpAdmin.declareExchange(directExchange());
-        amqpAdmin.declareExchange(topicExchange());
-        amqpAdmin.declareExchange(fanoutExchange());
-        amqpAdmin.declareExchange(headersExchange());
-
-        amqpAdmin.declareQueue(directQueue());
-        amqpAdmin.declareQueue(directQueue2());
-        amqpAdmin.declareQueue(topicQueue());
-        amqpAdmin.declareQueue(topicQueue2());
-        amqpAdmin.declareQueue(fanoutQueue());
-        amqpAdmin.declareQueue(fanoutQueue2());
-        amqpAdmin.declareQueue(headersQueue());
-        amqpAdmin.declareQueue(headersQueue2());
-        amqpAdmin.declareQueue(mixQueue());
-
-        Binding directBinding = BindingBuilder.bind(directQueue()).to(directExchange()).with(RoutingKey.DirectA.name);
-        Binding directBinding2 = BindingBuilder.bind(directQueue2()).to(directExchange()).with(RoutingKey.DirectB.name);
-        Binding directBinding3 = BindingBuilder.bind(mixQueue()).to(directExchange()).with(RoutingKey.DirectC.name);
-        Binding topicBinding = BindingBuilder.bind(topicQueue()).to(topicExchange()).with(RoutingKey.TopicA.name);
-        Binding topicBinding2 = BindingBuilder.bind(topicQueue2()).to(topicExchange()).with(RoutingKey.TopicB.name);
-        Binding topicBinding3 = BindingBuilder.bind(mixQueue()).to(topicExchange()).with(RoutingKey.TopicC.name);
-        Binding fanoutBinding = BindingBuilder.bind(fanoutQueue()).to(fanoutExchange());
-        Binding fanoutBinding2 = BindingBuilder.bind(fanoutQueue2()).to(fanoutExchange());
-        Binding fanoutBinding3 = BindingBuilder.bind(mixQueue()).to(fanoutExchange());
-        Binding headersBinding = BindingBuilder.bind(headersQueue()).to(headersExchange()).where("header.A").exists();
-        Binding headersBinding2 = BindingBuilder.bind(headersQueue2()).to(headersExchange()).where("header.B").exists();
-        Binding headersBinding3 = BindingBuilder.bind(mixQueue()).to(headersExchange()).where("header.C").exists();
-
-        // 绑定延迟队列
-        Binding delayBinding = BindingBuilder.bind(delayQueue()).to(directExchange()).with(RoutingKey.DirectDelay.name);
-
-        amqpAdmin.declareBinding(directBinding);
-        amqpAdmin.declareBinding(directBinding2);
-        amqpAdmin.declareBinding(directBinding3);
-        amqpAdmin.declareBinding(topicBinding);
-        amqpAdmin.declareBinding(topicBinding2);
-        amqpAdmin.declareBinding(topicBinding3);
-        amqpAdmin.declareBinding(fanoutBinding);
-        amqpAdmin.declareBinding(fanoutBinding2);
-        amqpAdmin.declareBinding(fanoutBinding3);
-        amqpAdmin.declareBinding(headersBinding);
-        amqpAdmin.declareBinding(headersBinding2);
-        amqpAdmin.declareBinding(headersBinding3);
-
-        amqpAdmin.declareBinding(delayBinding);
-    }
+//    @Bean
+//    public void register() {
+//        amqpAdmin.declareExchange(directExchange());
+//        amqpAdmin.declareExchange(topicExchange());
+//        amqpAdmin.declareExchange(fanoutExchange());
+//        amqpAdmin.declareExchange(headersExchange());
+//
+//        amqpAdmin.declareQueue(directQueue());
+//        amqpAdmin.declareQueue(directQueue2());
+//        amqpAdmin.declareQueue(topicQueue());
+//        amqpAdmin.declareQueue(topicQueue2());
+//        amqpAdmin.declareQueue(fanoutQueue());
+//        amqpAdmin.declareQueue(fanoutQueue2());
+//        amqpAdmin.declareQueue(headersQueue());
+//        amqpAdmin.declareQueue(headersQueue2());
+//        amqpAdmin.declareQueue(mixQueue());
+//
+//        Binding directBinding = BindingBuilder.bind(directQueue()).to(directExchange()).with(RoutingKey.DirectA.name);
+//        Binding directBinding2 = BindingBuilder.bind(directQueue2()).to(directExchange()).with(RoutingKey.DirectB.name);
+//        Binding directBinding3 = BindingBuilder.bind(mixQueue()).to(directExchange()).with(RoutingKey.DirectC.name);
+//        Binding topicBinding = BindingBuilder.bind(topicQueue()).to(topicExchange()).with(RoutingKey.TopicA.name);
+//        Binding topicBinding2 = BindingBuilder.bind(topicQueue2()).to(topicExchange()).with(RoutingKey.TopicB.name);
+//        Binding topicBinding3 = BindingBuilder.bind(mixQueue()).to(topicExchange()).with(RoutingKey.TopicC.name);
+//        Binding fanoutBinding = BindingBuilder.bind(fanoutQueue()).to(fanoutExchange());
+//        Binding fanoutBinding2 = BindingBuilder.bind(fanoutQueue2()).to(fanoutExchange());
+//        Binding fanoutBinding3 = BindingBuilder.bind(mixQueue()).to(fanoutExchange());
+//        Binding headersBinding = BindingBuilder.bind(headersQueue()).to(headersExchange()).where("header.A").exists();
+//        Binding headersBinding2 = BindingBuilder.bind(headersQueue2()).to(headersExchange()).where("header.B").exists();
+//        Binding headersBinding3 = BindingBuilder.bind(mixQueue()).to(headersExchange()).where("header.C").exists();
+//
+//        // 绑定延迟队列
+//        Binding delayBinding = BindingBuilder.bind(delayQueue()).to(directExchange()).with(RoutingKey.DirectDelay.name);
+//
+//        amqpAdmin.declareBinding(directBinding);
+//        amqpAdmin.declareBinding(directBinding2);
+//        amqpAdmin.declareBinding(directBinding3);
+//        amqpAdmin.declareBinding(topicBinding);
+//        amqpAdmin.declareBinding(topicBinding2);
+//        amqpAdmin.declareBinding(topicBinding3);
+//        amqpAdmin.declareBinding(fanoutBinding);
+//        amqpAdmin.declareBinding(fanoutBinding2);
+//        amqpAdmin.declareBinding(fanoutBinding3);
+//        amqpAdmin.declareBinding(headersBinding);
+//        amqpAdmin.declareBinding(headersBinding2);
+//        amqpAdmin.declareBinding(headersBinding3);
+//
+//        amqpAdmin.declareBinding(delayBinding);
+//    }
 
     @Autowired
     private RabbitMessagingTemplate rabbitMessagingTemplate;
