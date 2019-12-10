@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>cn.roy.springcloud</groupId>
+        <artifactId>demo</artifactId>
+        <version>${parent-release-version}</version>
+    </parent>
+    <artifactId>service-multiple-cache</artifactId>
+    <version>${release-version}</version>
+    <name>service-multiple-cache</name>
+    <description>多重缓存测试Demo</description>
+
+    <dependencies>
+        <!--基础库-->
+        <dependency>
+            <groupId>cn.roy.springcloud</groupId>
+            <artifactId>base</artifactId>
+            <version>${release-version}</version>
+        </dependency>
+
+        <!--mvc支持-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!--Cache-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+
+        <!--EhCache-->
+        <dependency>
+            <groupId>net.sf.ehcache.internal</groupId>
+            <artifactId>ehcache-core</artifactId>
+            <version>2.10.6</version>
+            <!--（1）compile：默认值，适用于所有阶段（表明该 jar 包在编译、运行以及测试中路径均可见），并且会随着项目一起发布。-->
+            <!--（2）test：只在测试时使用，用于编译和运行测试代码，不会随项目发布。-->
+            <!--（3）runtime：无需参与项目的编译，不过后期的测试和运行周期需要其参与，与 compile 相比，跳过了编译。如 JDBC 驱动，适用运行和测试阶段。-->
+            <!--（4）provided：编译和测试时有效，但是该依赖在运行时由服务器提供，并且打包时也不会被包含进去。如 servlet-api。-->
+            <!--（5）system：类似 provided，需要显式提供包含依赖的jar，不会从 maven 仓库下载，而是从本地文件系统获取，需要添加 systemPath 的属性来定义路径。-->
+            <scope>compile</scope>
+        </dependency>
+
+        <!--Redis-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-data-redis</artifactId>
+        </dependency>
+
+        <!--AOP支持-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-data-redis</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <jvmArguments>
+                        <!--开启远程调试功能-->
+                        -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005
+                    </jvmArguments>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

@@ -17,14 +17,14 @@
 
     <modules>
         <module>base</module>
-        <module>eureka</module>
-        <module>config</module>
-        <module>gateway</module>
-        <module>api</module>
-        <module>api2</module>
-        <module>mq</module>
-        <module>job</module>
-        <module>multiple-cache</module>
+        <module>base-eureka</module>
+        <module>base-config</module>
+        <module>base-gateway</module>
+        <module>service-api</module>
+        <module>service-api2</module>
+        <module>service-mq</module>
+        <module>service-job</module>
+        <module>service-multiple-cache</module>
     </modules>
 
     <properties>
