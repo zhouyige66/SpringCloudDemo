@@ -7,10 +7,10 @@
         <artifactId>demo</artifactId>
         <version>${parent-release-version}</version>
     </parent>
-    <artifactId>cache</artifactId>
+    <artifactId>multiple-cache</artifactId>
     <version>${release-version}</version>
-    <name>cache</name>
-    <description>Cache Test Demo</description>
+    <name>multiple cache</name>
+    <description>多重缓存测试Demo</description>
 
     <dependencies>
         <!--基础库-->

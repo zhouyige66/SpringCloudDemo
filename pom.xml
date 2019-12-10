@@ -24,7 +24,7 @@
         <module>api2</module>
         <module>mq</module>
         <module>job</module>
-        <module>cache</module>
+        <module>multiple-cache</module>
     </modules>
 
     <properties>
