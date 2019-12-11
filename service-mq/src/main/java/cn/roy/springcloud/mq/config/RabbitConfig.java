@@ -89,7 +89,6 @@ public class RabbitConfig {
         TopicB("topic.*"),
         TopicC("topic.#");
 
-
         private final String name;
 
         RoutingKey(String name) {
