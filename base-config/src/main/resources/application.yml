@@ -12,12 +12,3 @@ spring:
     user:
       name: roy
       password: 123456
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-  endpoint:
-    health:
-      show-details: always

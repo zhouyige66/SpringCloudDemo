@@ -4,13 +4,8 @@ server:
 spring:
   application:
     name: ${server.name.mq:mq}
-  #链路追踪
-  zipkin:
-    baseUrl: ${zipkin.url:http://localhost:9411}
-  sleuth:
-    traceId128: true
-    sampler:
-      probability: 1.0
+  profiles:
+    include: base
   activemq:
     broker-url: tcp://127.0.0.1:61616
     user: admin
