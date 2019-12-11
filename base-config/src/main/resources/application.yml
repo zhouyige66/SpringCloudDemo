@@ -13,7 +13,11 @@ spring:
       name: roy
       password: 123456
 
-#动态刷新配置 ---需要忽略权限拦截
 management:
-  security:
-    enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
