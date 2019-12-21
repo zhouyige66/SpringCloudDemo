@@ -71,7 +71,7 @@ public class CacheConfig {
         logger.info("监听到过期事件：" + expiredEvent);
         String cacheName = expiredEvent.getKeyspace();
         String key = new String(expiredEvent.getId());
-
+        logger.info("解析后数据：Keyspace={},id={}", cacheName, key);
         EhCacheCacheManager ehCacheCacheManager = ehCacheCacheManager();
         Cache cache = ehCacheCacheManager.getCache(cacheName);
         if (null != cache) {
