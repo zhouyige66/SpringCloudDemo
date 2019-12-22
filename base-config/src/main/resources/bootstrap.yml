@@ -27,8 +27,9 @@ spring:
       server:
         native:
           #注意，Windows中的绝对路径使用的“/”代替“\”
-          search-locations: /Users/zzy/code/J2EEProject/ConfigCenter
-#          search-locations: C:/Users/Roy Z Zhou/Music/ConfigCenter
+#          search-locations: /Users/zzy/code/J2EEProject/ConfigCenter     #windows路径
+#          search-locations: C:/Users/Roy Z Zhou/Music/ConfigCenter        #mac路径
+          search-locations: /Users/kk20/Documents/Code/J2EE/ConfigCenter  #mac路径2
           order: 1
         #配置读取远程仓库文件
         git:
