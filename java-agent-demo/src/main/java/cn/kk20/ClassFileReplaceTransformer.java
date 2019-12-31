@@ -18,23 +18,22 @@ public class ClassFileReplaceTransformer implements ClassFileTransformer {
     @Override
     public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined,
                             ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
-        if (!className.equals("cn/roy/springcloud/eureka/User")) {
+        if(className.startsWith("com/pwc/sdc")){
+            System.out.println("加载器：" + loader);
+            System.out.println("加载类：" + className);
+        }
+        if (!className.equals("com/pwc/sdc/e_confirmation/common/vo/ResultData")) {
             return classfileBuffer;
         }
-        System.out.println("加载器：" + loader);
-        System.out.println("加载类：" + className);
-        Class<?> aClass = loader.loadClass(className);
-        aClass.get
         CtClass ctClass = null;
         try {
             ClassPool pool = ClassPool.getDefault();
-//            ctClass = pool.makeClass(new ByteArrayInputStream(classfileBuffer));
-            ctClass = pool.get(className.replace("/","."));
+            pool.insertClassPath(new ClassClassPath(this.getClass()));
+            ctClass = pool.makeClass(new ByteArrayInputStream(classfileBuffer));
             System.out.println("ctClass==" + ctClass.getSimpleName());
             if (!ctClass.isInterface()) {
                 CtMethod[] methods = ctClass.getMethods();
                 System.out.println("methods：" + methods);
-//                CtBehavior[] methods = ctClass.getDeclaredBehaviors();
                 for (int i = 0; i < methods.length; i++) {
                     if (!isTargetMethod(methods[i])) {
                         continue;
@@ -56,15 +55,12 @@ public class ClassFileReplaceTransformer implements ClassFileTransformer {
     }
 
     private boolean isTargetMethod(CtBehavior method) throws NotFoundException {
-        if (!"print".equals(method.getName())) {
-            return false;
-        }
-        return true;
+        return "getContent".equals(method.getName());
     }
 
     private void transformMethod(CtBehavior method) throws NotFoundException, CannotCompileException {
         System.out.println("Transforming method:" + method.getName());
-        method.insertBefore("System.out.println(\"" + method.getName() + "方法插入代码\")");
+        method.setBody("{System.out.println(\"执行了替换\");return this.content;}");
     }
 
 }

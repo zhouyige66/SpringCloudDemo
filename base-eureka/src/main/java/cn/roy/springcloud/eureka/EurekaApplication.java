@@ -12,6 +12,8 @@ public class EurekaApplication {
         System.out.println("执行main方法");
         User user = new User("roy");
         user.print();
+        user.print("hello,");
+
         SpringApplication.run(EurekaApplication.class, args);
     }
 

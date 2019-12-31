@@ -25,4 +25,8 @@ public class User {
     public void print() {
         System.out.println("用户名：" + name);
     }
+
+    public void print(String prefix) {
+        System.out.println(prefix + name);
+    }
 }
