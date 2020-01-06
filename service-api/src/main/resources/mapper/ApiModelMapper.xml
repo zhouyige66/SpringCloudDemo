@@ -8,7 +8,7 @@
     <result column="description" jdbcType="VARCHAR" property="description" />
     <result column="route" jdbcType="VARCHAR" property="route" />
     <result column="method" jdbcType="VARCHAR" property="method" />
-    <result column="parameterIds" jdbcType="VARCHAR" property="parameterids" />
+    <result column="parameter_ids" jdbcType="VARCHAR" property="parameterIds" />
     <result column="body" jdbcType="BIGINT" property="body" />
     <result column="del" jdbcType="BIT" property="del" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
@@ -73,7 +73,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, name, controller, description, route, method, parameterIds, body, del, create_time, 
+    id, name, controller, description, route, method, parameter_ids, body, del, create_time, 
     update_time
   </sql>
   <select id="selectByQuery" parameterType="cn.roy.springcloud.api.dao.model.ApiModelQuery" resultMap="BaseResultMap">
@@ -111,11 +111,11 @@
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into api (name, controller, description, 
-      route, method, parameterIds, 
+      route, method, parameter_ids, 
       body, del, create_time, 
       update_time)
     values (#{name,jdbcType=VARCHAR}, #{controller,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
-      #{route,jdbcType=VARCHAR}, #{method,jdbcType=VARCHAR}, #{parameterids,jdbcType=VARCHAR}, 
+      #{route,jdbcType=VARCHAR}, #{method,jdbcType=VARCHAR}, #{parameterIds,jdbcType=VARCHAR}, 
       #{body,jdbcType=BIGINT}, #{del,jdbcType=BIT}, #{createTime,jdbcType=TIMESTAMP}, 
       #{updateTime,jdbcType=TIMESTAMP})
   </insert>
@@ -140,8 +140,8 @@
       <if test="method != null">
         method,
       </if>
-      <if test="parameterids != null">
-        parameterIds,
+      <if test="parameterIds != null">
+        parameter_ids,
       </if>
       <if test="body != null">
         body,
@@ -172,8 +172,8 @@
       <if test="method != null">
         #{method,jdbcType=VARCHAR},
       </if>
-      <if test="parameterids != null">
-        #{parameterids,jdbcType=VARCHAR},
+      <if test="parameterIds != null">
+        #{parameterIds,jdbcType=VARCHAR},
       </if>
       <if test="body != null">
         #{body,jdbcType=BIGINT},
@@ -216,8 +216,8 @@
       <if test="record.method != null">
         method = #{record.method,jdbcType=VARCHAR},
       </if>
-      <if test="record.parameterids != null">
-        parameterIds = #{record.parameterids,jdbcType=VARCHAR},
+      <if test="record.parameterIds != null">
+        parameter_ids = #{record.parameterIds,jdbcType=VARCHAR},
       </if>
       <if test="record.body != null">
         body = #{record.body,jdbcType=BIGINT},
@@ -244,7 +244,7 @@
       description = #{record.description,jdbcType=VARCHAR},
       route = #{record.route,jdbcType=VARCHAR},
       method = #{record.method,jdbcType=VARCHAR},
-      parameterIds = #{record.parameterids,jdbcType=VARCHAR},
+      parameter_ids = #{record.parameterIds,jdbcType=VARCHAR},
       body = #{record.body,jdbcType=BIGINT},
       del = #{record.del,jdbcType=BIT},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
@@ -271,8 +271,8 @@
       <if test="method != null">
         method = #{method,jdbcType=VARCHAR},
       </if>
-      <if test="parameterids != null">
-        parameterIds = #{parameterids,jdbcType=VARCHAR},
+      <if test="parameterIds != null">
+        parameter_ids = #{parameterIds,jdbcType=VARCHAR},
       </if>
       <if test="body != null">
         body = #{body,jdbcType=BIGINT},
@@ -296,7 +296,7 @@
       description = #{description,jdbcType=VARCHAR},
       route = #{route,jdbcType=VARCHAR},
       method = #{method,jdbcType=VARCHAR},
-      parameterIds = #{parameterids,jdbcType=VARCHAR},
+      parameter_ids = #{parameterIds,jdbcType=VARCHAR},
       body = #{body,jdbcType=BIGINT},
       del = #{del,jdbcType=BIT},
       create_time = #{createTime,jdbcType=TIMESTAMP},

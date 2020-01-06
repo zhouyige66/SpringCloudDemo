@@ -16,7 +16,7 @@ public class ApiModel implements Serializable {
 
     private String method;
 
-    private String parameterids;
+    private String parameterIds;
 
     private Long body;
 
@@ -106,17 +106,17 @@ public class ApiModel implements Serializable {
         this.method = method;
     }
 
-    public String getParameterids() {
-        return parameterids;
+    public String getParameterIds() {
+        return parameterIds;
     }
 
-    public ApiModel withParameterids(String parameterids) {
-        this.setParameterids(parameterids);
+    public ApiModel withParameterIds(String parameterIds) {
+        this.setParameterIds(parameterIds);
         return this;
     }
 
-    public void setParameterids(String parameterids) {
-        this.parameterids = parameterids;
+    public void setParameterIds(String parameterIds) {
+        this.parameterIds = parameterIds;
     }
 
     public Long getBody() {
@@ -183,7 +183,7 @@ public class ApiModel implements Serializable {
         sb.append(", description=").append(description);
         sb.append(", route=").append(route);
         sb.append(", method=").append(method);
-        sb.append(", parameterids=").append(parameterids);
+        sb.append(", parameterIds=").append(parameterIds);
         sb.append(", body=").append(body);
         sb.append(", del=").append(del);
         sb.append(", createTime=").append(createTime);

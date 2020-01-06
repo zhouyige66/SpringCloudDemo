@@ -515,73 +515,73 @@ public class ApiModelQuery {
             return (Criteria) this;
         }
 
-        public Criteria andParameteridsIsNull() {
-            addCriterion("parameterIds is null");
+        public Criteria andParameterIdsIsNull() {
+            addCriterion("parameter_ids is null");
             return (Criteria) this;
         }
 
-        public Criteria andParameteridsIsNotNull() {
-            addCriterion("parameterIds is not null");
+        public Criteria andParameterIdsIsNotNull() {
+            addCriterion("parameter_ids is not null");
             return (Criteria) this;
         }
 
-        public Criteria andParameteridsEqualTo(String value) {
-            addCriterion("parameterIds =", value, "parameterids");
+        public Criteria andParameterIdsEqualTo(String value) {
+            addCriterion("parameter_ids =", value, "parameterIds");
             return (Criteria) this;
         }
 
-        public Criteria andParameteridsNotEqualTo(String value) {
-            addCriterion("parameterIds <>", value, "parameterids");
+        public Criteria andParameterIdsNotEqualTo(String value) {
+            addCriterion("parameter_ids <>", value, "parameterIds");
             return (Criteria) this;
         }
 
-        public Criteria andParameteridsGreaterThan(String value) {
-            addCriterion("parameterIds >", value, "parameterids");
+        public Criteria andParameterIdsGreaterThan(String value) {
+            addCriterion("parameter_ids >", value, "parameterIds");
             return (Criteria) this;
         }
 
-        public Criteria andParameteridsGreaterThanOrEqualTo(String value) {
-            addCriterion("parameterIds >=", value, "parameterids");
+        public Criteria andParameterIdsGreaterThanOrEqualTo(String value) {
+            addCriterion("parameter_ids >=", value, "parameterIds");
             return (Criteria) this;
         }
 
-        public Criteria andParameteridsLessThan(String value) {
-            addCriterion("parameterIds <", value, "parameterids");
+        public Criteria andParameterIdsLessThan(String value) {
+            addCriterion("parameter_ids <", value, "parameterIds");
             return (Criteria) this;
         }
 
-        public Criteria andParameteridsLessThanOrEqualTo(String value) {
-            addCriterion("parameterIds <=", value, "parameterids");
+        public Criteria andParameterIdsLessThanOrEqualTo(String value) {
+            addCriterion("parameter_ids <=", value, "parameterIds");
             return (Criteria) this;
         }
 
-        public Criteria andParameteridsLike(String value) {
-            addCriterion("parameterIds like", value, "parameterids");
+        public Criteria andParameterIdsLike(String value) {
+            addCriterion("parameter_ids like", value, "parameterIds");
             return (Criteria) this;
         }
 
-        public Criteria andParameteridsNotLike(String value) {
-            addCriterion("parameterIds not like", value, "parameterids");
+        public Criteria andParameterIdsNotLike(String value) {
+            addCriterion("parameter_ids not like", value, "parameterIds");
             return (Criteria) this;
         }
 
-        public Criteria andParameteridsIn(List<String> values) {
-            addCriterion("parameterIds in", values, "parameterids");
+        public Criteria andParameterIdsIn(List<String> values) {
+            addCriterion("parameter_ids in", values, "parameterIds");
             return (Criteria) this;
         }
 
-        public Criteria andParameteridsNotIn(List<String> values) {
-            addCriterion("parameterIds not in", values, "parameterids");
+        public Criteria andParameterIdsNotIn(List<String> values) {
+            addCriterion("parameter_ids not in", values, "parameterIds");
             return (Criteria) this;
         }
 
-        public Criteria andParameteridsBetween(String value1, String value2) {
-            addCriterion("parameterIds between", value1, value2, "parameterids");
+        public Criteria andParameterIdsBetween(String value1, String value2) {
+            addCriterion("parameter_ids between", value1, value2, "parameterIds");
             return (Criteria) this;
         }
 
-        public Criteria andParameteridsNotBetween(String value1, String value2) {
-            addCriterion("parameterIds not between", value1, value2, "parameterids");
+        public Criteria andParameterIdsNotBetween(String value1, String value2) {
+            addCriterion("parameter_ids not between", value1, value2, "parameterIds");
             return (Criteria) this;
         }
 
