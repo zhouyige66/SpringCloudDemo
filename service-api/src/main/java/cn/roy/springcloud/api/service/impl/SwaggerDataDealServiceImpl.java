@@ -233,7 +233,7 @@ public class SwaggerDataDealServiceImpl implements SwaggerDataDealService {
                     .withRoute("")
                     .withMethod(method)
                     .withBody(bodyId)
-                    .withParameterids(JSON.toJSONString(parameterIdList));
+                    .withParameterIds(JSON.toJSONString(parameterIdList));
             apiModelMapper.insertSelective(api);
         }
 
