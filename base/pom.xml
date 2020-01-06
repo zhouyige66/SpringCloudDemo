@@ -6,10 +6,10 @@
     <parent>
         <groupId>cn.roy.springcloud</groupId>
         <artifactId>demo</artifactId>
-        <version>${parent-release-version}</version>
+        <version>0.0.1</version>
     </parent>
     <artifactId>base</artifactId>
-    <version>${release-version}</version>
+    <version>0.0.1</version>
     <name>base</name>
     <description>基础module</description>
 
@@ -50,6 +50,13 @@
             <groupId>net.bull.javamelody</groupId>
             <artifactId>javamelody-spring-boot-starter</artifactId>
             <version>1.80.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.mybatis.generator/mybatis-generator-core -->
+        <dependency>
+            <groupId>org.mybatis.generator</groupId>
+            <artifactId>mybatis-generator-core</artifactId>
+            <version>1.4.0</version>
         </dependency>
     </dependencies>
 

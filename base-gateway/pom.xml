@@ -5,10 +5,10 @@
     <parent>
         <groupId>cn.roy.springcloud</groupId>
         <artifactId>demo</artifactId>
-        <version>${parent-release-version}</version>
+        <version>0.0.1</version>
     </parent>
     <artifactId>base-gateway</artifactId>
-    <version>${release-version}</version>
+    <version>0.0.1</version>
     <name>base-gateway</name>
     <description>服务网关</description>
 
@@ -17,7 +17,7 @@
         <dependency>
             <groupId>cn.roy.springcloud</groupId>
             <artifactId>base</artifactId>
-            <version>${release-version}</version>
+            <version>0.0.1</version>
         </dependency>
 
         <!--服务网关-->

@@ -5,10 +5,10 @@
     <parent>
         <groupId>cn.roy.springcloud</groupId>
         <artifactId>demo</artifactId>
-        <version>${parent-release-version}</version>
+        <version>0.0.1</version>
     </parent>
     <artifactId>service-multiple-cache</artifactId>
-    <version>${release-version}</version>
+    <version>0.0.1</version>
     <name>service-multiple-cache</name>
     <description>多重缓存测试Demo</description>
 
@@ -17,7 +17,7 @@
         <dependency>
             <groupId>cn.roy.springcloud</groupId>
             <artifactId>base</artifactId>
-            <version>${release-version}</version>
+            <version>0.0.1</version>
         </dependency>
 
         <!--mvc支持-->

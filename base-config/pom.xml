@@ -5,10 +5,10 @@
     <parent>
         <groupId>cn.roy.springcloud</groupId>
         <artifactId>demo</artifactId>
-        <version>${parent-release-version}</version>
+        <version>0.0.1</version>
     </parent>
     <artifactId>base-config</artifactId>
-    <version>${release-version}</version>
+    <version>0.0.1</version>
     <name>base-config</name>
     <description>配置中心</description>
 
