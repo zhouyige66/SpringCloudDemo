@@ -8,9 +8,9 @@ import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface ApiParameterModelMapper {
-    long countByExample(ApiParameterModelQuery example);
+    long countByQuery(ApiParameterModelQuery example);
 
-    int deleteByExample(ApiParameterModelQuery example);
+    int deleteByQuery(ApiParameterModelQuery example);
 
     int deleteByPrimaryKey(Long id);
 
@@ -18,13 +18,13 @@ public interface ApiParameterModelMapper {
 
     int insertSelective(ApiParameterModel record);
 
-    List<ApiParameterModel> selectByExample(ApiParameterModelQuery example);
+    List<ApiParameterModel> selectByQuery(ApiParameterModelQuery example);
 
     ApiParameterModel selectByPrimaryKey(Long id);
 
-    int updateByExampleSelective(@Param("record") ApiParameterModel record, @Param("example") ApiParameterModelQuery example);
+    int updateByQuerySelective(@Param("record") ApiParameterModel record, @Param("example") ApiParameterModelQuery example);
 
-    int updateByExample(@Param("record") ApiParameterModel record, @Param("example") ApiParameterModelQuery example);
+    int updateByQuery(@Param("record") ApiParameterModel record, @Param("example") ApiParameterModelQuery example);
 
     int updateByPrimaryKeySelective(ApiParameterModel record);
 

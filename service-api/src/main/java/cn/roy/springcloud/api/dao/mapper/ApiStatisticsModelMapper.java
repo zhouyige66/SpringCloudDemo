@@ -8,9 +8,9 @@ import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface ApiStatisticsModelMapper {
-    long countByExample(ApiStatisticsModelQuery example);
+    long countByQuery(ApiStatisticsModelQuery example);
 
-    int deleteByExample(ApiStatisticsModelQuery example);
+    int deleteByQuery(ApiStatisticsModelQuery example);
 
     int deleteByPrimaryKey(Long id);
 
@@ -18,13 +18,13 @@ public interface ApiStatisticsModelMapper {
 
     int insertSelective(ApiStatisticsModel record);
 
-    List<ApiStatisticsModel> selectByExample(ApiStatisticsModelQuery example);
+    List<ApiStatisticsModel> selectByQuery(ApiStatisticsModelQuery example);
 
     ApiStatisticsModel selectByPrimaryKey(Long id);
 
-    int updateByExampleSelective(@Param("record") ApiStatisticsModel record, @Param("example") ApiStatisticsModelQuery example);
+    int updateByQuerySelective(@Param("record") ApiStatisticsModel record, @Param("example") ApiStatisticsModelQuery example);
 
-    int updateByExample(@Param("record") ApiStatisticsModel record, @Param("example") ApiStatisticsModelQuery example);
+    int updateByQuery(@Param("record") ApiStatisticsModel record, @Param("example") ApiStatisticsModelQuery example);
 
     int updateByPrimaryKeySelective(ApiStatisticsModel record);
 

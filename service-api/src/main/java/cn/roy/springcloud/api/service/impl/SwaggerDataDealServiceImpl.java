@@ -169,8 +169,8 @@ public class SwaggerDataDealServiceImpl implements SwaggerDataDealService {
 
                             query.createCriteria().andNameEqualTo(entityName);
                             // 查询实体Id
-                            List<ApiEntityModel> entities = apiEntityModelMapper.selectByExample(query);
-                            if (entities != null && entities.size() > 0) {
+                            List<ApiEntityModel> entities = apiEntityModelMapper.selectByQuery(query);
+                            if (!CollectionUtils.isEmpty(entities)) {
                                 bodyId = entities.get(0).getId();
                             }
                         } else {
@@ -202,8 +202,8 @@ public class SwaggerDataDealServiceImpl implements SwaggerDataDealService {
                             logger.info("搜索关键字：{}", searchKey);
                             query.createCriteria().andNameEqualTo(searchKey);
                             // 查询实体Id
-                            List<ApiEntityModel> entities = apiEntityModelMapper.selectByExample(query);
-                            if (entities != null && entities.size() > 0) {
+                            List<ApiEntityModel> entities = apiEntityModelMapper.selectByQuery(query);
+                            if (!CollectionUtils.isEmpty(entities)) {
                                 bodyId = entities.get(0).getId();
                             } else {
                                 // 未查到，直接插入数据库，然后赋值
@@ -300,7 +300,7 @@ public class SwaggerDataDealServiceImpl implements SwaggerDataDealService {
         for (String url : sortKeys) {
             ApiModelQuery apiModelQuery = new ApiModelQuery();
             apiModelQuery.createCriteria().andNameEqualTo(url);
-            List<ApiModel> apiModelList = apiModelMapper.selectByExample(apiModelQuery);
+            List<ApiModel> apiModelList = apiModelMapper.selectByQuery(apiModelQuery);
             if (CollectionUtils.isEmpty(apiModelList)) {
                 continue;
             }
@@ -346,7 +346,7 @@ public class SwaggerDataDealServiceImpl implements SwaggerDataDealService {
                     // 搜索
                     ApiEntityModelQuery query = new ApiEntityModelQuery();
                     query.createCriteria().andNameEqualTo(body);
-                    List<ApiEntityModel> entityList = apiEntityModelMapper.selectByExample(query);
+                    List<ApiEntityModel> entityList = apiEntityModelMapper.selectByQuery(query);
                     if (!CollectionUtils.isEmpty(entityList)) {
                         StringBuilder sb = new StringBuilder();
                         sb.append("[").append(entityList.get(0).getProperties())
