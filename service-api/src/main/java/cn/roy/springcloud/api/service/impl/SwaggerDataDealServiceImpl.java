@@ -314,8 +314,8 @@ public class SwaggerDataDealServiceImpl implements SwaggerDataDealService {
             apiBean.setDescription(apiModel.getDescription());
             apiBean.setMethod(apiModel.getMethod());
             // 参数处理
-            String parameterids = apiModel.getParameterids();
-            List<Long> parameterIdList = JSON.parseArray(parameterids, Long.class);
+            String parameterIds = apiModel.getParameterIds();
+            List<Long> parameterIdList = JSON.parseArray(parameterIds, Long.class);
             if (!CollectionUtils.isEmpty(parameterIdList)) {
                 List<ParameterBean> parameterBeanList = new ArrayList<>();
                 for (Long pId : parameterIdList) {
