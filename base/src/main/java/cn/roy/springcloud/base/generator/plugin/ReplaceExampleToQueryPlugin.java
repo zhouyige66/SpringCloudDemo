@@ -6,7 +6,7 @@ import org.mybatis.generator.api.PluginAdapter;
 import java.util.List;
 
 /**
- * @Description: 替换插件
+ * @Description: mapper与xml中example字符替换插件
  * @Author: Roy Z
  * @Date: 2020-01-03 16:39
  * @Version: v1.0
