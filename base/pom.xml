@@ -52,7 +52,7 @@
             <version>1.80.0</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.mybatis.generator/mybatis-generator-core -->
+        <!--mybatis generator插件-->
         <dependency>
             <groupId>org.mybatis.generator</groupId>
             <artifactId>mybatis-generator-core</artifactId>

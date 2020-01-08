@@ -1,4 +1,4 @@
-package cn.roy.springcloud.base.plugin;
+package cn.roy.springcloud.base.generator.plugin;
 
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
