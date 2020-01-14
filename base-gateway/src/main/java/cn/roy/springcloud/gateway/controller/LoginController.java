@@ -40,6 +40,11 @@ public class LoginController {
         }
     }
 
+    @GetMapping("logout")
+    public ResultData login() {
+        return ResultData.fail(401, "请重新登录");
+    }
+
     private String fallback(@Nullable Object obj) {
         return "调用默认降级方法";
     }

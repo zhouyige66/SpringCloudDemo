@@ -98,7 +98,7 @@ public class ShiroConfig {
         // 必须设置 SecurityManager
         shiroFilterFactoryBean.setSecurityManager(securityManager());
         // 设置Login URL
-//        shiroFilterFactoryBean.setLoginUrl("/login.html");
+        shiroFilterFactoryBean.setLoginUrl("/auth/logout");
         // 登录成功后要跳转的链接
 //        shiroFilterFactoryBean.setSuccessUrl("/LoginSuccess.action");
         // 未授权的页面

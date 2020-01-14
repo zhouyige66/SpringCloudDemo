@@ -54,16 +54,16 @@
             console.log("结果：" + xmlhttp.responseText)
             if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
                 let data = JSON.parse(xmlhttp.responseText);
-                if(data.code != 200){
-                    alert(data.msg)
-                }else {
+                if (data.code != 200) {
+                    alert(data.msg);
+                } else {
                     window.location.href = "/main.html";
                 }
             } else {
 
             }
         };
-        let url = "/auth/login/";
+        let url = "gateway/auth/login/";
         console.log("访问地址：" + url);
         xmlhttp.open("POST", url, true);
         xmlhttp.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');

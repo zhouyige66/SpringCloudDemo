@@ -34,14 +34,22 @@
         }
         xmlhttp.onreadystatechange = function () {
             if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                document.getElementById("result").innerHTML = "返回结果：" + xmlhttp.responseText;
+                let response = JSON.parse(xmlhttp.responseText);
+                if (response.code == 401) {
+                    window.location.href = "/index.html";
+                } else if (response.code == 200) {
+                    document.getElementById("result").innerHTML = "返回结果：" + xmlhttp.responseText;
+                } else {
+                    alert(response.msg);
+                }
             } else {
-                console.log("结果：" + xmlhttp.readyState)
+                console.log("结果：" + xmlhttp.readyState);
             }
         };
-        let url = server + "user/getUserById/" + userId.value;
+        let url = "gateway/user/getUserById/" + userId.value;
         console.log("访问地址：" + url);
         xmlhttp.open("GET", url, true);
+        xmlhttp.send(null);
     }
 </script>
 </html>
