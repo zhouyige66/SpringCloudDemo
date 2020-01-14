@@ -1,5 +1,6 @@
-package cn.roy.springcloud.gateway.shiro;
+package cn.roy.springcloud.gateway.config;
 
+import cn.roy.springcloud.gateway.shiro.ShiroRealm;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.cache.ehcache.EhCacheManager;
 import org.apache.shiro.mgt.SecurityManager;
@@ -11,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.cache.RedisCacheManager;
+//import org.springframework.data.redis.cache.RedisCacheManager;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -53,15 +54,15 @@ public class ShiroConfig {
         return new ShiroRealm();
     }
 
-    @Autowired
-    private RedisCacheManager redisCacheManager;
-
-    @Bean
-    public ShiroCacheManager shiroCacheManager() {
-        EhCacheManager ehCacheManager = new EhCacheManager();
-        ShiroCacheManager manager = new ShiroCacheManager(ehCacheManager, redisCacheManager);
-        return manager;
-    }
+//    @Autowired
+//    private RedisCacheManager redisCacheManager;
+//
+//    @Bean
+//    public ShiroCacheManager shiroCacheManager() {
+//        EhCacheManager ehCacheManager = new EhCacheManager();
+//        ShiroCacheManager manager = new ShiroCacheManager(ehCacheManager, redisCacheManager);
+//        return manager;
+//    }
 
     @Bean
     public SecurityManager securityManager() {
@@ -69,7 +70,7 @@ public class ShiroConfig {
         // 自定义realm;
         securityManager.setRealm(shiroRealm());
         // 缓存管理器;
-        securityManager.setCacheManager(shiroCacheManager());
+//        securityManager.setCacheManager(shiroCacheManager());
         // session管理器
 //        securityManager.setSessionManager(defaultWebSessionManager);
         return securityManager;
@@ -77,36 +78,30 @@ public class ShiroConfig {
 
     @Bean
     public ShiroFilterFactoryBean shiroFilterFactoryBean() {
-        // 拦截器.
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String, String>();
-        // src="jquery/jquery-3.2.1.min.js" 生效
-        filterChainDefinitionMap.put("/jquery/*", "anon");
-        // 设置登录的URL为匿名访问，因为一开始没有用户验证
-        filterChainDefinitionMap.put("/auth/login", "anon");
-        filterChainDefinitionMap.put("/Exception.class", "anon");
-        // Swagger接口权限 开放
-        filterChainDefinitionMap.put("/swagger-ui.html", "anon");
-        filterChainDefinitionMap.put("/webjars/**", "anon");
+        // 不需要认证的URL
         filterChainDefinitionMap.put("/v2/**", "anon");
+        filterChainDefinitionMap.put("/webjars/**", "anon");
+        filterChainDefinitionMap.put("/swagger-ui.html", "anon");
         filterChainDefinitionMap.put("/swagger-resources/**", "anon");
+        filterChainDefinitionMap.put("/auth/**", "anon");
         // 需要认证的URL
-        filterChainDefinitionMap.put("/auth/test", "anon");
-        filterChainDefinitionMap.put("/auth/user/**", "authc");
+        filterChainDefinitionMap.put("/user/**", "authc");
         // 退出系统的过滤器
         filterChainDefinitionMap.put("/logout", "logout");
         // 现在资源的角色
-        filterChainDefinitionMap.put("/admin.html", "roles[admin]");
+//        filterChainDefinitionMap.put("/admin.html", "roles[admin]");
 
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         // 必须设置 SecurityManager
         shiroFilterFactoryBean.setSecurityManager(securityManager());
         // 设置Login URL
-        shiroFilterFactoryBean.setLoginUrl("/login.html");
+//        shiroFilterFactoryBean.setLoginUrl("/login.html");
         // 登录成功后要跳转的链接
 //        shiroFilterFactoryBean.setSuccessUrl("/LoginSuccess.action");
         // 未授权的页面
-        shiroFilterFactoryBean.setUnauthorizedUrl("/unauthorized.action");
+//        shiroFilterFactoryBean.setUnauthorizedUrl("/unauthorized.action");
 
         return shiroFilterFactoryBean;
     }

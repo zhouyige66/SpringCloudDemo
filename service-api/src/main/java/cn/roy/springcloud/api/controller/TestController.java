@@ -118,4 +118,15 @@ public class TestController {
         return "调用默认方法，服务熔断（降级了）";
     }
 
+    @ApiOperation(value = "测试远程调用接口", notes = "功能：测试远程调用")
+    @GetMapping("session")
+    public String sessionTest(HttpServletRequest request){
+        return request.getSession().getId();
+    }
+
+    @ApiOperation(value = "测试远程调用接口", notes = "功能：测试远程调用")
+    @GetMapping("session2")
+    public String sessionTest2(HttpServletRequest request){
+        return request.getSession().getId();
+    }
 }

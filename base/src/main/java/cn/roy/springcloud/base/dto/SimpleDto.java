@@ -15,8 +15,9 @@ public class SimpleDto extends BaseDto{
         return value;
     }
 
-    public void setValue(Serializable value) {
+    public SimpleDto setValue(Serializable value) {
         this.value = value;
+        return this;
     }
 
 }

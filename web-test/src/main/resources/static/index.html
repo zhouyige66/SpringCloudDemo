@@ -3,14 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <title>登录</title>
+    <script src="js/config.js" type="text/javascript"></script>
 </head>
 <body>
-<div id="myDiv">
-    返回结果：
+<div>
+    <div>请输入用户名：</div>
+    <input type="text" id="username">
 </div>
-<input type="text" id="username">
-<input type="password" id="password">
-<input type="submit" onclick="checkInput()">
+<div>
+    <div style="margin-top: 5px">请输入密码：</div>
+    <input type="password" id="password">
+</div>
+<div style="margin-top: 10px">
+    <input type="submit" onclick="checkInput()">
+</div>
 </body>
 <script type="text/javascript">
     function checkInput() {
@@ -34,8 +40,8 @@
             "userName": oUserName.value,
             "password": oPassWord.value
         };
-        console.log("原始数据："+data);
-        console.log("转换后数据："+JSON.stringify(data));
+        console.log("原始数据：" + data);
+        console.log("转换后数据：" + JSON.stringify(data));
         var xmlhttp;
         if (window.XMLHttpRequest) {
             // IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
@@ -45,14 +51,22 @@
             xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
         }
         xmlhttp.onreadystatechange = function () {
+            console.log("结果：" + xmlhttp.responseText)
             if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                document.getElementById("myDiv").innerHTML = xmlhttp.responseText;
+                let data = JSON.parse(xmlhttp.responseText);
+                if(data.code != 200){
+                    alert(data.msg)
+                }else {
+                    window.location.href = "/main.html";
+                }
             } else {
-                console.log("结果：" + xmlhttp.readyState)
+
             }
         };
-        xmlhttp.open("POST", "/auth/login", true);
-        xmlhttp.setRequestHeader('Content-Type','application/json;charset=UTF-8');
+        let url = "/auth/login/";
+        console.log("访问地址：" + url);
+        xmlhttp.open("POST", url, true);
+        xmlhttp.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
         xmlhttp.send(JSON.stringify(data));
     }
 </script>

@@ -26,6 +26,7 @@
         <module>service-job</module>
         <module>service-multiple-cache</module>
         <module>java-agent-demo</module>
+        <module>web-test</module>
     </modules>
 
     <properties>

@@ -1,10 +1,15 @@
 package cn.roy.springcloud.gateway.controller;
 
+import cn.roy.springcloud.base.dto.SimpleDto;
+import cn.roy.springcloud.base.http.ResultData;
+import cn.roy.springcloud.gateway.model.User;
 import com.netflix.hystrix.contrib.javanica.annotation.DefaultProperties;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,48 +23,20 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("auth")
 @DefaultProperties(defaultFallback = "fallback")
 public class LoginController {
+    private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
     @PostMapping("login")
-    public String login(@RequestBody User user) {
+    public ResultData login(@RequestBody User user) {
         Subject subject = SecurityUtils.getSubject();
         UsernamePasswordToken authenticationToken = new UsernamePasswordToken(user.getUserName(),
                 user.getPassword());
+
+        logger.debug("subject中获取的sessionId=={}", subject.getSession().getId());
         try {
             subject.login(authenticationToken);
-            return "success";
+            return ResultData.success(new SimpleDto().setValue("登录成功"));
         } catch (AuthenticationException e) {
-            return e.getMessage();
-        }
-    }
-
-    @GetMapping("user/{id}")
-    public String getUser(@PathVariable String id) {
-        return "user_" + id;
-    }
-
-    @GetMapping("test")
-    public String test(@RequestParam String txt) {
-        return "hello " + txt;
-    }
-
-    public static final class User {
-        private String userName;
-        private String password;
-
-        public String getUserName() {
-            return userName;
-        }
-
-        public void setUserName(String userName) {
-            this.userName = userName;
-        }
-
-        public String getPassword() {
-            return password;
-        }
-
-        public void setPassword(String password) {
-            this.password = password;
+            return ResultData.fail(500, "用户名或密码错误");
         }
     }
 
