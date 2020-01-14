@@ -1,5 +1,6 @@
 package cn.roy.springcloud.gateway.config;
 
+import cn.roy.springcloud.gateway.shiro.ShiroCacheManager;
 import cn.roy.springcloud.gateway.shiro.ShiroRealm;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.cache.ehcache.EhCacheManager;
@@ -12,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-//import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.data.redis.cache.RedisCacheManager;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -54,15 +55,15 @@ public class ShiroConfig {
         return new ShiroRealm();
     }
 
-//    @Autowired
-//    private RedisCacheManager redisCacheManager;
-//
-//    @Bean
-//    public ShiroCacheManager shiroCacheManager() {
-//        EhCacheManager ehCacheManager = new EhCacheManager();
-//        ShiroCacheManager manager = new ShiroCacheManager(ehCacheManager, redisCacheManager);
-//        return manager;
-//    }
+    @Autowired
+    private RedisCacheManager redisCacheManager;
+
+    @Bean
+    public ShiroCacheManager shiroCacheManager() {
+        EhCacheManager ehCacheManager = new EhCacheManager();
+        ShiroCacheManager manager = new ShiroCacheManager(ehCacheManager, redisCacheManager);
+        return manager;
+    }
 
     @Bean
     public SecurityManager securityManager() {
@@ -70,8 +71,8 @@ public class ShiroConfig {
         // 自定义realm;
         securityManager.setRealm(shiroRealm());
         // 缓存管理器;
-//        securityManager.setCacheManager(shiroCacheManager());
-        // session管理器
+        securityManager.setCacheManager(shiroCacheManager());
+//        // session管理器
 //        securityManager.setSessionManager(defaultWebSessionManager);
         return securityManager;
     }

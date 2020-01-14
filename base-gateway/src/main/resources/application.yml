@@ -1,10 +1,10 @@
 server:
 #  port: ${server.port.gateway:8080}
   port: 10003
-  servlet:
-    session:
-      cookie:
-        name: jsessionid_${server.port}
+#  servlet:
+#    session:
+#      cookie:
+#        name: jsessionid_${server.port}
 
 spring:
   application:
@@ -21,10 +21,10 @@ spring:
 #  elasticsearch:
 #    rest:
 #      uris: ["127.0.0.1:9200"]
-#  #redis
-#  redis:
-#    host: 127.0.0.1
-#    port: 6379
+  #redis
+  redis:
+    host: 127.0.0.1
+    port: 6379
   #  #redis密码
   #  password:
   #  #redis超时时间（毫秒），如果不设置，取默认值2000
