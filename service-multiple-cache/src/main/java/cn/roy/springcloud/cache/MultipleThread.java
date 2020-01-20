@@ -191,7 +191,6 @@ public class MultipleThread {
                 lock.unlock();
             }
         }
-
     }
 
 }
