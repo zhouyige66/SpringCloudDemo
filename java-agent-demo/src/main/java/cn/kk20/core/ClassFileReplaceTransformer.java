@@ -1,4 +1,4 @@
-package cn.kk20;
+package cn.kk20.core;
 
 import javassist.*;
 

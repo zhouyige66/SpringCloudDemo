@@ -1,4 +1,4 @@
-package cn.kk20;
+package cn.kk20.core;
 
 import java.lang.instrument.Instrumentation;
 
@@ -8,7 +8,7 @@ import java.lang.instrument.Instrumentation;
  * @Date: 2019-12-27 15:10
  * @Version: v1.0
  */
-public class Agent {
+public class PreAgent {
     /**
      * 使用 javaagent 需要几个步骤：
      * 1.定义一个 MANIFEST.MF 文件，必须包含 Premain-Class 选项，通常也会加入 Can-Redefine-Classes 和 Can-Retransform-Classes 选项

@@ -23,8 +23,6 @@ public class MainApp {
     public static void main(String[] args) {
         SpringApplication.run(MainApp.class, args);
 
-        // 线程池
-        // 几种通用的线程池
         /**
          * 创建一个单工作线程执行的线程池，返回的实例不可再重新配置
          * 构建是包装ThreadPoolExecutor，队列使用LinkedBlockingQueue
@@ -50,13 +48,13 @@ public class MainApp {
          */
         ExecutorService workStealingPool = Executors.newWorkStealingPool();
         /**
-         * 可定期运行的线程池
+         * 可周期运行的线程池
          */
         ScheduledExecutorService singleThreadScheduledExecutor = Executors.newSingleThreadScheduledExecutor();
         ScheduledExecutorService scheduledThreadPool = Executors.newScheduledThreadPool(1);
-
-
-
+        /**
+         * 不常见的方法
+         */
         Executors.unconfigurableExecutorService(new ExecutorService() {
             @Override
             public void shutdown() {

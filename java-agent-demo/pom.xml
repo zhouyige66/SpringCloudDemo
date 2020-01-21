@@ -88,7 +88,7 @@
 <!--                            &lt;!&ndash;Can-Redefine-Classes：true表示能重定义此代理所需的类，默认值为 false（可选）&ndash;&gt;-->
 <!--                            &lt;!&ndash;Can-Retransform-Classes：true 表示能重转换此代理所需的类，默认值为 false （可选）&ndash;&gt;-->
 <!--                            &lt;!&ndash;Can-Set-Native-Method-Prefix： true表示能设置此代理所需的本机方法前缀，默认值为 false（可选）&ndash;&gt;-->
-<!--                            <Premain-Class>cn.kk20.Agent</Premain-Class>-->
+<!--                            <Premain-Class>cn.kk20.core.PreAgent</Premain-Class>-->
 <!--                            <Can-Redefine-Classes>true</Can-Redefine-Classes>-->
 <!--                            <Can-Retransform-Classes>true</Can-Retransform-Classes>-->
 <!--                        </manifestEntries>-->

@@ -1,4 +1,4 @@
-package cn.kk20;
+package cn.kk20.core;
 
 import java.lang.instrument.Instrumentation;
 import java.lang.instrument.UnmodifiableClassException;
@@ -9,7 +9,7 @@ import java.lang.instrument.UnmodifiableClassException;
  * @Date: 2020-01-03 15:50
  * @Version: v1.0
  */
-public class Hotfix {
+public class RunningAgent {
 
     public static void agentmain(String agentArgs, Instrumentation inst) throws UnmodifiableClassException {
         System.out.println("Agent Main called");

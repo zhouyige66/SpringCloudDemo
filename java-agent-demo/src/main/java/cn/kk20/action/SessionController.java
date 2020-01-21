@@ -1,4 +1,4 @@
-package cn.kk20;
+package cn.kk20.action;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -17,10 +17,10 @@ import javax.servlet.http.HttpServletRequest;
  * @Version: v1.0
  */
 @RestController
-@RequestMapping("test")
+@RequestMapping("t")
 @Api(tags = "TestController相关接口")
-public class TestController {
-    private static final Logger logger = LoggerFactory.getLogger(TestController.class);
+public class SessionController {
+    private static final Logger logger = LoggerFactory.getLogger(SessionController.class);
 
     @ApiOperation(value = "session测试", notes = "功能：session测试")
     @GetMapping("session")
