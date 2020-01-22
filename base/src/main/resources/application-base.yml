@@ -34,7 +34,7 @@ management:
       show-details: always
 
 spring:
-  #链路追踪
+  #链路追踪，web地址端口：9411
   zipkin:
     baseUrl: ${zipkin.url:http://localhost:9400}
   sleuth:

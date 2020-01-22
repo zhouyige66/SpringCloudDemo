@@ -88,6 +88,8 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/auth/**", "anon");
         // 需要认证的URL
         filterChainDefinitionMap.put("/user/**", "authc");
+        filterChainDefinitionMap.put("/api/**", "authc");
+        filterChainDefinitionMap.put("/api2/**", "anon");
         // 退出系统的过滤器
         filterChainDefinitionMap.put("/logout", "logout");
         // 现在资源的角色
