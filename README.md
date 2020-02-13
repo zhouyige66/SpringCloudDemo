@@ -1,4 +1,2 @@
-# SpringCloudDemo
-# 测试Spring Cloud各组件
-项目目录结构：
-
+# SpringCloudDemo，一个综合Spring Cloud各组件的综合Demo
+## 项目目录结构
