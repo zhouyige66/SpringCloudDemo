@@ -1,7 +1,8 @@
-package cn.kk20;
+package cn.roy.session;
 
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -12,13 +13,18 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
- * @Description: Swagger配置
+ * @Description:
  * @Author: Roy Z
- * @Date: 2019-04-26 14:30
+ * @Date: 2020-01-09 13:38
  * @Version: v1.0
  */
-@Configuration
-public class SwaggerConfig {
+@SpringBootApplication
+@EnableSwagger2
+public class SessionApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(SessionApplication.class, args);
+    }
 
     @Bean
     public Docket createRestApi() {

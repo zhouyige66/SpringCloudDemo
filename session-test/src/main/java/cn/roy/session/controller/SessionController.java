@@ -1,4 +1,4 @@
-package cn.kk20.action;
+package cn.roy.session.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -17,20 +17,14 @@ import javax.servlet.http.HttpServletRequest;
  * @Version: v1.0
  */
 @RestController
-@RequestMapping("t")
-@Api(tags = "TestController相关接口")
+@RequestMapping("session")
+@Api(tags = "Session测试接口")
 public class SessionController {
     private static final Logger logger = LoggerFactory.getLogger(SessionController.class);
 
-    @ApiOperation(value = "session测试", notes = "功能：session测试")
-    @GetMapping("session")
-    public String sessionTest(HttpServletRequest request){
-        return request.getSession().getId();
-    }
-
-    @ApiOperation(value = "session测试2", notes = "功能：session测试2")
-    @GetMapping("session2")
-    public String sessionTest2(org.apache.catalina.servlet4preview.http.HttpServletRequest request){
+    @ApiOperation(value = "获取sessionId", notes = "功能：获取调用接口的客户端传递的sessionId")
+    @GetMapping("getSessionId")
+    public String sessionTest(HttpServletRequest request) {
         return request.getSession().getId();
     }
 
