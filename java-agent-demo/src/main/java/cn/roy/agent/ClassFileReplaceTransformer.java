@@ -17,12 +17,15 @@ public class ClassFileReplaceTransformer implements ClassFileTransformer {
 
     @Override
     public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined,
-                            ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
-        if(className.startsWith("com/pwc/sdc")){
+                            ProtectionDomain protectionDomain, byte[] classfileBuffer)
+            throws IllegalClassFormatException {
+        String targetClassName = "cn.roy.session.controller.SessionController";
+        String replace = targetClassName.replace(".", "/");
+        if (className.startsWith(replace)) {
             System.out.println("加载器：" + loader);
             System.out.println("加载类：" + className);
         }
-        if (!className.equals("com/pwc/sdc/e_confirmation/common/vo/ResultData")) {
+        if (!className.equals(replace)) {
             return classfileBuffer;
         }
         CtClass ctClass = null;
@@ -35,10 +38,12 @@ public class ClassFileReplaceTransformer implements ClassFileTransformer {
                 CtMethod[] methods = ctClass.getMethods();
                 System.out.println("methods：" + methods);
                 for (int i = 0; i < methods.length; i++) {
-                    if (!isTargetMethod(methods[i])) {
+                    CtMethod method = methods[i];
+                    if (!isTargetMethod(method)) {
                         continue;
                     }
-                    transformMethod(methods[i]);
+
+                    transformMethod(method, loader);
                 }
                 return ctClass.toBytecode();
             }
@@ -55,12 +60,22 @@ public class ClassFileReplaceTransformer implements ClassFileTransformer {
     }
 
     private boolean isTargetMethod(CtBehavior method) throws NotFoundException {
-        return "getContent".equals(method.getName());
+        return "sessionTest".equals(method.getName());
     }
 
-    private void transformMethod(CtBehavior method) throws NotFoundException, CannotCompileException {
+    private void transformMethod(CtBehavior method, ClassLoader classLoader) throws NotFoundException, CannotCompileException {
         System.out.println("Transforming method:" + method.getName());
-        method.setBody("{System.out.println(\"执行了替换\");return this.content;}");
+        CtClass[] parameterTypes = method.getParameterTypes();
+        for (CtClass parameterClass : parameterTypes) {
+            try {
+                classLoader.loadClass(parameterClass.getClass().getName());
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        method.setBody("{\n" +
+                "        return \"SessionId=\" + $1.getSession().getId();\n" +
+                "    }");
     }
 
 }

@@ -1,8 +1,8 @@
 package cn.roy.agent;
 
-import com.sun.tools.attach.VirtualMachine;
-import com.sun.tools.attach.VirtualMachineDescriptor;
+import com.sun.tools.attach.*;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -21,24 +21,25 @@ public class HotfixMain {
             System.out.println("displayName=" + displayName);
             System.out.println("id=" + id);
 
-//            if (vmd.displayName().endsWith("AccountMain")) {
-//                VirtualMachine virtualMachine = null;
-//                try {
-//                    virtualMachine = VirtualMachine.attach(vmd.id());
-//                    virtualMachine.loadAgent("E:\\self\\demo\\out\\artifacts\\test\\test.jar", "cxs");
-//                    virtualMachine.detach();
-//
-//                    System.out.println("attach vm成功");
-//                } catch (AttachNotSupportedException e) {
-//                    e.printStackTrace();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                } catch (AgentLoadException e) {
-//                    e.printStackTrace();
-//                } catch (AgentInitializationException e) {
-//                    e.printStackTrace();
-//                }
-//            }
+            String fixVmId = System.getProperty("FixVmId");
+            if (id.equals(fixVmId)) {
+                VirtualMachine virtualMachine = null;
+                try {
+                    String agentPath = System.getProperty("AgentPath");
+                    virtualMachine = VirtualMachine.attach(vmd.id());
+                    virtualMachine.loadAgent(agentPath);
+                    virtualMachine.detach();
+                    System.out.println("attach vm成功");
+                } catch (AttachNotSupportedException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (AgentLoadException e) {
+                    e.printStackTrace();
+                } catch (AgentInitializationException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
