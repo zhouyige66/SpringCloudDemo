@@ -22,15 +22,21 @@ public class Agent {
         inst.addTransformer(new ClassFileReplaceTransformer(), true);
     }
 
-    public static void agentmain(String agentArgs, Instrumentation inst) throws UnmodifiableClassException {
-        System.out.println("调用了agentmain方法，参数agentArgs=" + agentArgs);
+    public static void agentmain(String agentArgs, Instrumentation inst) {
+        System.out.println("调用了agentmain方法");
+        Class[] allLoadedClasses = inst.getAllLoadedClasses();
+        for (Class item : allLoadedClasses) {
+            System.out.println("已加载类：" + item.getName());
+        }
+
         inst.addTransformer(new ClassFileReplaceTransformer(), true);
-        // 类替换
-        Class<?> account = null;
         try {
-            account = Class.forName("Account");
-            inst.retransformClasses(account);
+            // 类替换
+            Class<?> clazz = Class.forName("cn.roy.session.controller.SessionController");
+            inst.retransformClasses(clazz);
         } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (UnmodifiableClassException e) {
             e.printStackTrace();
         }
     }
