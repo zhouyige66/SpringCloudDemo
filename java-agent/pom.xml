@@ -5,16 +5,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>java-demo</groupId>
-    <artifactId>java-agent-demo</artifactId>
+    <artifactId>java-agent</artifactId>
     <version>0.0.1</version>
 
     <dependencies>
         <dependency>
-            <groupId>com.sun</groupId>
-            <artifactId>tools</artifactId>
-            <version>1.8.0</version>
-            <scope>system</scope>
-            <systemPath>/Library/Java/JavaVirtualMachines/jdk1.8.0_181.jdk/Contents/Home/lib/tools.jar</systemPath>
+            <groupId>org.javassist</groupId>
+            <artifactId>javassist</artifactId>
+            <version>3.25.0-GA</version>
         </dependency>
     </dependencies>
 
@@ -76,7 +74,7 @@
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>3.2.0</version>
                 <configuration>
-                    <finalName>java-agent-demo</finalName>
+                    <finalName>java-agent</finalName>
                     <descriptors>
                         <descriptor>./src/assembly/assembly.xml</descriptor>
                     </descriptors>
@@ -87,15 +85,15 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>cn.roy.agent.HotfixMain</mainClass>
+<!--                            <mainClass>cn.roy.agent.HotfixMain</mainClass>-->
                         </manifest>
                         <manifestEntries>
-<!--                            <Premain-Class>cn.roy.agent.Agent</Premain-Class>-->
-<!--                            <Agent-Class>cn.roy.agent.Agent</Agent-Class>-->
-<!--                            <Can-Redefine-Classes>true</Can-Redefine-Classes>-->
-<!--                            <Can-Retransform-Classes>true</Can-Retransform-Classes>-->
+                            <Premain-Class>cn.roy.agent.Agent</Premain-Class>
+                            <Agent-Class>cn.roy.agent.Agent</Agent-Class>
+                            <Can-Redefine-Classes>true</Can-Redefine-Classes>
+                            <Can-Retransform-Classes>true</Can-Retransform-Classes>
                             <!--追加scope为system的本地jar-->
-                            <Class-Path>lib/tools-1.8.0.jar</Class-Path>
+<!--                            <Class-Path>lib/tools-1.8.0.jar</Class-Path>-->
                         </manifestEntries>
                     </archive>
                 </configuration>

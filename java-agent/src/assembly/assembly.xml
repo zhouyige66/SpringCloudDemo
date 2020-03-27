@@ -1,0 +1,58 @@
+<assembly>
+    <id>1.0</id>
+    <formats>
+        <format>jar</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <dependencySets>
+        <dependencySet>
+            <!--是否解开jar包-->
+            <unpack>false</unpack>
+            <outputDirectory>lib</outputDirectory>
+            <!--是否包含自身jar-->
+            <useProjectArtifact>false</useProjectArtifact>
+            <scope>system</scope>
+        </dependencySet>
+    </dependencySets>
+    <fileSets>
+        <!--脚本文件-->
+        <fileSet>
+            <directory>bin</directory>
+            <outputDirectory>bin</outputDirectory>
+            <fileMode>0755</fileMode>
+        </fileSet>
+        <!--源文件-->
+        <fileSet>
+            <directory>${project.build.directory}/classes</directory>
+            <outputDirectory>/</outputDirectory>
+        </fileSet>
+        <!--资源文件-->
+        <fileSet>
+            <directory>src/main/resources</directory>
+            <outputDirectory>conf</outputDirectory>
+            <fileMode>0644</fileMode>
+        </fileSet>
+        <!--依赖jar-->
+        <fileSet>
+            <directory>target/lib</directory>
+            <outputDirectory>lib</outputDirectory>
+            <includes>
+                <include>*.jar</include>
+            </includes>
+        </fileSet>
+        <!--        <fileSet>-->
+        <!--            <outputDirectory>logs</outputDirectory>-->
+        <!--            <fileMode>0755</fileMode>-->
+        <!--            <excludes>-->
+        <!--                <exclude>**/*</exclude>-->
+        <!--            </excludes>-->
+        <!--        </fileSet>-->
+        <!--        <fileSet>-->
+        <!--            <outputDirectory>tmp</outputDirectory>-->
+        <!--            <fileMode>0755</fileMode>-->
+        <!--            <excludes>-->
+        <!--                <exclude>**/*</exclude>-->
+        <!--            </excludes>-->
+        <!--        </fileSet>-->
+    </fileSets>
+</assembly>

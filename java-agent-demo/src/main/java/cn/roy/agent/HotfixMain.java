@@ -15,21 +15,23 @@ public class HotfixMain {
 
     public static void main(String[] args) {
         List<VirtualMachineDescriptor> list = VirtualMachine.list();
+        String pid = System.getProperty("pid");
+        String agentPath = System.getProperty("agentPath");
+        System.out.println("获取的pid：" + pid);
+        System.out.println("获取的agent路径：" + agentPath);
         for (VirtualMachineDescriptor vmd : list) {
             String displayName = vmd.displayName();
             String id = vmd.id();
             System.out.println("displayName=" + displayName);
             System.out.println("id=" + id);
-
-            String fixVmId = System.getProperty("FixVmId");
-            if (id.equals(fixVmId)) {
+            if (id.equals(pid)) {
                 VirtualMachine virtualMachine = null;
                 try {
-                    String agentPath = System.getProperty("AgentPath");
-                    virtualMachine = VirtualMachine.attach(vmd.id());
+                    virtualMachine = VirtualMachine.attach(id);
                     virtualMachine.loadAgent(agentPath);
                     virtualMachine.detach();
                     System.out.println("attach vm成功");
+                    break;
                 } catch (AttachNotSupportedException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
