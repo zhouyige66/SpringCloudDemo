@@ -1,5 +1,14 @@
 package cn.roy.agent;
 
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtMethod;
+import javassist.NotFoundException;
+
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.lang.instrument.Instrumentation;
 import java.lang.instrument.UnmodifiableClassException;
 
@@ -40,4 +49,9 @@ public class Agent {
             e.printStackTrace();
         }
     }
+
+    public static void main(String[] args) {
+
+    }
+
 }

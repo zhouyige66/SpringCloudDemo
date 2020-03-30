@@ -2,7 +2,7 @@ package cn.roy.agent;
 
 import javassist.*;
 
-import java.io.ByteArrayInputStream;
+import java.io.*;
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import java.security.ProtectionDomain;
@@ -21,32 +21,35 @@ public class ClassFileReplaceTransformer implements ClassFileTransformer {
             throws IllegalClassFormatException {
         String targetClassName = "cn.roy.session.controller.SessionController";
         String replace = targetClassName.replace(".", "/");
-        if (className.startsWith(replace)) {
-            System.out.println("加载器：" + loader);
-            System.out.println("加载类：" + className);
-        }
         if (!className.equals(replace)) {
             return classfileBuffer;
         }
+
+        System.out.println("加载器：" + loader);
+        System.out.println("加载类：" + className);
         CtClass ctClass = null;
         try {
             ClassPool pool = ClassPool.getDefault();
-            pool.insertClassPath(new ClassClassPath(this.getClass()));
-            ctClass = pool.makeClass(new ByteArrayInputStream(classfileBuffer));
-            System.out.println("ctClass==" + ctClass.getSimpleName());
-            if (!ctClass.isInterface()) {
-                CtMethod[] methods = ctClass.getMethods();
-                System.out.println("methods：" + methods);
-                for (int i = 0; i < methods.length; i++) {
-                    CtMethod method = methods[i];
-                    if (!isTargetMethod(method)) {
-                        continue;
-                    }
-
-                    transformMethod(method, loader);
-                }
-                return ctClass.toBytecode();
-            }
+            ctClass = pool.makeClass(new DataInputStream(
+                    new FileInputStream("/Users/zzy/Desktop/SessionController.class")));
+            return ctClass.toBytecode();
+//            ClassPool pool = ClassPool.getDefault();
+//            pool.insertClassPath(new ClassClassPath(this.getClass()));
+//            ctClass = pool.makeClass(new ByteArrayInputStream(classfileBuffer));
+//            System.out.println("ctClass==" + ctClass.getSimpleName());
+//            if (!ctClass.isInterface()) {
+//                CtMethod[] methods = ctClass.getMethods();
+//                System.out.println("methods：" + methods);
+//                for (int i = 0; i < methods.length; i++) {
+//                    CtMethod method = methods[i];
+//                    if (!isTargetMethod(method)) {
+//                        continue;
+//                    }
+//
+//                    transformMethod(method, loader);
+//                }
+//                return ctClass.toBytecode();
+//            }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -56,26 +59,42 @@ public class ClassFileReplaceTransformer implements ClassFileTransformer {
         }
 
         // 返回null则不修改字节码
-        return classfileBuffer;
+        return null;
     }
 
     private boolean isTargetMethod(CtBehavior method) throws NotFoundException {
         return "sessionTest".equals(method.getName());
     }
 
-    private void transformMethod(CtBehavior method, ClassLoader classLoader) throws NotFoundException, CannotCompileException {
+    private void transformMethod(CtMethod method, ClassLoader classLoader) throws NotFoundException, CannotCompileException {
         System.out.println("Transforming method:" + method.getName());
-        CtClass[] parameterTypes = method.getParameterTypes();
-        for (CtClass parameterClass : parameterTypes) {
-            try {
-                classLoader.loadClass(parameterClass.getClass().getName());
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+        CtMethod fixedMethod = loadFixedMethod();
+        method.setBody(fixedMethod, null);
+//        method.setBody("{\n" +
+//                "        return \"SessionId=\" + $1.getSession().getId();\n" +
+//                "    }");
+    }
+
+    private CtMethod loadFixedMethod() {
+        ClassPool classPool = ClassPool.getDefault();
+        try {
+            CtClass ctClass = classPool.makeClass(new DataInputStream(
+                    new FileInputStream("/Users/zzy/Desktop/SessionController.class")));
+            CtMethod[] methods = ctClass.getMethods();
+            for (CtMethod method : methods) {
+                if (isTargetMethod(method)) {
+                    return method;
+                }
             }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NotFoundException e) {
+            e.printStackTrace();
         }
-        method.setBody("{\n" +
-                "        return \"SessionId=\" + $1.getSession().getId();\n" +
-                "    }");
+
+        return null;
     }
 
 }
