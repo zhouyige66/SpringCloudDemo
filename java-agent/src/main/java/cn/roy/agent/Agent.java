@@ -1,14 +1,5 @@
 package cn.roy.agent;
 
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtMethod;
-import javassist.NotFoundException;
-
-import java.io.DataInputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.lang.instrument.Instrumentation;
 import java.lang.instrument.UnmodifiableClassException;
 
@@ -27,31 +18,33 @@ public class Agent {
      * 4.使用参数 -javaagent: jar包路径 启动要代理的方法
      */
     public static void premain(String agentArgs, Instrumentation inst) {
-        System.out.println("premain");
-        inst.addTransformer(new ClassFileReplaceTransformer(), true);
+        System.out.println("调用了premain方法");
+        fix(agentArgs, inst);
     }
 
     public static void agentmain(String agentArgs, Instrumentation inst) {
         System.out.println("调用了agentmain方法");
-        Class[] allLoadedClasses = inst.getAllLoadedClasses();
-        for (Class item : allLoadedClasses) {
-            System.out.println("已加载类：" + item.getName());
-        }
+        fix(agentArgs, inst);
+    }
 
-        inst.addTransformer(new ClassFileReplaceTransformer(), true);
+    private static void fix(String args, Instrumentation instrumentation) {
+        instrumentation.addTransformer(new ClassFileReplaceTransformer(), true);
         try {
-            // 类替换
-            Class<?> clazz = Class.forName("cn.roy.session.controller.SessionController");
-            inst.retransformClasses(clazz);
+            System.out.println("运行参数：" + args);
+            if (args == null || args.trim().length() == 0) {
+                return;
+            }
+            String[] split = args.trim().split(",");
+            for (String str : split) {
+                // 类替换
+                Class<?> clazz = Class.forName(str);
+                instrumentation.retransformClasses(clazz);
+            }
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (UnmodifiableClassException e) {
             e.printStackTrace();
         }
-    }
-
-    public static void main(String[] args) {
-
     }
 
 }

@@ -1,9 +1,13 @@
 package cn.roy.agent;
 
-import com.sun.tools.attach.*;
+import com.sun.tools.attach.AgentInitializationException;
+import com.sun.tools.attach.AgentLoadException;
+import com.sun.tools.attach.AttachNotSupportedException;
+import com.sun.tools.attach.VirtualMachine;
 
 import java.io.IOException;
-import java.util.List;
+import java.io.InputStream;
+import java.util.Properties;
 
 /**
  * @Description: 热修复
@@ -14,31 +18,35 @@ import java.util.List;
 public class HotfixMain {
 
     public static void main(String[] args) {
-        List<VirtualMachineDescriptor> list = VirtualMachine.list();
         String pid = System.getProperty("pid");
-        String agentPath = System.getProperty("agentPath");
-        System.out.println("获取的pid：" + pid);
-        System.out.println("获取的agent路径：" + agentPath);
-        for (VirtualMachineDescriptor vmd : list) {
-            String displayName = vmd.displayName();
-            String id = vmd.id();
-            System.out.println("displayName=" + displayName);
-            System.out.println("id=" + id);
-            if (id.equals(pid)) {
-                VirtualMachine virtualMachine = null;
+        if (pid == null || pid.trim().length() == 0) {
+            return;
+        }
+        // 读取配置文件夹下需要修复的类
+        Properties properties = new Properties();
+        // 使用ClassLoader加载properties配置文件生成对应的输入流
+        InputStream in = HotfixMain.class.getClassLoader().getResourceAsStream("hotfix.properties");
+        // 使用properties对象加载输入流
+        VirtualMachine machine = null;
+        try {
+            properties.load(in);
+            String property = properties.getProperty("fix-class-names");
+            machine = VirtualMachine.attach(pid);
+            machine.loadAgent("/lib/agent.jar", property);
+            System.out.println("attach vm success");
+        } catch (AttachNotSupportedException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (AgentLoadException e) {
+            e.printStackTrace();
+        } catch (AgentInitializationException e) {
+            e.printStackTrace();
+        } finally {
+            if (machine != null) {
                 try {
-                    virtualMachine = VirtualMachine.attach(id);
-                    virtualMachine.loadAgent(agentPath);
-                    virtualMachine.detach();
-                    System.out.println("attach vm成功");
-                    break;
-                } catch (AttachNotSupportedException e) {
-                    e.printStackTrace();
+                    machine.detach();
                 } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (AgentLoadException e) {
-                    e.printStackTrace();
-                } catch (AgentInitializationException e) {
                     e.printStackTrace();
                 }
             }

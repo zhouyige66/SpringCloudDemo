@@ -17,10 +17,10 @@ import javax.servlet.http.HttpServletRequest;
  * @Version: v1.0
  */
 @RestController
-@RequestMapping("session")
-@Api(tags = "Session测试接口")
-public class SessionController {
-    private static final Logger logger = LoggerFactory.getLogger(SessionController.class);
+@RequestMapping("session2")
+@Api(tags = "Session测试接口2")
+public class SessionController2 {
+    private static final Logger logger = LoggerFactory.getLogger(SessionController2.class);
 
     @ApiOperation(value = "获取sessionId", notes = "功能：获取调用接口的客户端传递的sessionId")
     @GetMapping("getId")

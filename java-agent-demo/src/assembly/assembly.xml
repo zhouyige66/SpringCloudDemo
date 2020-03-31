@@ -40,6 +40,13 @@
                 <include>*.jar</include>
             </includes>
         </fileSet>
+        <!--修复文件-->
+        <fileSet>
+            <directory>src/hotfix</directory>
+            <outputDirectory>hotfix</outputDirectory>
+            <fileMode>0644</fileMode>
+        </fileSet>
+
         <!--        <fileSet>-->
         <!--            <outputDirectory>logs</outputDirectory>-->
         <!--            <fileMode>0755</fileMode>-->

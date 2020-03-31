@@ -1,8 +1,11 @@
 package cn.roy.agent;
 
-import javassist.*;
+import javassist.ClassPool;
+import javassist.CtClass;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import java.security.ProtectionDomain;
@@ -19,20 +22,27 @@ public class ClassFileReplaceTransformer implements ClassFileTransformer {
     public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined,
                             ProtectionDomain protectionDomain, byte[] classfileBuffer)
             throws IllegalClassFormatException {
-        String targetClassName = "cn.roy.session.controller.SessionController";
-        String replace = targetClassName.replace(".", "/");
-        if (!className.equals(replace)) {
-            return classfileBuffer;
-        }
-
+        String redefinedName = classBeingRedefined.getName();
+        System.out.println("重定义的类：" + redefinedName);
         System.out.println("加载器：" + loader);
         System.out.println("加载类：" + className);
-        CtClass ctClass = null;
-        try {
-            ClassPool pool = ClassPool.getDefault();
-            ctClass = pool.makeClass(new DataInputStream(
-                    new FileInputStream("/Users/zzy/Desktop/SessionController.class")));
-            return ctClass.toBytecode();
+        String replace = className.replace("/", ".");
+        if (replace.equals(redefinedName)) {
+            CtClass ctClass = null;
+            // 查找需要替换的类文件是否存在
+            String name = redefinedName.substring(redefinedName.lastIndexOf(".") + 1);
+            String path = "hotfix" + File.separator + name + ".class";
+            System.out.println("path = " + path);
+            File file = new File(path);
+            if (!file.exists()) {
+                return null;
+            }
+
+            try {
+                ClassPool pool = ClassPool.getDefault();
+                ctClass = pool.makeClass(new DataInputStream(
+                        new FileInputStream("/Users/zzy/Desktop/SessionController.class")));
+                return ctClass.toBytecode();
 //            ClassPool pool = ClassPool.getDefault();
 //            pool.insertClassPath(new ClassClassPath(this.getClass()));
 //            ctClass = pool.makeClass(new ByteArrayInputStream(classfileBuffer));
@@ -50,50 +60,16 @@ public class ClassFileReplaceTransformer implements ClassFileTransformer {
 //                }
 //                return ctClass.toBytecode();
 //            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (ctClass != null) {
-                ctClass.detach();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (ctClass != null) {
+                    ctClass.detach();
+                }
             }
         }
 
         // 返回null则不修改字节码
-        return null;
-    }
-
-    private boolean isTargetMethod(CtBehavior method) throws NotFoundException {
-        return "sessionTest".equals(method.getName());
-    }
-
-    private void transformMethod(CtMethod method, ClassLoader classLoader) throws NotFoundException, CannotCompileException {
-        System.out.println("Transforming method:" + method.getName());
-        CtMethod fixedMethod = loadFixedMethod();
-        method.setBody(fixedMethod, null);
-//        method.setBody("{\n" +
-//                "        return \"SessionId=\" + $1.getSession().getId();\n" +
-//                "    }");
-    }
-
-    private CtMethod loadFixedMethod() {
-        ClassPool classPool = ClassPool.getDefault();
-        try {
-            CtClass ctClass = classPool.makeClass(new DataInputStream(
-                    new FileInputStream("/Users/zzy/Desktop/SessionController.class")));
-            CtMethod[] methods = ctClass.getMethods();
-            for (CtMethod method : methods) {
-                if (isTargetMethod(method)) {
-                    return method;
-                }
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (NotFoundException e) {
-            e.printStackTrace();
-        }
-
         return null;
     }
 
