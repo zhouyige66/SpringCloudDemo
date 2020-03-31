@@ -17,31 +17,29 @@ public class Agent {
      * 3.将 premain 的类和 MANIFEST.MF 文件打成jar包
      * 4.使用参数 -javaagent: jar包路径 启动要代理的方法
      */
-    public static void premain(String agentArgs, Instrumentation inst) {
+    public static void premain(String agentArgs, Instrumentation instrumentation) {
         System.out.println("调用了premain方法");
-        fix(agentArgs, inst);
+        instrumentation.addTransformer(new ClassFileReplaceTransformer(true), true);
     }
 
-    public static void agentmain(String agentArgs, Instrumentation inst) {
+    public static void agentmain(String agentArgs, Instrumentation instrumentation) {
         System.out.println("调用了agentmain方法");
-        fix(agentArgs, inst);
-    }
-
-    private static void fix(String args, Instrumentation instrumentation) {
-        instrumentation.addTransformer(new ClassFileReplaceTransformer(), true);
+        final ClassFileReplaceTransformer transformer = new ClassFileReplaceTransformer(false);
+        instrumentation.addTransformer(transformer, true);
+        final String[] replaceClassNames = transformer.getReplaceClassNames();
+        if (replaceClassNames == null || replaceClassNames.length == 0) {
+            return;
+        }
+        final Class[] allLoadedClasses = instrumentation.getAllLoadedClasses();
         try {
-            System.out.println("运行参数：" + args);
-            if (args == null || args.trim().length() == 0) {
-                return;
+            for (Class clazz : allLoadedClasses) {
+                for (String str : replaceClassNames) {
+                    if (str.equals(clazz.getName())) {
+                        System.out.println("找到需要修复的类：" + clazz.getName());
+                        instrumentation.retransformClasses(clazz);
+                    }
+                }
             }
-            String[] split = args.trim().split(",");
-            for (String str : split) {
-                // 类替换
-                Class<?> clazz = Class.forName(str);
-                instrumentation.retransformClasses(clazz);
-            }
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         } catch (UnmodifiableClassException e) {
             e.printStackTrace();
         }

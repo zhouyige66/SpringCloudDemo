@@ -7,10 +7,10 @@
     <dependencySets>
         <dependencySet>
             <!--是否解开jar包-->
-            <unpack>false</unpack>
-            <outputDirectory>lib</outputDirectory>
+            <unpack>true</unpack>
+            <outputDirectory>/</outputDirectory>
             <!--是否包含自身jar-->
-            <useProjectArtifact>false</useProjectArtifact>
+            <useProjectArtifact>true</useProjectArtifact>
             <scope>system</scope>
         </dependencySet>
     </dependencySets>
@@ -40,26 +40,19 @@
                 <include>*.jar</include>
             </includes>
         </fileSet>
-        <!--修复文件-->
-        <fileSet>
-            <directory>src/hotfix</directory>
-            <outputDirectory>hotfix</outputDirectory>
-            <fileMode>0644</fileMode>
-        </fileSet>
-
-        <!--        <fileSet>-->
-        <!--            <outputDirectory>logs</outputDirectory>-->
-        <!--            <fileMode>0755</fileMode>-->
-        <!--            <excludes>-->
-        <!--                <exclude>**/*</exclude>-->
-        <!--            </excludes>-->
-        <!--        </fileSet>-->
-        <!--        <fileSet>-->
-        <!--            <outputDirectory>tmp</outputDirectory>-->
-        <!--            <fileMode>0755</fileMode>-->
-        <!--            <excludes>-->
-        <!--                <exclude>**/*</exclude>-->
-        <!--            </excludes>-->
-        <!--        </fileSet>-->
+<!--        <fileSet>-->
+<!--            <outputDirectory>logs</outputDirectory>-->
+<!--            <fileMode>0755</fileMode>-->
+<!--            <excludes>-->
+<!--                <exclude>**/*</exclude>-->
+<!--            </excludes>-->
+<!--        </fileSet>-->
+<!--        <fileSet>-->
+<!--            <outputDirectory>tmp</outputDirectory>-->
+<!--            <fileMode>0755</fileMode>-->
+<!--            <excludes>-->
+<!--                <exclude>**/*</exclude>-->
+<!--            </excludes>-->
+<!--        </fileSet>-->
     </fileSets>
 </assembly>

@@ -46,29 +46,6 @@
                 </executions>
             </plugin>
 
-            <!--TODO 第一种打包方式-->
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-jar-plugin</artifactId>-->
-<!--                <version>3.2.0</version>-->
-<!--                <configuration>-->
-<!--                    <archive>-->
-<!--                        <manifest>-->
-<!--                            <mainClass>cn.roy.agent.HotfixMain</mainClass>-->
-<!--                            <addClasspath>true</addClasspath>-->
-<!--                            <classpathPrefix>lib/</classpathPrefix>-->
-<!--                        </manifest>-->
-<!--                        <manifestEntries>-->
-<!--                            <Premain-Class>cn.roy.agent.Agent</Premain-Class>-->
-<!--                            <Agent-Class>cn.roy.agent.Agent</Agent-Class>-->
-<!--                            <Can-Redefine-Classes>true</Can-Redefine-Classes>-->
-<!--                            <Can-Retransform-Classes>true</Can-Retransform-Classes>-->
-<!--                        </manifestEntries>-->
-<!--                    </archive>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
-
-            <!--TODO 第二种打包方式-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
@@ -85,15 +62,12 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-<!--                            <mainClass>cn.roy.agent.HotfixMain</mainClass>-->
                         </manifest>
                         <manifestEntries>
                             <Premain-Class>cn.roy.agent.Agent</Premain-Class>
                             <Agent-Class>cn.roy.agent.Agent</Agent-Class>
                             <Can-Redefine-Classes>true</Can-Redefine-Classes>
                             <Can-Retransform-Classes>true</Can-Retransform-Classes>
-                            <!--追加scope为system的本地jar-->
-<!--                            <Class-Path>lib/tools-1.8.0.jar</Class-Path>-->
                         </manifestEntries>
                     </archive>
                 </configuration>
@@ -108,13 +82,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <!--TODO 第三种打包方式-->
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-shade-plugin</artifactId>-->
-<!--                <version>3.2.2</version>-->
-<!--            </plugin>-->
         </plugins>
     </build>
 </project>
