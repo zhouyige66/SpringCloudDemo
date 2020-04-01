@@ -42,7 +42,7 @@ public class ClassFileReplaceTransformer implements ClassFileTransformer {
         }
         File file = new File(decodePath);
         parentFilePath = file.getParent();
-        String propPath = parentFilePath + "/hotfix/hotfix.properties";
+        String propPath = parentFilePath + File.separator + "conf" + File.separator + "hotfix.properties";
         System.out.println("配置文件路径：" + propPath);
         try (
                 FileInputStream fileInputStream = new FileInputStream(propPath);
@@ -81,7 +81,7 @@ public class ClassFileReplaceTransformer implements ClassFileTransformer {
         if (replace) {
             // 查找需要替换的类文件是否存在
             String fileName = className.substring(className.lastIndexOf("/") + 1);
-            String path = parentFilePath + "/hotfix/" + fileName + ".class";
+            String path = parentFilePath + File.separator + "res" + File.separator + fileName + ".class";
             System.out.println("修复类文件路径：" + path);
             File file = new File(path);
             if (!file.exists()) {

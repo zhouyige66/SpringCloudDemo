@@ -16,12 +16,5 @@
             <directory>${project.build.directory}/classes</directory>
             <outputDirectory>./</outputDirectory>
         </fileSet>
-<!--        <fileSet>-->
-<!--            <directory>target/lib</directory>-->
-<!--            <outputDirectory>lib</outputDirectory>-->
-<!--            <includes>-->
-<!--                <include>*.jar</include>-->
-<!--            </includes>-->
-<!--        </fileSet>-->
     </fileSets>
 </assembly>

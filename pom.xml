@@ -25,10 +25,9 @@
         <module>service-mq</module>
         <module>service-job</module>
         <module>service-multiple-cache</module>
-        <module>java-agent-core</module>
-        <module>java-agent-hotfix</module>
         <module>web-test</module>
         <module>session-test</module>
+        <module>java-agent</module>
     </modules>
 
     <properties>
