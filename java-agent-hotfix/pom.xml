@@ -10,6 +10,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.javassist</groupId>
+            <artifactId>javassist</artifactId>
+            <version>3.25.0-GA</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.sun</groupId>
             <artifactId>tools</artifactId>
             <version>1.8.0</version>
@@ -50,27 +56,23 @@
             </plugin>
 
             <!--TODO 第一种打包方式-->
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-jar-plugin</artifactId>-->
-<!--                <version>3.2.0</version>-->
-<!--                <configuration>-->
-<!--                    <archive>-->
-<!--                        <manifest>-->
-<!--                            <mainClass>cn.roy.agent.HotfixMain</mainClass>-->
-<!--                            <addClasspath>true</addClasspath>-->
-<!--                            <classpathPrefix>lib/</classpathPrefix>-->
-<!--                        </manifest>-->
-<!--                        <manifestEntries>-->
-<!--                            <Premain-Class>cn.roy.agent.Agent</Premain-Class>-->
-<!--                            <Agent-Class>cn.roy.agent.Agent</Agent-Class>-->
-<!--                            <Can-Redefine-Classes>true</Can-Redefine-Classes>-->
-<!--                            <Can-Retransform-Classes>true</Can-Retransform-Classes>-->
-<!--                            <Class-Path>lib/tools-1.8.0.jar</Class-Path>-->
-<!--                        </manifestEntries>-->
-<!--                    </archive>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>cn.roy.agent.HotfixMain</mainClass>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib</classpathPrefix>
+                        </manifest>
+                        <manifestEntries>
+                            <Class-Path>lib/tools-1.8.0.jar</Class-Path>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
 
             <!--TODO 第二种打包方式-->
             <plugin>
@@ -78,28 +80,14 @@
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>3.2.0</version>
                 <configuration>
-                    <finalName>java-agent-demo</finalName>
+                    <finalName>hotfix</finalName>
                     <descriptors>
-                        <descriptor>./src/assembly/assembly.xml</descriptor>
+                        <descriptor>src/assembly/assembly.xml</descriptor>
                     </descriptors>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                    <archive>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                            <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>cn.roy.agent.HotfixMain</mainClass>
-                        </manifest>
-                        <manifestEntries>
-<!--                            <Premain-Class>cn.roy.agent.Agent</Premain-Class>-->
-<!--                            <Agent-Class>cn.roy.agent.Agent</Agent-Class>-->
-<!--                            <Can-Redefine-Classes>true</Can-Redefine-Classes>-->
-<!--                            <Can-Retransform-Classes>true</Can-Retransform-Classes>-->
-                            <!--追加scope为system的本地jar-->
-                            <Class-Path>lib/tools-1.8.0.jar</Class-Path>
-                        </manifestEntries>
-                    </archive>
+<!--                    <descriptorRefs>-->
+<!--                        <descriptorRef>jar-with-dependencies</descriptorRef>-->
+<!--                    </descriptorRefs>-->
+<!--                    <outputDirectory>output</outputDirectory>-->
                 </configuration>
                 <executions>
                     <!--配置执行器-->
@@ -112,6 +100,32 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!--TODO 第三种打包方式-->
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-shade-plugin</artifactId>-->
+<!--                <version>3.2.0</version>-->
+<!--                <configuration>-->
+<!--                    <createDependencyReducedPom>true</createDependencyReducedPom>-->
+<!--                </configuration>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <phase>package</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>shade</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            <transformers>-->
+<!--                                <transformer-->
+<!--                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">-->
+<!--                                    <mainClass>cn.roy.agent.HotfixMain</mainClass>-->
+<!--                                </transformer>-->
+<!--                            </transformers>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
         </plugins>
     </build>
 </project>

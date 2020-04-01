@@ -25,7 +25,8 @@ public class SessionController {
     @ApiOperation(value = "获取sessionId", notes = "功能：获取调用接口的客户端传递的sessionId")
     @GetMapping("getId")
     public String sessionTest(HttpServletRequest request) {
-        return request.getSession().getId();
+        logger.info("调用了session接口");
+        return "session接口获取的sessionId=" + request.getSession().getId();
     }
 
 }

@@ -6,23 +6,22 @@
     <includeBaseDirectory>false</includeBaseDirectory>
     <dependencySets>
         <dependencySet>
-            <unpack>false</unpack>
-            <outputDirectory>lib</outputDirectory>
+            <unpack>true</unpack>
+            <outputDirectory>./</outputDirectory>
             <useProjectArtifact>false</useProjectArtifact>
-            <scope>system</scope>
         </dependencySet>
     </dependencySets>
     <fileSets>
         <fileSet>
             <directory>${project.build.directory}/classes</directory>
-            <outputDirectory>/</outputDirectory>
+            <outputDirectory>./</outputDirectory>
         </fileSet>
-        <fileSet>
-            <directory>target/lib</directory>
-            <outputDirectory>lib</outputDirectory>
-            <includes>
-                <include>*.jar</include>
-            </includes>
-        </fileSet>
+<!--        <fileSet>-->
+<!--            <directory>target/lib</directory>-->
+<!--            <outputDirectory>lib</outputDirectory>-->
+<!--            <includes>-->
+<!--                <include>*.jar</include>-->
+<!--            </includes>-->
+<!--        </fileSet>-->
     </fileSets>
 </assembly>

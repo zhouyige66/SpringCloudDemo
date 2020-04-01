@@ -1,9 +1,6 @@
 package cn.roy.agent;
 
-import com.sun.tools.attach.AgentInitializationException;
-import com.sun.tools.attach.AgentLoadException;
-import com.sun.tools.attach.AttachNotSupportedException;
-import com.sun.tools.attach.VirtualMachine;
+import com.sun.tools.attach.*;
 
 import java.io.IOException;
 
@@ -21,7 +18,15 @@ public class HotfixMain {
         if (pid == null || pid.trim().length() == 0 || agentPath == null || agentPath.trim().length() == 0) {
             return;
         }
-
+        System.out.println("pid：" + pid);
+        System.out.println("agent路径：" + agentPath);
+        SecurityManager sm = System.getSecurityManager();
+        if (sm != null) {
+            System.out.println("检查权限");
+            sm.checkPermission(new AttachPermission("attachVirtualMachine"));
+        }else {
+            System.out.println("权限manager为空");
+        }
         VirtualMachine machine = null;
         try {
             machine = VirtualMachine.attach(pid);

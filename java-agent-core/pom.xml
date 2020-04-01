@@ -51,18 +51,18 @@
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>3.2.0</version>
                 <configuration>
-                    <finalName>java-agent</finalName>
-                    <descriptors>
-                        <descriptor>./src/assembly/assembly.xml</descriptor>
-                    </descriptors>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
+                    <finalName>agent</finalName>
+<!--                    <descriptors>-->
+<!--                        <descriptor>./src/assembly/assembly.xml</descriptor>-->
+<!--                    </descriptors>-->
+<!--                    <descriptorRefs>-->
+<!--                        <descriptorRef>jar-with-dependencies</descriptorRef>-->
+<!--                    </descriptorRefs>-->
                     <archive>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                            <classpathPrefix>lib/</classpathPrefix>
-                        </manifest>
+<!--                        <manifest>-->
+<!--                            <addClasspath>true</addClasspath>-->
+<!--                            <classpathPrefix>./lib/</classpathPrefix>-->
+<!--                        </manifest>-->
                         <manifestEntries>
                             <Premain-Class>cn.roy.agent.Agent</Premain-Class>
                             <Agent-Class>cn.roy.agent.Agent</Agent-Class>
@@ -72,13 +72,17 @@
                     </archive>
                 </configuration>
                 <executions>
-                    <!--配置执行器-->
                     <execution>
                         <id>make-assembly</id>
                         <phase>package</phase>
                         <goals>
                             <goal>single</goal>
                         </goals>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/assembly/assembly.xml</descriptor>
+                            </descriptors>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

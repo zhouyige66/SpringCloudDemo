@@ -8,6 +8,7 @@ import javassist.CtClass;
 import java.io.*;
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
+import java.net.URLDecoder;
 import java.security.ProtectionDomain;
 import java.util.Properties;
 
@@ -32,7 +33,14 @@ public class ClassFileReplaceTransformer implements ClassFileTransformer {
         Properties properties = new Properties();
         // 使用ClassLoader加载properties配置文件生成对应的输入流
         String jarPath = Agent.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-        File file = new File(jarPath);
+        String decodePath;
+        try {
+            decodePath = URLDecoder.decode(jarPath, "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            decodePath = jarPath;
+        }
+        File file = new File(decodePath);
         parentFilePath = file.getParent();
         String propPath = parentFilePath + "/hotfix/hotfix.properties";
         System.out.println("配置文件路径：" + propPath);
