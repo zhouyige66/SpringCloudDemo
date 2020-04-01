@@ -32,7 +32,7 @@ public class SessionController2 {
     public String sessionTest(HttpServletRequest request) {
         logger.info("调用了session2接口");
         printService.print("请求的sessionId为：" + request.getSession().getId());
-        return "session2接口获取的sessionId=" + request.getSession().getId();
+        return request.getSession().getId();
     }
 
 }

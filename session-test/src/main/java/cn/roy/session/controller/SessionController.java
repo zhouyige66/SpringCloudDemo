@@ -26,7 +26,7 @@ public class SessionController {
     @GetMapping("getId")
     public String sessionTest(HttpServletRequest request) {
         logger.info("调用了session接口");
-        return "session接口获取的sessionId=" + request.getSession().getId();
+        return request.getSession().getId();
     }
 
 }

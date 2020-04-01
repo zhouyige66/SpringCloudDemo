@@ -14,8 +14,8 @@
             <artifactId>tools</artifactId>
             <version>1.8.0</version>
             <scope>system</scope>
-            <!--            <systemPath>/Library/Java/JavaVirtualMachines/jdk1.8.0_181.jdk/Contents/Home/lib/tools.jar</systemPath>-->
-            <systemPath>C:\Soft\Java\jdk1.8.0_201\lib\tools.jar</systemPath>
+            <systemPath>/Library/Java/JavaVirtualMachines/jdk1.8.0_181.jdk/Contents/Home/lib/tools.jar</systemPath>
+<!--            <systemPath>C:\Soft\Java\jdk1.8.0_201\lib\tools.jar</systemPath>-->
         </dependency>
     </dependencies>
 
